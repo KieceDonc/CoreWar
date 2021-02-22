@@ -1,4 +1,4 @@
-package corewars;
+package corewars.main;
 
 public class CoreWar
 {
