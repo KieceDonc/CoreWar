@@ -1,2 +1,2 @@
 # CoreWars
-Simulateur MARS en java
+Simulateur MARS en java (prise en charge réseau)
