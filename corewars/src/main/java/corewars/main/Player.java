@@ -4,6 +4,7 @@ public class Player{
 
   private String name;
   private int id;
+  private int score;
 
   public Player(String name,int id){
     this.name = name;
@@ -16,5 +17,21 @@ public class Player{
   
   public int getID(){
     return this.id;
+  }
+
+  public void updateScore(int partyScore){
+    score+=partyScore;
+  }
+
+  public int getScore(){
+    return score;
+  }
+
+  public boolean equals(Player player2){
+    return this.getID()==player2.getID();
+  }
+
+  public String toString(){
+    return "Player "+this.getID()+":\nname = "+this.getName()+"\nscore = "+this.getScore();
   }
 }

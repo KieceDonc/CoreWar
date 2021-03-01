@@ -4,14 +4,20 @@ import java.util.ArrayList;
 
 public class PlayersList{
 
-  private ArrayList<Player> playersList;
+  protected ArrayList<Player> playersList;
 
   public PlayersList(){
-    this.playersList = new ArrayList();
+    this.playersList = new ArrayList<Player>();
   }
 
   public void add(Player player){
-    this.playersList.add(player);
+    if(isInList(player)){
+      System.err.println("player already in list");
+      System.out.println(this.toString());
+      System.out.println(player.toString());
+    }else{
+      this.playersList.add(player);
+    }
   }
 
   /*
@@ -54,16 +60,21 @@ public class PlayersList{
     return player;
   }
 
+  public boolean isInList(Player player){
+    return this.getByID(player.getID())!=null;
+  }
+
   public int getSize(){
     return this.playersList.size();
   }
 
+  @Override
   public String toString(){
     String toReturn = "";
     toReturn+="Players list info : \n";
-    toReturn+=" - Size : "+this.getSize()+"\n";
+    toReturn+="Size = "+this.getSize()+"\n";
     for(int x=0;x<this.getSize();x++){
-      toReturn+=" - Player index n°"+x+" : "+this.getByIndex(x).toString()+"\n";
+      toReturn+="Player index n°"+x+" = "+this.getByIndex(x).toString()+"\n";
     }
     return toReturn;
   }
