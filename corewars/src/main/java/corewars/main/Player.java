@@ -2,6 +2,7 @@ package corewars.main;
 
 public class Player{
 
+  private Program program;
   private String name;
   private int id;
   private int score;
@@ -9,6 +10,14 @@ public class Player{
   public Player(String name,int id){
     this.name = name;
     this.id = id;
+  }
+
+  public void setProgram(Program program){
+    this.program = program;
+  }
+
+  public Program getProgram(){
+    return program;
   }
 
   public String getName(){
