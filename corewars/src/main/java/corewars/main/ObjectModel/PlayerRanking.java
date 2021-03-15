@@ -1,4 +1,4 @@
-package corewars.main;
+package corewars.main.ObjectModel;
 
 import java.util.Collections;
 import java.util.Comparator;
