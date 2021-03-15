@@ -1,4 +1,4 @@
-package corewars.main;
+package corewars.main.ObjectModel;
 
 public class Program {
   

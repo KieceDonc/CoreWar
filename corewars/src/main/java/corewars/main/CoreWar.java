@@ -1,11 +1,23 @@
 package corewars.main;
 
+import corewars.main.Client.Client;
+import corewars.main.Server.Server;
+
 public class CoreWar{
 
+    private static boolean DEBUG_VALUE = true;
     public static void main(String[] args){
+        //clearConsole();
         printLogo();
-        Player player = new Player(choseName(), 0);
-        printMainMenu();
+        switch(serverOrClient()){
+            case 1:{ 
+                new Client();
+                break;
+            }
+            case 2:{
+                new Server();
+            }
+        };
     }
 
     public static int createParty(){
@@ -42,7 +54,7 @@ public class CoreWar{
         return playerName;
     }
 
-    public static int printMainMenu(){
+    public static int clientMainMenu(){
         int choice = 0;
         do{
             System.out.println("------------------------------------------------------------------------------------------");
@@ -59,8 +71,29 @@ public class CoreWar{
         return choice;
     }
 
+    public static int serverOrClient(){
+        int choice = 0;
+        do{
+            System.out.println("------------------------------------------------------------------------------------------");
+            System.out.println("");
+            System.out.println("1 - Rejoindre en tant que joueur");
+            System.out.println("2 - Créer un serveur");
+            System.out.println("");
+            System.out.print("Votre choix : ");
+            choice = Lire.i();
+            System.out.println("");
+            System.out.println("------------------------------------------------------------------------------------------");    
+        }while(choice>2 || choice<1);
+        return choice;
+    }
+
+    public static void DebugMessage(String str){
+        if(DEBUG_VALUE){
+            System.out.println("DEBUG : "+str);
+        }
+    }
+
     public static void printLogo(){
-        clearConsole();
         System.out.println("------------------------------------------------------------------------------------------");
         System.out.println("@@@@@@@@@@@@@@@@@@@@@@&@@@@@@@@@@@@@@@%@@@@@@@@@@@@@@@@@@@&@@&@@@@@@@@@@@@@@@@@@");
         System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
