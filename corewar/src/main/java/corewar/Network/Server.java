@@ -7,7 +7,7 @@ import corewar.ObjectModel.PlayerRanking;
 
 public class Server{
 
-  public static String ip = "192.168.1.240";
+  public static String ip = "localhost";
   public static int port = 5487;
 
   private PlayerRanking ranking = new PlayerRanking();

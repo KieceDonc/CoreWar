@@ -3,11 +3,10 @@ package corewar;
 import corewar.Client.Client;
 import corewar.Server.Server;
 
-public class CoreWar{
+public class Main{
 
     private static boolean DEBUG_VALUE = true;
     public static void main(String[] args){
-        //clearConsole();
         printLogo();
         switch(serverOrClient()){
             case 1:{ 
