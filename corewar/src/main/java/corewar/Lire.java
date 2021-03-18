@@ -1,6 +1,10 @@
 package corewar;
 
 import java.io.*;
+
+/*
+      Les méthodes de lire bloque le programme jusqu'à une entrée valide
+*/
 public class Lire{
 
       public static String S(){ // Lire un String

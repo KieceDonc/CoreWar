@@ -1,34 +1,39 @@
-package corewar.Server;
+package corewar.ClientSide;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 
-import corewar.ObjectModel.SocketCommunication;
+import corewar.Network.SocketCommunication;
 
 public class Connexion extends Thread{
   
   private Socket socket;
-  private ObjectOutputStream oss;
+  private SocketCommunication toSendCom;
+  private SocketCommunication receivedCom;
   
-  public Connexion(Socket socket){
+  public Connexion(Socket socket, SocketCommunication toSendCom) throws IOException {
     this.socket = socket;
-    oss = new ObjectOutputStream(socket.getOutputStream());
+    this.toSendCom = toSendCom;
   }
   
   public void run(){
     try {
+      ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+      oos.writeObject(toSendCom);
       ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
       boolean shouldStop = false;
       while (!shouldStop) {
-        SocketCommunication receivedObject = (SocketCommunication) ois.readObject();
-        if (receivedObject.getAPICallType()==SocketCommunication.END_COMM){
+        receivedCom = (SocketCommunication) ois.readObject();
+        if (toSendCom.getAPICallType()==receivedCom.getAPICallType()){
           shouldStop = true;
-        }else{
-          APIHandler(receivedObject);
+          if(receivedCom.getObject().equals(SocketCommunication.BAD_COMM)){
+            receivedCom = null;
+          }
         }
-        System.out.println(o);
       }
+      oos.close();
       ois.close();
       socket.close();
     }catch(IOException | ClassNotFoundException e){
@@ -37,6 +42,10 @@ public class Connexion extends Thread{
     }
   }
 
+  public Object getReceivedObject(){
+    return receivedCom.getObject();
+  }
+/*
   public void APIHandler(SocketCommunication receivedObject){
     switch(receivedObject.getAPICallType()){
       case SocketCommunication.GET_RANKING:{
@@ -47,7 +56,7 @@ public class Connexion extends Thread{
 
   public void getRanking(){
     socket.writeObject(new SocketCommunication(SocketCommunication.GET_RANKING));
-  }
+  }*/
 
   /*
   package corewar.Client;

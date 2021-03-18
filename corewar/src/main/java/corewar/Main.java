@@ -1,11 +1,12 @@
 package corewar;
 
-import corewar.Client.Client;
-import corewar.Server.Server;
+import corewar.ServerSide.Server;
+import corewar.ClientSide.Client;
 
 public class Main{
 
     private static boolean DEBUG_VALUE = true;
+    
     public static void main(String[] args){
         printLogo();
         switch(serverOrClient()){

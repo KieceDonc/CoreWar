@@ -1,11 +1,12 @@
 package corewar.ObjectModel;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.Comparator;
 
-public class PlayerRanking extends PlayersList {
-  
-  public PlayerRanking(){
+public class PlayerRanking extends PlayersList implements Serializable{
+
+  public PlayerRanking() {
     super();
   }
 
