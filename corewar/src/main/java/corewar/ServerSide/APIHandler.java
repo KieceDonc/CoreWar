@@ -53,6 +53,9 @@ public class APIHandler extends Thread{
       case SocketCommunication.IS_PLAYER_NAME_TAKEN:{
         isPlayerNameTakenHandler(InComingAPICallType, InComingObject);
       }
+      case SocketCommunication.CREATE_PARTY:{
+        createPartyHandler(InComingAPICallType);
+      }
     }
   }
 
@@ -64,6 +67,12 @@ public class APIHandler extends Thread{
     String playerName = (String)InComingObject;
     boolean isPlayerNameTaken = server.getRanking().isInList(playerName);
     respond(new SocketCommunication(InComingAPICallType, isPlayerNameTaken));
+  }
+
+  public void createPartyHandler(int InComingAPICallType){
+    Party party = new Party(this.server);
+    server.getPartyList().add(party);
+    respond(new SocketCommunication(InComingAPICallType, party.getID()));
   }
 
   public void respond(SocketCommunication toSendObject){

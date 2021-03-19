@@ -8,6 +8,7 @@ public class SocketCommunication implements Serializable{
   public static final int END_COMM = -1;
   public static final int GET_RANKING = 0;
   public static final int IS_PLAYER_NAME_TAKEN = 1;
+  public static final int CREATE_PARTY = 2;
 
   private int APICallType;
   private Object object;  

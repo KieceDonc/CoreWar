@@ -4,9 +4,9 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.Comparator;
 
-public class PlayerRanking extends PlayersList implements Serializable{
+public class PlayersRanking extends PlayersList implements Serializable{
 
-  public PlayerRanking() {
+  public PlayersRanking() {
     super();
   }
 

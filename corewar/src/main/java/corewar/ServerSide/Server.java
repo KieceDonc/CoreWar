@@ -1,20 +1,20 @@
 package corewar.ServerSide;
 
 import java.io.IOException;
-import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.SocketException;
 
 import corewar.Lire;
 import corewar.Main;
-import corewar.ObjectModel.PlayerRanking;
+import corewar.ObjectModel.PlayersRanking;
 
 public class Server {
 
-  public static final String ip="localhost";
+  public static final String ip = "localhost";
   public static final int port = 5487;
-
-  private PlayerRanking ranking = new PlayerRanking();
+  
+  private PartyList partyList = new PartyList();
+  private PlayersRanking ranking = new PlayersRanking();
   private ServerSocket server;
 
   private boolean stopServer = false;
@@ -76,29 +76,12 @@ public class Server {
     }
   }
 
-  public PlayerRanking getRanking(){
+  public PartyList getPartyList(){
+    return this.partyList;
+  }
+
+  public PlayersRanking getRanking(){
     return this.ranking;
   }
 
-/*
-public void partyStart(Party party){
-    if(party.getPlayersList().getSize()>1){
-      party.start();
-    }
-  }
-
-  public void onPartyEnded(Party party){
-    
-  }
-
-  public void onPlayerConnected(Player player){
-    if(!ranking.isInList(player)){
-      ranking.add(player);
-    }
-  }
-
-  public void onPlayerSubmitProgram(Player player, Program program){
-    player.setProgram(program);
-  }
-*/
 }

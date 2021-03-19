@@ -66,6 +66,10 @@ public class PlayersList{
     return player;
   }
 
+  public Player get(Player player){
+    return this.getByName(player.getName());
+  }
+
   public boolean isInList(Player player){
     return this.getByName(player.getName())!=null;
   }

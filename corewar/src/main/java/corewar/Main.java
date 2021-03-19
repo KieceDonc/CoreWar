@@ -20,30 +20,6 @@ public class Main{
         };
     }
 
-    public static int createParty(){
-        int choice = 0;
-        do{
-            System.out.println("------------------------------------------------------------------------------------------");
-            System.out.println("");
-            System.out.println("Partie ID : 12345");
-            System.out.println("");
-            System.out.println("Liste des joueurs : (2)");
-            System.out.println("");
-            System.out.println("Joueur 1 : Ben ( Programme : Terminator )");
-            System.out.println("Joueur 2 : Alan ( Programme : Turing )");
-            System.out.println("");
-            System.out.println("Options :");
-            System.out.println("    1- Démarrer la partie");
-            System.out.println("    2- Annuler la partie");
-            System.out.println("");
-            System.out.print("Votre choix : ");
-            choice = Lire.i();
-            System.out.println("");
-            System.out.println("------------------------------------------------------------------------------------------");    
-        }while(choice<1 || choice>2);
-        return choice;
-    }
-
     public static int serverOrClient(){
         int choice = 0;
         do{

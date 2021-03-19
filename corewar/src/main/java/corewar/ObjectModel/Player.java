@@ -5,6 +5,7 @@ public class Player{
   private Program program;
   private String name;
   private int score;
+  private int partyScore;
 
   public Player(String name){
     this.name = name;
@@ -15,19 +16,31 @@ public class Player{
   }
 
   public Program getProgram(){
-    return program;
+    return this.program;
   }
 
   public String getName(){
     return this.name;
   }
 
-  public void updateScore(int partyScore){
-    score+=partyScore;
+  public void updateScore(){
+    this.score+=this.partyScore;
   }
 
   public int getScore(){
-    return score;
+    return this.score;
+  }
+
+  public int getPartyScore(){
+    return this.partyScore;
+  }
+
+  public void updatePartyScore(int partyScore){
+    this.partyScore+=partyScore;
+  }
+
+  public void resetPartyScore(){
+    this.partyScore = 0;
   }
 
   public boolean equals(Player player2){

@@ -5,7 +5,7 @@ import java.io.IOException;
 import corewar.Lire;
 import corewar.Network.SocketCommunication;
 import corewar.ObjectModel.Player;
-import corewar.ObjectModel.PlayerRanking;
+import corewar.ObjectModel.PlayersRanking;
 
 public class Client {
 
@@ -16,7 +16,7 @@ public class Client {
     mainMenu();
   }
 
-  public void initPlayer(){
+  private void initPlayer(){
     String playerName = "";
     try{
       boolean isPlayerNameTaken = false;
@@ -63,6 +63,7 @@ public class Client {
     
     switch(choice){
       case 1:{
+        createParty();
         break;
       }
       case 2:{
@@ -86,6 +87,16 @@ public class Client {
     mainMenu();
   }
 
+  public void createParty(){
+    try{
+      Party party = Party.create(currentPlayer);
+      party.start();
+      party.join();
+    }catch(Exception e){
+      e.printStackTrace();
+    }
+  }
+
   public boolean isPlayerNameTaken(String playerName){
     try {
       Connexion connexion = new Connexion(new SocketCommunication(SocketCommunication.IS_PLAYER_NAME_TAKEN, playerName));
@@ -101,12 +112,12 @@ public class Client {
     return true;
   }
 
-  public PlayerRanking getRanking() {
+  public PlayersRanking getRanking() {
     try {
       Connexion connexion = new Connexion(new SocketCommunication(SocketCommunication.GET_RANKING, null));
       connexion.start();
       connexion.join();
-      return (PlayerRanking)connexion.getReceivedObject();
+      return (PlayersRanking)connexion.getReceivedObject();
     } catch (IOException | InterruptedException e) {
       e.printStackTrace();
     }
