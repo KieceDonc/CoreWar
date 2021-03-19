@@ -9,6 +9,10 @@ public class SocketCommunication implements Serializable{
   public static final int GET_RANKING = 0;
   public static final int IS_PLAYER_NAME_TAKEN = 1;
   public static final int CREATE_PARTY = 2;
+  public static final int SUBSCRIBE_PARTY_EVENT = 3;
+  public static final int PLAYER_JOINED_PARTY = 4;
+  public static final int PLAYER_JOIN_PARTY = 5;
+  public static final int GET_PARTY_LIST = 6;
 
   private int APICallType;
   private Object object;  

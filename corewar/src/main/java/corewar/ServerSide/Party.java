@@ -1,45 +1,58 @@
 package corewar.ServerSide;
 
+import java.io.IOException;
+import java.net.Socket;
+
 import corewar.ObjectModel.Player;
 import corewar.ObjectModel.PlayersList;
 import corewar.ObjectModel.PlayersRanking;
+import corewar.ObjectModel.EventsSubscriber;
 
-public class Party{
+public class Party {
 
     private Server server;
     private PlayersList playersList;
-    private final int ID; 
+    private EventsSubscriber socketEventSubscriber;
+    private final int ID;
 
-    public Party(Server server){
+    public Party(Server server) {
         this.server = server;
         this.playersList = new PlayersList();
-        this.ID=IDGenerator.get();
+        this.ID = IDGenerator.get();
     }
 
-    public void onPlayerJoin(Player player){
-        player.resetPartyScore();
-    }
-    public void start(){
-
+    public void onPlayerJoin(Player player) {
+        playersList.add(player);
     }
 
-    public void cancel(){
+    public void start() {
 
     }
 
-    public void onEnd(){
+    public void cancel() {
+
+    }
+
+    public void onEnd() {
         PlayersRanking playersRanking = server.getRanking();
-        for(int x=0;x<playersList.getSize();x++){
+        for (int x = 0; x < playersList.getSize(); x++) {
             Player currentPlayer = playersList.getByIndex(x);
-            if(playersRanking.isInList(currentPlayer)){
+            if (playersRanking.isInList(currentPlayer)) {
                 playersRanking.get(currentPlayer).updateScore();
-            }else{
+            } else {
                 playersRanking.add(currentPlayer);
             }
         }
+        try {
+            socketEventSubscriber.closeAll();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-
+    public void subscribeEvent(Socket socket){
+        socketEventSubscriber.add(socket);
+    }
 
     public PlayersList getPlayersList(){
         return this.playersList;

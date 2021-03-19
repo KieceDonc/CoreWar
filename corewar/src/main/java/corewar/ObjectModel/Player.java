@@ -1,6 +1,8 @@
 package corewar.ObjectModel;
 
-public class Player{
+import java.io.Serializable;
+
+public class Player implements Serializable {
 
   private Program program;
   private String name;
@@ -37,6 +39,7 @@ public class Player{
 
   public void updatePartyScore(int partyScore){
     this.partyScore+=partyScore;
+    this.resetPartyScore();
   }
 
   public void resetPartyScore(){

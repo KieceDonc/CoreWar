@@ -6,6 +6,7 @@ import corewar.Lire;
 import corewar.Network.SocketCommunication;
 import corewar.ObjectModel.Player;
 import corewar.ObjectModel.PlayersRanking;
+import corewar.ServerSide.PartyList;
 
 public class Client {
 
@@ -43,6 +44,21 @@ public class Client {
     }
     currentPlayer = new Player(playerName);
   }
+  
+  public boolean isPlayerNameTaken(String playerName){
+    try {
+      Connexion connexion = new Connexion(new SocketCommunication(SocketCommunication.IS_PLAYER_NAME_TAKEN, playerName));
+      connexion.start();
+      connexion.join();
+      System.out.println(connexion.getReceivedObject().toString());
+      return (boolean)connexion.getReceivedObject();
+    } catch (IOException | InterruptedException e) {
+      e.printStackTrace();
+    }
+    System.out.println("Erreur fatal dans la fonction choseName()");
+    System.exit(0);
+    return true;
+  }
 
   public void mainMenu(){
     int choice = 0;
@@ -67,6 +83,7 @@ public class Client {
         break;
       }
       case 2:{
+        joinParty();
         break;
       }
       case 3:{
@@ -97,20 +114,21 @@ public class Client {
     }
   }
 
-  public boolean isPlayerNameTaken(String playerName){
-    try {
-      Connexion connexion = new Connexion(new SocketCommunication(SocketCommunication.IS_PLAYER_NAME_TAKEN, playerName));
-      connexion.start();
-      connexion.join();
-      System.out.println(connexion.getReceivedObject().toString());
-      return (boolean)connexion.getReceivedObject();
-    } catch (IOException | InterruptedException e) {
-      e.printStackTrace();
-    }
-    System.out.println("Erreur fatal dans la fonction choseName()");
-    System.exit(0);
-    return true;
-  }
+  public void joinParty(){
+    PartyList partyList;
+    int choice = 0;
+    do{
+      partyList = getPartyList();
+      System.out.println("------------------------------------------------------------------------------------------");
+      System.out.println("");
+      partyList.printClient();
+      System.out.println("");
+      System.out.print("Veuillez écrire l'id de la partie que vous souhaitez rejoindre : ");
+      choice = Lire.i();
+      System.out.println("");
+      System.out.println("------------------------------------------------------------------------------------------");
+    }while(partyList.getByID(choice)==null);
+   }
 
   public PlayersRanking getRanking() {
     try {
@@ -118,6 +136,18 @@ public class Client {
       connexion.start();
       connexion.join();
       return (PlayersRanking)connexion.getReceivedObject();
+    } catch (IOException | InterruptedException e) {
+      e.printStackTrace();
+    }
+    return null;
+  }
+
+  public PartyList getPartyList(){
+    try {
+      Connexion connexion = new Connexion(new SocketCommunication(SocketCommunication.GET_PARTY_LIST, null));
+      connexion.start();
+      connexion.join();
+      return (PartyList)connexion.getReceivedObject();
     } catch (IOException | InterruptedException e) {
       e.printStackTrace();
     }

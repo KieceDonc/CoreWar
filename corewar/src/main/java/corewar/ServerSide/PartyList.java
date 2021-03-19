@@ -1,14 +1,15 @@
 package corewar.ServerSide;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class PartyList {
+public class PartyList implements Serializable {
 
-    private ArrayList<Party> partyList = new ArrayList<>();
+  private ArrayList<Party> partyList = new ArrayList<>();
 
-    public void add(Party party){
-        this.partyList.add(party);
-    }
+  public void add(Party party){
+    this.partyList.add(party);
+  }
     
   /*
     Retourne la party de la liste avec l'id donné en paramètre
@@ -45,5 +46,13 @@ public class PartyList {
 
   public int getSize(){
       return this.partyList.size();
+  }
+
+  public void printClient(){
+    System.out.println("");
+    for(int x=0;x<partyList.size();x++){
+      Party currentParty = partyList.get(x);
+      System.out.println("Partie id : "+currentParty.getID()+", Nombre de joueurs : "+currentParty.getPlayersList().getSize());
+    }
   }
 }
