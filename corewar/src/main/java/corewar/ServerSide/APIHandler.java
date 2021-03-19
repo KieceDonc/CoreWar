@@ -11,6 +11,7 @@ public class APIHandler extends Thread{
   
   private Server server;
   private Socket socket;
+  private ObjectOutputStream oos;
   
   public APIHandler(Server server,Socket socket) throws IOException {
     this.server = server;
@@ -20,11 +21,19 @@ public class APIHandler extends Thread{
   public void run(){
     try {
       ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
+      oos = new ObjectOutputStream(socket.getOutputStream());
       boolean shouldStop = false;
-      while (!shouldStop) {
-        SocketCommunication receivedObject = (SocketCommunication) ois.readObject();
-        HandleIncomingObject(receivedObject);
+      while (!shouldStop){
+        Object object = ois.readObject();
+        SocketCommunication receivedObject = (SocketCommunication) object;
+        
+        if(receivedObject.getAPICallType()==SocketCommunication.END_COMM){
+          shouldStop = true;
+        }else{
+          HandleIncomingObject(receivedObject);
+        }
       }
+      oos.close();
       ois.close();
       socket.close();
     }catch(IOException | ClassNotFoundException e){
@@ -34,20 +43,31 @@ public class APIHandler extends Thread{
 
   public void HandleIncomingObject(SocketCommunication receivedObject){
     int InComingAPICallType = receivedObject.getAPICallType();
+    Object InComingObject = receivedObject.getObject();
+    
     switch(InComingAPICallType){
       case SocketCommunication.GET_RANKING:{
-        respond(new SocketCommunication(InComingAPICallType, server.getRanking()));
+        getRankingHandler(InComingAPICallType);
         break;
       }
-      default:{
-        respond(new SocketCommunication(InComingAPICallType,SocketCommunication.BAD_COMM));
+      case SocketCommunication.IS_PLAYER_NAME_TAKEN:{
+        isPlayerNameTakenHandler(InComingAPICallType, InComingObject);
       }
     }
   }
 
+  public void getRankingHandler(int InComingAPICallType){
+    respond(new SocketCommunication(InComingAPICallType, server.getRanking()));
+  }
+
+  public void isPlayerNameTakenHandler(int InComingAPICallType, Object InComingObject){
+    String playerName = (String)InComingObject;
+    boolean isPlayerNameTaken = server.getRanking().isInList(playerName);
+    respond(new SocketCommunication(InComingAPICallType, isPlayerNameTaken));
+  }
+
   public void respond(SocketCommunication toSendObject){
     try{
-      ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
       oos.writeObject(toSendObject);
     }catch(IOException e){
       e.printStackTrace();

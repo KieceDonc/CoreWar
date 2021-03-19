@@ -1,6 +1,7 @@
 package corewar.ServerSide;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.SocketException;
 
@@ -10,7 +11,7 @@ import corewar.ObjectModel.PlayerRanking;
 
 public class Server {
 
-  public static final String ip = "localhost";
+  public static final String ip="localhost";
   public static final int port = 5487;
 
   private PlayerRanking ranking = new PlayerRanking();

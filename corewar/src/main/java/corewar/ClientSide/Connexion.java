@@ -4,17 +4,21 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.Timer;
 
 import corewar.Network.SocketCommunication;
+import corewar.ServerSide.Server;
 
 public class Connexion extends Thread{
   
   private Socket socket;
   private SocketCommunication toSendCom;
   private SocketCommunication receivedCom;
+  private int timeout = 10000; // temps accordé pour une requête en millisecondes
+  private boolean respondReceived = false;
   
-  public Connexion(Socket socket, SocketCommunication toSendCom) throws IOException {
-    this.socket = socket;
+  public Connexion(SocketCommunication toSendCom) throws IOException {
+    this.socket = new Socket(Server.ip, Server.port);
     this.toSendCom = toSendCom;
   }
   
@@ -23,16 +27,21 @@ public class Connexion extends Thread{
       ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
       oos.writeObject(toSendCom);
       ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
+      timeoutHandler();
       boolean shouldStop = false;
       while (!shouldStop) {
         receivedCom = (SocketCommunication) ois.readObject();
         if (toSendCom.getAPICallType()==receivedCom.getAPICallType()){
+          respondReceived = true;
           shouldStop = true;
           if(receivedCom.getObject().equals(SocketCommunication.BAD_COMM)){
-            receivedCom = null;
+            System.out.println("Bad communication");
+            System.out.println(toSendCom.toString());
+            System.exit(0);
           }
         }
       }
+      oos.writeObject(new SocketCommunication(SocketCommunication.END_COMM, null));
       oos.close();
       ois.close();
       socket.close();
@@ -42,54 +51,24 @@ public class Connexion extends Thread{
     }
   }
 
+  private void timeoutHandler(){
+    Timer timer = new Timer();
+    timer.schedule(new java.util.TimerTask(){
+      @Override
+      public void run() {
+        if(!respondReceived){
+          System.out.println("Pas de réponse du server après "+timeout+" ms");
+          System.out.println("On suppose le serveur mort");
+          System.out.println("Votre requête :");
+          System.out.println(toSendCom.toString());
+          System.exit(0);
+        }
+        timer.cancel();
+      }
+    }, timeout);
+  }
+
   public Object getReceivedObject(){
     return receivedCom.getObject();
   }
-/*
-  public void APIHandler(SocketCommunication receivedObject){
-    switch(receivedObject.getAPICallType()){
-      case SocketCommunication.GET_RANKING:{
-        break;
-      }
-    }
-  }
-
-  public void getRanking(){
-    socket.writeObject(new SocketCommunication(SocketCommunication.GET_RANKING));
-  }*/
-
-  /*
-  package corewar.Client;
-
-  import java.io.IOException;
-  import java.io.ObjectOutputStream;
-  import java.net.Socket;
-  import java.net.UnknownHostException;
-
-  import corewar.CoreWar;
-  import corewar.Server.Server;
-
-  public class Connexion{
-  
-  private Socket socket;
-  private ObjectOutputStream oss;
-
-
-  public Connexion() throws UnknownHostException, IOException{
-    socket = new Socket(Server.ip, Server.port);
-    oss = new ObjectOutputStream(socket.getOutputStream());
-    CoreWar.DebugMessage("Nouvelle connexion : "+socket.getPort());
-  }
-
-  public void test() throws IOException{
-    oss.writeObject("hello world");
-  }
-
-  public void end() throws IOException{
-    oss.writeObject("END");
-    oss.close();
-    socket.close();
-  }
-}
-*/
 }

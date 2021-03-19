@@ -26,6 +26,9 @@ public class PlayersList{
     * return {Player} si le joueur n'est pas trouvé renvoie null
   */
   public Player getByIndex(int index){
+    if(getSize()==0){
+      return null;
+    }
     if(index<0 && index>=playersList.size()){
       System.err.println("index "+index+" in players list out of bound");
       System.out.print(this.toString());
@@ -35,18 +38,21 @@ public class PlayersList{
   }
 
   /*
-    Retourne le joueur de la liste avec l'id donné en paramètre
-    * {int} ID 
+    Retourne le joueur de la liste avec le nom donné en paramètre
+    * {String} PlayerName 
     * return {Player} si le joueur n'est pas trouvé renvoie null
   */
-  public Player getByID(int ID){
+  public Player getByName(String PlayerName){
+    if(getSize()==0){
+      return null;
+    }
     Player player = null;
     int index = 0;
     boolean founded = false;
 
     do{
       Player currentPlayer = playersList.get(index);
-      if(currentPlayer.getID()==ID){
+      if(currentPlayer.getName().equals(PlayerName)){
         player = currentPlayer;
         founded = true;
       }
@@ -54,14 +60,18 @@ public class PlayersList{
     }while(!founded);
     
     if(!founded){
-      System.err.println("Player "+ID+" not founded");
+      System.err.println("Player "+PlayerName+" not founded");
       System.out.print(this.toString());
     }
     return player;
   }
 
   public boolean isInList(Player player){
-    return this.getByID(player.getID())!=null;
+    return this.getByName(player.getName())!=null;
+  }
+
+  public boolean isInList(String playerName){
+    return this.getByName(playerName)!=null;
   }
 
   public int getSize(){

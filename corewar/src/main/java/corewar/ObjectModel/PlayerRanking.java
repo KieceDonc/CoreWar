@@ -27,5 +27,19 @@ public class PlayerRanking extends PlayersList implements Serializable{
       }
     });
   }
+
+  public void print(){
+    this.sort();
+    System.out.println("------------------------------------------------------------------------------------------");
+    System.out.println("");
+    System.out.println("Classement des joueurs :");
+    System.out.println("");
+    for(int x=0;x<this.getSize();x++){
+      Player currentPlayer = this.getByIndex(x);
+      System.out.println("Joueur n°"+x+": "+currentPlayer.getName()+", score : "+currentPlayer.getScore());
+    }
+    System.out.println("");
+    System.out.println("------------------------------------------------------------------------------------------");
+  }
   
 }

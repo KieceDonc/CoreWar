@@ -44,33 +44,6 @@ public class Main{
         return choice;
     }
 
-    public static String choseName(){
-        System.out.println("------------------------------------------------------------------------------------------");
-        System.out.println("");
-        System.out.print("Veuillez choisir un pseudo : ");
-        String playerName = Lire.S();
-        System.out.println("");
-        System.out.println("------------------------------------------------------------------------------------------");
-        return playerName;
-    }
-
-    public static int clientMainMenu(){
-        int choice = 0;
-        do{
-            System.out.println("------------------------------------------------------------------------------------------");
-            System.out.println("");
-            System.out.println("1 - Crée une partie");
-            System.out.println("2 - Rejoindre une partie");
-            System.out.println("3 - Voir le classement");
-            System.out.println("");
-            System.out.print("Votre choix : ");
-            choice = Lire.i();
-            System.out.println("");
-            System.out.println("------------------------------------------------------------------------------------------");    
-        }while(choice>3 || choice<1);
-        return choice;
-    }
-
     public static int serverOrClient(){
         int choice = 0;
         do{

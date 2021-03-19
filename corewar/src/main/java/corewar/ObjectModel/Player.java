@@ -4,12 +4,10 @@ public class Player{
 
   private Program program;
   private String name;
-  private int id;
   private int score;
 
-  public Player(String name,int id){
+  public Player(String name){
     this.name = name;
-    this.id = id;
   }
 
   public void setProgram(Program program){
@@ -23,10 +21,6 @@ public class Player{
   public String getName(){
     return this.name;
   }
-  
-  public int getID(){
-    return this.id;
-  }
 
   public void updateScore(int partyScore){
     score+=partyScore;
@@ -37,10 +31,10 @@ public class Player{
   }
 
   public boolean equals(Player player2){
-    return this.getID()==player2.getID();
+    return this.getName().equals(player2.getName());
   }
 
   public String toString(){
-    return "Player "+this.getID()+":\nname = "+this.getName()+"\nscore = "+this.getScore();
+    return "Player "+this.getName()+", score = "+this.getScore();
   }
 }
