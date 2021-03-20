@@ -8,7 +8,7 @@ import corewar.Lire;
 import corewar.Main;
 import corewar.ObjectModel.PlayersRanking;
 
-public class Server {
+public class Server{
 
   public static final String ip = "localhost";
   public static final int port = 5487;

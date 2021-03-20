@@ -1,9 +1,12 @@
 package corewar.ObjectModel;
 
+import java.io.Serializable;
 import java.util.ArrayList; 
 
-public class PlayersList{
+public class PlayersList implements Serializable{
 
+  private static final long serialVersionUID = 4421202624407538837L;
+  
   protected ArrayList<Player> playersList;
 
   public PlayersList(){
@@ -46,6 +49,7 @@ public class PlayersList{
     if(getSize()==0){
       return null;
     }
+    
     Player player = null;
     int index = 0;
     boolean founded = false;
@@ -57,7 +61,7 @@ public class PlayersList{
         founded = true;
       }
       index++;
-    }while(!founded);
+    }while(!founded && index<this.getSize());
     
     if(!founded){
       System.err.println("Player "+PlayerName+" not founded");

@@ -1,36 +1,50 @@
 package corewar.ServerSide;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.Socket;
 
 import corewar.ObjectModel.Player;
 import corewar.ObjectModel.PlayersList;
 import corewar.ObjectModel.PlayersRanking;
+import corewar.Network.SocketCommunication;
 import corewar.ObjectModel.EventsSubscriber;
 
-public class Party {
+public class Party implements Serializable {
 
+    private static final long serialVersionUID = -6158548070086506523L;
+    
     private Server server;
     private PlayersList playersList;
-    private EventsSubscriber socketEventSubscriber;
+    private EventsSubscriber socketEventsSubscriber;
     private final int ID;
 
     public Party(Server server) {
         this.server = server;
         this.playersList = new PlayersList();
+        this.socketEventsSubscriber = new EventsSubscriber();
         this.ID = IDGenerator.get();
     }
 
-    public void onPlayerJoin(Player player) {
+    public void onPlayerJoin(Socket socketToExcept, Player player) {
         playersList.add(player);
+        try {
+            socketEventsSubscriber.sendAllExceptOne(new SocketCommunication(SocketCommunication.PLAYER_JOINED_PARTY, player), socketToExcept);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void start() {
 
     }
 
-    public void cancel() {
-
+    public void cancel(Socket socketToExcept) {
+        try {
+            socketEventsSubscriber.sendAllExceptOne(new SocketCommunication(SocketCommunication.CANCEL_PARTY, null),socketToExcept);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void onEnd() {
@@ -44,14 +58,14 @@ public class Party {
             }
         }
         try {
-            socketEventSubscriber.closeAll();
+            socketEventsSubscriber.closeAll();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     public void subscribeEvent(Socket socket){
-        socketEventSubscriber.add(socket);
+        socketEventsSubscriber.add(socket);
     }
 
     public PlayersList getPlayersList(){

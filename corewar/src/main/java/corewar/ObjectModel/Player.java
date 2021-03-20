@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 public class Player implements Serializable {
 
+  private static final long serialVersionUID = 5300637892606913207L;
+  
   private Program program;
   private String name;
   private int score;

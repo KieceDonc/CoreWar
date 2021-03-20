@@ -1,14 +1,21 @@
 package corewar.ServerSide;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
-public class PartyList implements Serializable {
+public class PartyList{
 
   private ArrayList<Party> partyList = new ArrayList<>();
 
   public void add(Party party){
     this.partyList.add(party);
+  }
+
+  public Party getByIndex(int index){
+    if(index<0 || index>this.getSize()){
+      return null;
+    }else{
+      return this.partyList.get(index);
+    }
   }
     
   /*
@@ -31,7 +38,7 @@ public class PartyList implements Serializable {
         founded = true;
       }
       index++;
-    }while(!founded);
+    }while(!founded && index<this.getSize());
     
     if(!founded){
       System.err.println("Party "+ID+" not founded");
@@ -48,11 +55,20 @@ public class PartyList implements Serializable {
       return this.partyList.size();
   }
 
-  public void printClient(){
-    System.out.println("");
+  public int[] getAllIDS(){
+    int allIDS[] = new int[this.getSize()];
+    for(int x=0;x<this.getSize();x++){
+      allIDS[x] = this.partyList.get(0).getID();
+    }
+    return allIDS;
+  }
+
+  public ClientPrinterPartyList getClientPrinterObject(){
+    String toPrint = "\n";
     for(int x=0;x<partyList.size();x++){
       Party currentParty = partyList.get(x);
-      System.out.println("Partie id : "+currentParty.getID()+", Nombre de joueurs : "+currentParty.getPlayersList().getSize());
+      toPrint+="Partie id : "+currentParty.getID()+", Nombre de joueurs : "+currentParty.getPlayersList().getSize()+"\n";
     }
+    return new ClientPrinterPartyList(toPrint,partyList.size(),this.getAllIDS());
   }
 }

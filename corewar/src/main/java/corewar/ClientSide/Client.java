@@ -6,7 +6,8 @@ import corewar.Lire;
 import corewar.Network.SocketCommunication;
 import corewar.ObjectModel.Player;
 import corewar.ObjectModel.PlayersRanking;
-import corewar.ServerSide.PartyList;
+import corewar.ObjectModel.Program;
+import corewar.ServerSide.ClientPrinterPartyList;
 
 public class Client {
 
@@ -17,41 +18,41 @@ public class Client {
     mainMenu();
   }
 
-  private void initPlayer(){
+  private void initPlayer() {
     String playerName = "";
-    try{
+    try {
       boolean isPlayerNameTaken = false;
       boolean incorrectPlayerName = false;
-      do{
-        if(isPlayerNameTaken){
+      do {
+        if (isPlayerNameTaken) {
           System.out.println("Pseudo déjà prit, dommage :(\nVeuillez en prendre un nouveau");
-        }else if(incorrectPlayerName){
+        } else if (incorrectPlayerName) {
           System.out.println("Pseudo incorrect :(\nVeuillez en prendre un nouveau");
         }
-        System.out.println("------------------------------------------------------------------------------------------");
+        System.out .println("------------------------------------------------------------------------------------------");
         System.out.println("");
         System.out.print("Veuillez choisir un pseudo : ");
         playerName = Lire.S();
         System.out.println("");
         System.out.println("------------------------------------------------------------------------------------------");
-        incorrectPlayerName = playerName.length()<=0;
-        if(!incorrectPlayerName){
+        incorrectPlayerName = playerName.length() <= 0;
+        if (!incorrectPlayerName) {
           isPlayerNameTaken = isPlayerNameTaken(playerName);
         }
-      }while(isPlayerNameTaken || incorrectPlayerName);
-    }catch(Exception e){
+      } while (isPlayerNameTaken || incorrectPlayerName);
+    } catch (Exception e) {
       e.printStackTrace();
     }
     currentPlayer = new Player(playerName);
+    currentPlayer.setProgram(new Program("default program lul ", "none"));
   }
-  
-  public boolean isPlayerNameTaken(String playerName){
+
+  public boolean isPlayerNameTaken(String playerName) {
     try {
       Connexion connexion = new Connexion(new SocketCommunication(SocketCommunication.IS_PLAYER_NAME_TAKEN, playerName));
       connexion.start();
       connexion.join();
-      System.out.println(connexion.getReceivedObject().toString());
-      return (boolean)connexion.getReceivedObject();
+      return (boolean) connexion.getReceivedObject();
     } catch (IOException | InterruptedException e) {
       e.printStackTrace();
     }
@@ -60,10 +61,10 @@ public class Client {
     return true;
   }
 
-  public void mainMenu(){
+  public void mainMenu() {
     int choice = 0;
     int maxChoice = 4;
-    do{
+    do {
       System.out.println("------------------------------------------------------------------------------------------");
       System.out.println("");
       System.out.println("1 - Crée une partie");
@@ -74,60 +75,78 @@ public class Client {
       System.out.print("Votre choix : ");
       choice = Lire.i();
       System.out.println("");
-      System.out.println("------------------------------------------------------------------------------------------");    
-    }while(choice>maxChoice || choice<1);
-    
-    switch(choice){
-      case 1:{
+      System.out.println("------------------------------------------------------------------------------------------");
+    } while (choice > maxChoice || choice < 1);
+
+    switch (choice) {
+      case 1: {
         createParty();
         break;
       }
-      case 2:{
+      case 2: {
         joinParty();
         break;
       }
-      case 3:{
+      case 3: {
         getRanking().print();
         break;
       }
-      case 4:{
+      case 4: {
         System.exit(0);
         break;
       }
-      default:{
-        System.out.println("wtf, unhandled choice, max choice ="+maxChoice+", current choice = "+choice);
+      default: {
+        System.out.println("wtf, unhandled choice, max choice =" + maxChoice + ", current choice = " + choice);
         System.out.println("Normally it happend when you don't incremente maxChoice in clientMainMenu()");
         System.exit(0);
       }
-    };
+    }
+    ;
 
     mainMenu();
   }
 
-  public void createParty(){
-    try{
+  public void createParty() {
+    try {
       Party party = Party.create(currentPlayer);
       party.start();
       party.join();
-    }catch(Exception e){
+    } catch (Exception e) {
       e.printStackTrace();
     }
   }
 
-  public void joinParty(){
-    PartyList partyList;
-    int choice = 0;
-    do{
-      partyList = getPartyList();
-      System.out.println("------------------------------------------------------------------------------------------");
-      System.out.println("");
-      partyList.printClient();
-      System.out.println("");
-      System.out.print("Veuillez écrire l'id de la partie que vous souhaitez rejoindre : ");
-      choice = Lire.i();
-      System.out.println("");
-      System.out.println("------------------------------------------------------------------------------------------");
-    }while(partyList.getByID(choice)==null);
+  public void joinParty() {
+    ClientPrinterPartyList partyList = getPartyList();
+    if (partyList.getSize() == 0) {
+      System.out.println("Aucune partie disponible");
+    } else {
+      boolean firstSetup = true;
+      int partyID = 0;
+      do {
+        if (!firstSetup) {
+          partyList = getPartyList();
+        } else {
+          firstSetup = false;
+        }
+        System.out.println("------------------------------------------------------------------------------------------");
+        System.out.println("");
+        partyList.print();
+        System.out.println("");
+        System.out.print("Veuillez écrire l'id de la partie que vous souhaitez rejoindre : ");
+        partyID = Lire.i();
+        System.out.println("");
+        System.out.println("------------------------------------------------------------------------------------------");
+      } while (partyList.getByID(partyID) == -1);
+
+      try {
+        Party party = Party.join(currentPlayer, partyID);
+        party.start();
+        party.join();
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
+    }
    }
 
   public PlayersRanking getRanking() {
@@ -142,12 +161,12 @@ public class Client {
     return null;
   }
 
-  public PartyList getPartyList(){
+  public ClientPrinterPartyList getPartyList(){
     try {
-      Connexion connexion = new Connexion(new SocketCommunication(SocketCommunication.GET_PARTY_LIST, null));
+      Connexion connexion = new Connexion(new SocketCommunication(SocketCommunication.GET_PARTY_LIST_PRINTER, null));
       connexion.start();
       connexion.join();
-      return (PartyList)connexion.getReceivedObject();
+      return (ClientPrinterPartyList)connexion.getReceivedObject();
     } catch (IOException | InterruptedException e) {
       e.printStackTrace();
     }

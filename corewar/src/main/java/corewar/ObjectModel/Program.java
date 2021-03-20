@@ -1,6 +1,10 @@
 package corewar.ObjectModel;
 
-public class Program {
+import java.io.Serializable;
+
+public class Program implements Serializable {
+  
+  private static final long serialVersionUID = 4934912641307152L;
   
   private String name;
   private String path;

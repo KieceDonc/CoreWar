@@ -26,7 +26,7 @@ public class ProgramList{
         founded = true;
       }
       index++;
-    }while(!founded);
+    }while(!founded && index<this.getSize());
     
     if(!founded){
       System.err.println("Program with path="+path+" not founded");

@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 public class SocketCommunication implements Serializable{
 
+  private static final long serialVersionUID = 2127495232721679744L;
+  
   public static final String BAD_COMM = "BAD APICALL"; // unknow api call
   public static final int END_COMM = -1;
   public static final int GET_RANKING = 0;
@@ -12,7 +14,8 @@ public class SocketCommunication implements Serializable{
   public static final int SUBSCRIBE_PARTY_EVENT = 3;
   public static final int PLAYER_JOINED_PARTY = 4;
   public static final int PLAYER_JOIN_PARTY = 5;
-  public static final int GET_PARTY_LIST = 6;
+  public static final int GET_PARTY_LIST_PRINTER = 6;
+  public static final int CANCEL_PARTY = 7;
 
   private int APICallType;
   private Object object;  

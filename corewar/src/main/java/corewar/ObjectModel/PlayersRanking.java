@@ -1,10 +1,11 @@
 package corewar.ObjectModel;
 
-import java.io.Serializable;
 import java.util.Collections;
 import java.util.Comparator;
 
-public class PlayersRanking extends PlayersList implements Serializable{
+public class PlayersRanking extends PlayersList{
+
+  private static final long serialVersionUID = -5644134169553267238L;
 
   public PlayersRanking() {
     super();
@@ -34,9 +35,13 @@ public class PlayersRanking extends PlayersList implements Serializable{
     System.out.println("");
     System.out.println("Classement des joueurs :");
     System.out.println("");
-    for(int x=0;x<this.getSize();x++){
-      Player currentPlayer = this.getByIndex(x);
-      System.out.println("Joueur n°"+x+": "+currentPlayer.getName()+", score : "+currentPlayer.getScore());
+    if(this.getSize()==0){
+      System.out.println("Aucun joueur dans le classement");
+    }else{
+      for(int x=0;x<this.getSize();x++){
+        Player currentPlayer = this.getByIndex(x);
+        System.out.println("Joueur n°"+x+": "+currentPlayer.getName()+", score : "+currentPlayer.getScore());
+      }
     }
     System.out.println("");
     System.out.println("------------------------------------------------------------------------------------------");
