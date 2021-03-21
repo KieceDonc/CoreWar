@@ -63,10 +63,6 @@ public class PlayersList implements Serializable{
       index++;
     }while(!founded && index<this.getSize());
     
-    if(!founded){
-      System.err.println("Player "+PlayerName+" not founded");
-      System.out.print(this.toString());
-    }
     return player;
   }
 

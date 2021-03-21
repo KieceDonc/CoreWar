@@ -1,8 +1,8 @@
 package corewar.ServerSide;
 
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.net.Socket;
 
 import corewar.ObjectModel.Player;
 import corewar.ObjectModel.PlayersList;
@@ -26,10 +26,10 @@ public class Party implements Serializable {
         this.ID = IDGenerator.get();
     }
 
-    public void onPlayerJoin(Socket socketToExcept, Player player) {
+    public void onPlayerJoin(ObjectOutputStream oosToExcept, Player player) {
         playersList.add(player);
         try {
-            socketEventsSubscriber.sendAllExceptOne(new SocketCommunication(SocketCommunication.PLAYER_JOINED_PARTY, player), socketToExcept);
+            socketEventsSubscriber.sendAllExceptOne(new SocketCommunication(SocketCommunication.PLAYER_JOINED_PARTY, player), oosToExcept);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -39,9 +39,9 @@ public class Party implements Serializable {
 
     }
 
-    public void cancel(Socket socketToExcept) {
+    public void cancel(ObjectOutputStream oosToExcept) {
         try {
-            socketEventsSubscriber.sendAllExceptOne(new SocketCommunication(SocketCommunication.CANCEL_PARTY, null),socketToExcept);
+            socketEventsSubscriber.sendAllExceptOne(new SocketCommunication(SocketCommunication.CANCEL_PARTY, null),oosToExcept);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -57,15 +57,10 @@ public class Party implements Serializable {
                 playersRanking.add(currentPlayer);
             }
         }
-        try {
-            socketEventsSubscriber.closeAll();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
-    public void subscribeEvent(Socket socket){
-        socketEventsSubscriber.add(socket);
+    public void subscribeEvent(ObjectOutputStream oos){
+        socketEventsSubscriber.add(oos);
     }
 
     public PlayersList getPlayersList(){

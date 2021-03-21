@@ -2,10 +2,11 @@ package corewar;
 
 import corewar.ServerSide.Server;
 import corewar.ClientSide.Client;
+import corewar.Read.Read;
 
 public class Main{
 
-    private static boolean DEBUG_VALUE = true;
+    public static boolean DEBUG_VALUE = true;
     
     public static void main(String[] args){
         printLogo();
@@ -29,7 +30,7 @@ public class Main{
             System.out.println("2 - Créer un serveur");
             System.out.println("");
             System.out.print("Votre choix : ");
-            choice = Lire.i();
+            choice = Read.i();
             System.out.println("");
             System.out.println("------------------------------------------------------------------------------------------");    
         }while(choice>2 || choice<1);
@@ -77,20 +78,6 @@ public class Main{
         System.out.println("@@@@@@@@@@%@@@@@@@@@@@@@@@@&@@@@@@@@(@@@@@@@@@@@@@@@@@@@(@&@@@@@@@@@@@@@@@@@@@@@");
         System.out.println("@#@@@@&@#@@@&@@#@@@@&@@@&@@&@@@&@@@@@@/@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
         System.out.println("------------------------------------------------------------------------------------------");
-    }
-
-    public static void clearConsole(){
-        try{
-            String os = System.getProperty("os.name");
-
-            if (os.contains("Windows")){
-                Runtime.getRuntime().exec("cls");
-            }else{
-                System.out.print("\033\143");
-            }
-        }catch (Exception e){
-            e.printStackTrace();
-        }
     }
 
 }

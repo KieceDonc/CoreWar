@@ -4,9 +4,9 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.SocketException;
 
-import corewar.Lire;
 import corewar.Main;
 import corewar.ObjectModel.PlayersRanking;
+import corewar.Read.Read;
 
 public class Server{
 
@@ -50,7 +50,7 @@ public class Server{
       public void run() {
         try {
           System.out.println("Appuyer sur entrée pour étiendre le serveur");
-          Lire.S();
+          Read.S();
           stopServer = true;
           server.close();
         } catch (SocketException e){

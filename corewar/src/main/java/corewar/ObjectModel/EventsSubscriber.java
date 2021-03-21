@@ -2,44 +2,35 @@ package corewar.ObjectModel;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.net.Socket;
 import java.util.ArrayList;
 
 import corewar.Network.SocketCommunication;
 
 public class EventsSubscriber{
 
-    private ArrayList<Socket> socketList = new ArrayList<>();
+    private ArrayList<ObjectOutputStream> oosList = new ArrayList<>();
 
-    public void add(Socket socket) {
-        socketList.add(socket);
+    public void add(ObjectOutputStream oos) {
+        oosList.add(oos);
     }
 
     public void sendAll(SocketCommunication socketCommunication) throws IOException {
         for(int x=0;x<this.getSize();x++){
-            Socket currentSocket = socketList.get(x);
-            new ObjectOutputStream(currentSocket.getOutputStream()).writeObject(socketCommunication);;
+            ObjectOutputStream currentOos = oosList.get(x);
+            currentOos.writeObject(socketCommunication);;
         }
     }
 
-    public void sendAllExceptOne(SocketCommunication socketCommunication, Socket socketToExcept) throws IOException {
+    public void sendAllExceptOne(SocketCommunication socketCommunication, ObjectOutputStream oosExcept) throws IOException {
         for(int x=0;x<this.getSize();x++){
-            Socket currentSocket = socketList.get(x);
-            if(!currentSocket.equals(socketToExcept)){
-                new ObjectOutputStream(currentSocket.getOutputStream()).writeObject(socketCommunication);
+            ObjectOutputStream currentOos = oosList.get(x);
+            if(!currentOos.equals(oosExcept)){
+                currentOos.writeObject(socketCommunication);
             }
         }
     }
 
-    public void closeAll() throws IOException {
-        sendAll(new SocketCommunication(SocketCommunication.END_COMM, null));
-        for(int x=0;x<this.getSize();x++){
-            Socket currentSocket = socketList.get(x);
-            currentSocket.close();
-        }
-    }
-
     public int getSize(){
-        return this.socketList.size();
+        return this.oosList.size();
     }
 }

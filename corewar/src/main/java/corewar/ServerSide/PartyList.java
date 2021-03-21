@@ -64,7 +64,7 @@ public class PartyList{
   }
 
   public ClientPrinterPartyList getClientPrinterObject(){
-    String toPrint = "\n";
+    String toPrint = "";
     for(int x=0;x<partyList.size();x++){
       Party currentParty = partyList.get(x);
       toPrint+="Partie id : "+currentParty.getID()+", Nombre de joueurs : "+currentParty.getPlayersList().getSize()+"\n";

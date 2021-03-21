@@ -2,7 +2,7 @@ package corewar.ClientSide;
 
 import java.io.IOException;
 
-import corewar.Lire;
+import corewar.Read.Read;
 import corewar.Network.SocketCommunication;
 import corewar.ObjectModel.Player;
 import corewar.ObjectModel.PlayersRanking;
@@ -32,7 +32,7 @@ public class Client {
         System.out .println("------------------------------------------------------------------------------------------");
         System.out.println("");
         System.out.print("Veuillez choisir un pseudo : ");
-        playerName = Lire.S();
+        playerName = Read.S();
         System.out.println("");
         System.out.println("------------------------------------------------------------------------------------------");
         incorrectPlayerName = playerName.length() <= 0;
@@ -73,7 +73,7 @@ public class Client {
       System.out.println("4 - Fermer");
       System.out.println("");
       System.out.print("Votre choix : ");
-      choice = Lire.i();
+      choice = Read.i();
       System.out.println("");
       System.out.println("------------------------------------------------------------------------------------------");
     } while (choice > maxChoice || choice < 1);
@@ -134,17 +134,21 @@ public class Client {
         partyList.print();
         System.out.println("");
         System.out.print("Veuillez écrire l'id de la partie que vous souhaitez rejoindre : ");
-        partyID = Lire.i();
+        partyID = Read.i();
+        System.out.println("");
+        System.out.println("Entrer -10 pour annuler votre action");
         System.out.println("");
         System.out.println("------------------------------------------------------------------------------------------");
       } while (partyList.getByID(partyID) == -1);
-
-      try {
-        Party party = Party.join(currentPlayer, partyID);
-        party.start();
-        party.join();
-      } catch (InterruptedException e) {
-        e.printStackTrace();
+      
+      if(partyID!=-10){
+        try {
+          Party party = Party.join(currentPlayer, partyID);
+          party.start();
+          party.join();
+        } catch (InterruptedException e) {
+          e.printStackTrace();
+        }
       }
     }
    }

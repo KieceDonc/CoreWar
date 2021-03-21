@@ -29,10 +29,12 @@ public class APIHandler extends Thread{
         Object object = ois.readObject();
         SocketCommunication receivedObject = (SocketCommunication) object;
         
-        if(receivedObject.getAPICallType()==SocketCommunication.END_COMM){
-          shouldStop = true;
-        }else{
-          HandleIncomingObject(receivedObject);
+        if(receivedObject!=null){
+          if(receivedObject.getAPICallType()==SocketCommunication.END_COMM){
+            shouldStop = true;
+          }else{
+            HandleIncomingObject(receivedObject);
+          }
         }
       }
       oos.close();
@@ -70,6 +72,7 @@ public class APIHandler extends Thread{
       }
       case SocketCommunication.GET_PARTY_LIST_PRINTER:{
         getPartyListPrinterHandler(InComingAPICallType);
+        break;
       }
       case SocketCommunication.CANCEL_PARTY:{
         cancelPartyHandler(InComingObject);
@@ -110,7 +113,7 @@ public class APIHandler extends Thread{
 
   public void subscribePartyEventHandler(int InComingAPICallType, Object InComingObject){
     int partyID = (Integer)InComingObject;
-    server.getPartyList().getByID(partyID).subscribeEvent(socket);
+    server.getPartyList().getByID(partyID).subscribeEvent(this.oos);
   }
 
   public void playerJoinPartyHandler(int InComingAPICallType, Object InComingObject){
@@ -118,7 +121,7 @@ public class APIHandler extends Thread{
     int partyID = (int) allObjects[0];
     Player player = (Player) allObjects[1];
     Party currentParty = server.getPartyList().getByID(partyID);
-    currentParty.onPlayerJoin(this.socket,player);
+    currentParty.onPlayerJoin(this.oos,player);
     respond(new SocketCommunication(InComingAPICallType, currentParty.getPlayersList()));
   }
 
@@ -130,7 +133,7 @@ public class APIHandler extends Thread{
   public void cancelPartyHandler(Object InComingObject){
     int PartyID = (int) InComingObject;
     Party currentParty = server.getPartyList().getByID(PartyID);
-    currentParty.cancel(this.socket);
+    currentParty.cancel(this.oos);
     server.getPartyList().remove(currentParty);
   }
 

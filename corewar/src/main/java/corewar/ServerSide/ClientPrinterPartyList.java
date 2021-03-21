@@ -43,8 +43,7 @@ public class ClientPrinterPartyList implements Serializable {
       }while(!founded && index<this.getSize());
       
       if(!founded){
-        System.err.println("Party "+ID+" not founded");
-        System.out.print(this.toString());
+        System.err.println("La partie avec l'ID "+ID+" n'existe pas");
       }
       return partyID;
     }

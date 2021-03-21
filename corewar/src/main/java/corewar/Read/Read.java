@@ -1,11 +1,11 @@
-package corewar;
+package corewar.Read;
 
 import java.io.*;
 
 /*
       Les méthodes de lire bloque le programme jusqu'à une entrée valide
 */
-public class Lire{
+public class Read{
 
       public static String S(){ // Lire un String
             boolean error = false;
@@ -125,12 +125,12 @@ public class Lire{
       }        
           
             
-      public  static char c(){// Lire un caractere
+      public static char c(){// Lire un caractere
             String tmp=S();
             if(tmp.length()==0){
                   return '\n';
             }else{
                   return tmp.charAt(0);
             }
-      }        
+      }      
 }         
