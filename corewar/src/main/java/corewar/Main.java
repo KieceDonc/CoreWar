@@ -2,7 +2,6 @@ package corewar;
 
 import corewar.ServerSide.Server;
 import corewar.ClientSide.Client;
-import corewar.Read.Read;
 
 public class Main{
 

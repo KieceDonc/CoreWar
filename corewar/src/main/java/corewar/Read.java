@@ -1,4 +1,4 @@
-package corewar.Read;
+package corewar;
 
 import java.io.*;
 
@@ -7,6 +7,7 @@ import java.io.*;
 */
 public class Read{
 
+
       public static String S(){ // Lire un String
             boolean error = false;
             String tmp = "";
@@ -14,13 +15,14 @@ public class Read{
             do{
                   try{
                         while ((C=(char) System.in.read()) !='\n'){
-                        if (C != '\r')  tmp = tmp+C;
+                              
+                              if (C != '\r')  tmp = tmp+C;
                         
                         }
                         error=false;
                   }catch (IOException e){
                         System.out.println("Erreur");
-                        System.out.println("Veuillez s'il vous plaît rentrer une chaîne de caractère :");
+                        System.out.println("Veuillez s'il vous plaît rentrer une chaîne de caractère : ");
                         error=true;
                   } 
             }while(error); 
@@ -36,7 +38,7 @@ public class Read{
                         error=false;
                   }catch (NumberFormatException e){
                         System.out.println("Erreur");
-                        System.out.println("Veuillez s'il vous plaît rentrer un entier byte :");
+                        System.out.println("Veuillez s'il vous plaît rentrer un entier byte : ");
                         error=true;
                   }     
             }while(error);
@@ -52,7 +54,7 @@ public class Read{
                         error=false;
                   }catch(NumberFormatException e){
                         System.out.println("Erreur");
-                        System.out.println("Veuillez s'il vous plaît rentrer un entier short :");
+                        System.out.println("Veuillez s'il vous plaît rentrer un entier short : ");
                         error=true;
                   }     
             }while(error);
@@ -68,7 +70,7 @@ public class Read{
                         error=false;
                   }catch (NumberFormatException e) {
                         System.out.println("Erreur");
-                        System.out.println("Veuillez s'il vous plaît rentrer un entier :");
+                        System.out.println("Veuillez s'il vous plaît rentrer un entier : ");
                         error=true;
                   }     
             }while(error);
@@ -84,7 +86,7 @@ public class Read{
                         error=false;
                   }catch(NumberFormatException e){
                         System.out.println("Erreur");
-                        System.out.println("Veuillez s'il vous plaît rentrer un entier long");
+                        System.out.println("Veuillez s'il vous plaît rentrer un entier long : ");
                         error=true;
                   }     
             }while(error);
@@ -101,7 +103,7 @@ public class Read{
                         error=false;
                   }catch (NumberFormatException e) {
                         System.out.println("Erreur");
-                        System.out.println("Veuillez s'il vous plaît rentrer un double");
+                        System.out.println("Veuillez s'il vous plaît rentrer un double : ");
                         error=true;
                   }     
                   return x ;
@@ -117,7 +119,7 @@ public class Read{
                         error=false;
                   }catch (NumberFormatException e){
                         System.out.println("Erreur");
-                        System.out.println("Veuillez s'il vous plaît rentrer un float");
+                        System.out.println("Veuillez s'il vous plaît rentrer un float : ");
                         error=true;
                   }
             }while(error);     
@@ -132,5 +134,8 @@ public class Read{
             }else{
                   return tmp.charAt(0);
             }
-      }      
+      } 
+      
+
 }         
+

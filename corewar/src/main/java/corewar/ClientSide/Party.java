@@ -2,20 +2,20 @@ package corewar.ClientSide;
 
 import java.io.IOException;
 
+import corewar.Read;
 import corewar.ClientSide.EventInterface.onPartyCancel;
 import corewar.ClientSide.EventInterface.onPlayerJoinParty;
 import corewar.Network.SocketCommunication;
 import corewar.ObjectModel.Player;
 import corewar.ObjectModel.PlayersList;
-import corewar.Read.ThreadReadI;
 
 public class Party extends Thread {
 
     private PartyCommunicationHandler partyCommunicationHandler;
     private PlayersList playersList;
     private Player currentPlayer;
-    private ThreadReadI threadReadChoice;
     private boolean isHost = false; // security issue
+    private boolean stop = false;
 
     private final int ID;
 
@@ -29,6 +29,33 @@ public class Party extends Thread {
             System.out.println("Fatal error");
             System.exit(0);
         }
+
+        partyCommunicationHandler.onPlayerJoinParty(new onPlayerJoinParty() {
+
+            @Override
+            public void update(Player player) {
+                playersList.add(player);
+                System.out.println("");
+                System.out.println("");
+                printWaitingMenuFirstPart();
+            }
+        });
+
+        partyCommunicationHandler.onPartyCancel(new onPartyCancel() {
+
+            @Override
+            public void dothis() {
+                System.out.println("");
+                System.out.println("");
+                System.out.println("------------------------------------------------------------------------------------------");
+                System.out.println("");
+                System.out.println("Partie annulée");
+                System.out.println("Appuyer sur n'importe quel entier pour continuer");
+                System.out.println("");
+                System.out.println("------------------------------------------------------------------------------------------");
+                stop = true;
+            }
+        });
     }
 
     // player joining party constructor
@@ -48,108 +75,96 @@ public class Party extends Thread {
     }
 
     public void run() {
-        partyCommunicationHandler.onPlayerJoinParty(new onPlayerJoinParty() {
+        while(!stop){
+            printWaitingMenu();
+        }
+    }
 
-            @Override
-            public void update(Player player) {
-                if (threadReadChoice != null) {
-                    threadReadChoice.interrupt();
-                }
-                playersList.add(player);
-                printWaitingMenu();
-            }
-        });
-
-        Thread currentThread = this;
-        partyCommunicationHandler.onPartyCancel(new onPartyCancel() {
-
-            @Override
-            public void dothis() {
-                if (threadReadChoice != null) {
-                    threadReadChoice.interrupt();
-                }
-                System.out.println("------------------------------------------------------------------------------------------");
-                System.out.println("");
-                System.out.println("Partie annulée");
-                System.out.println("");
-                System.out.println("------------------------------------------------------------------------------------------");
-                currentThread.interrupt();
-            }
-        });
-
-        printWaitingMenu();
+    private void printWaitingMenuFirstPart(){
+        System.out.println(
+            "------------------------------------------------------------------------------------------");
+        System.out.println("");
+        System.out.println("Partie ID : " + this.getID());
+        System.out.println("");
+        System.out.println("Liste des joueurs : " + playersList.getSize());
+        System.out.println("");
+        for (int x = 0; x < playersList.getSize(); x++) {
+            Player currentPlayerInList = playersList.getByIndex(x);
+            System.out.println("Joueur " + x + " : " + currentPlayerInList.getName() + " ( Programme : " + currentPlayerInList.getProgram().getName() + " )");
+        }
+        System.out.println("");
+        System.out.println("Options :");
+        if (isHost) {
+            System.out.println("    1- Démarrer la partie");
+            System.out.println("    2- Annuler la partie");
+        } else {
+            System.out.println("    1- Quitter la partie");
+        }
+        System.out.println("");
+        System.out.print("Votre choix : ");
     }
 
     private void printWaitingMenu() {
         boolean shouldPrintAgain = false;
         int choice = 0;
         do {
-            System.out.println(
-                    "------------------------------------------------------------------------------------------");
-            System.out.println("");
-            System.out.println("Partie ID : " + this.getID());
-            System.out.println("");
-            System.out.println("Liste des joueurs : " + playersList.getSize());
-            System.out.println("");
-            for (int x = 0; x < playersList.getSize(); x++) {
-                Player currentPlayerInList = playersList.getByIndex(x);
-                System.out.println("Joueur " + x + " : " + currentPlayerInList.getName() + " ( Programme : "
-                        + currentPlayerInList.getProgram().getName() + " )");
+            printWaitingMenuFirstPart();
+            if(!Read.isReading){
+                choice = Read.i();
             }
-            System.out.println("");
-            System.out.println("Options :");
-            if (isHost) {
-                System.out.println("    1- Démarrer la partie");
-                System.out.println("    2- Annuler la partie");
-            } else {
-                System.out.println("    1- Quitter la partie");
-            }
-            System.out.println("");
-            System.out.print("Votre choix : ");
-            choice = readChoice();
-            System.out.println("");
-            System.out.println("------------------------------------------------------------------------------------------");
-            if(isHost){
-                shouldPrintAgain = choice<1||choice>2;
+
+            if(!stop){
+                System.out.println("");
+                System.out.println("------------------------------------------------------------------------------------------");
+                if (isHost) {
+                    shouldPrintAgain = choice < 1 || choice > 2;
+                } else {
+                    shouldPrintAgain = choice != 1;
+                }
             }else{
-                shouldPrintAgain = choice!=1;
+                // On a reçu l'ordre d'arrêter la partie mais on attendait que le joueur appuit sur une touche donc on sort
+                shouldPrintAgain = false;
             }
         } while (shouldPrintAgain);
-        switch (choice) {
-            case 1: {
-                if(isHost){
-                    startParty();
-                }else{
-                    leave();
+
+        if(!stop){
+            switch (choice) {
+                case 1: {
+                    if (isHost) {
+                        startParty();
+                    } else {
+                        leave();
+                    }
+                    break;
                 }
-                break;
-            }
-            case 2: {
-                if(isHost){
-                    cancel();
+                case 2: {
+                    if (isHost) {
+                        cancel();
+                    }
+                    break;
                 }
-                break;
-            }
-            default: {
-                System.out.println("wtf, unhandled choice, current choice = " + choice);
-                System.out.println("Normally it happend when you don't incremente maxChoice in clientMainMenu()");
-                System.exit(0);
+                default: {
+                    System.out.println("wtf, unhandled choice, current choice = " + choice);
+                    System.out.println("Normally it happend when you don't incremente maxChoice in clientMainMenu()");
+                    System.exit(0);
+                }
             }
         }
     }
 
-    private void startParty(){
+    private void startParty() {
         /// TODO handle when host when to start party
         // don't forget to check is playersList.size()>=2
         System.out.println("TODO");
     }
 
-    private void leave(){
+    private void leave() {
         // TODO handle when user when to leave "waiting screen"
+        stop = true;
         System.out.println("TODO");
     }
 
-    private void cancel(){
+    private void cancel() {
         System.out.println("------------------------------------------------------------------------------------------");
         System.out.println("");
         System.out.println("Partie annulée");
@@ -160,7 +175,7 @@ public class Party extends Thread {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        this.interrupt();
+        stop = true;
     }
 
     public int getID() {
@@ -182,36 +197,19 @@ public class Party extends Thread {
         return null;
     }
 
-    public static Party join(Player currentPlayer, int partyID){
+    public static Party join(Player currentPlayer, int partyID) {
         Connexion connexion;
         try {
-            Object[] allObject = {partyID,currentPlayer};
+            Object[] allObject = { partyID, currentPlayer };
             connexion = new Connexion(new SocketCommunication(SocketCommunication.PLAYER_JOIN_PARTY, allObject));
             connexion.start();
             connexion.join();
-            return new Party(partyID, currentPlayer,(PlayersList) connexion.getReceivedObject());
+            return new Party(partyID, currentPlayer, (PlayersList) connexion.getReceivedObject());
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
             System.out.println("Fatal error, failed to create party");
             System.exit(0);
         }
         return null;
-    }
-
-    private int readChoice(){
-        try {        
-            int choice = 0;
-            threadReadChoice = new ThreadReadI();
-            threadReadChoice.start();
-            threadReadChoice.join();
-            choice = threadReadChoice.call();
-            threadReadChoice = null;
-            return choice;
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-            System.out.println("Fatal error, couldn't read choice");
-            System.exit(0);
-        }
-        return -1;
     }
 }

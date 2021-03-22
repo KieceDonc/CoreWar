@@ -6,7 +6,7 @@ import java.net.SocketException;
 
 import corewar.Main;
 import corewar.ObjectModel.PlayersRanking;
-import corewar.Read.Read;
+import corewar.Read;
 
 public class Server{
 

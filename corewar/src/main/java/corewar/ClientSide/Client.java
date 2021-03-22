@@ -2,7 +2,7 @@ package corewar.ClientSide;
 
 import java.io.IOException;
 
-import corewar.Read.Read;
+import corewar.Read;
 import corewar.Network.SocketCommunication;
 import corewar.ObjectModel.Player;
 import corewar.ObjectModel.PlayersRanking;
@@ -133,10 +133,11 @@ public class Client {
         System.out.println("");
         partyList.print();
         System.out.println("");
+        System.out.println("Entrer -10 pour annuler votre action");
+        System.out.println("");
         System.out.print("Veuillez écrire l'id de la partie que vous souhaitez rejoindre : ");
         partyID = Read.i();
         System.out.println("");
-        System.out.println("Entrer -10 pour annuler votre action");
         System.out.println("");
         System.out.println("------------------------------------------------------------------------------------------");
       } while (partyList.getByID(partyID) == -1);
