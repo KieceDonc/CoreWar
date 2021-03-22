@@ -2,12 +2,17 @@ package corewar;
 
 import corewar.ServerSide.Server;
 import corewar.ClientSide.Client;
+import corewar.Local.*;
 
 public class Main{
 
     public static boolean DEBUG_VALUE = true;
     
     public static void main(String[] args){
+
+        // Tests du jeu en LOCAL (à mettre en commentaire pour tester serveurs)
+        localGameTest();
+
         printLogo();
         switch(serverOrClient()){
             case 1:{ 
@@ -18,6 +23,14 @@ public class Main{
                 new Server();
             }
         };
+    }
+
+    public static void localGameTest(){
+        System.out.println("LANCEMENT DU TEST LOCAL");
+        LocalGame lg = new LocalGame();
+        lg.localTest();
+        System.out.println("FIN DU TEST LOCAL, SORTIE DU PROGRAMME");
+        System.exit(0);
     }
 
     public static int serverOrClient(){
