@@ -25,5 +25,8 @@ public class Adresse {
     public void moins(Adresse ad2){
         this.setAdresse(this.getAdresse()-ad2.getAdresse());
     }
-}
+
+    public String toString(){
+        return String.valueOf(this.getAdresse());
+    }
 }

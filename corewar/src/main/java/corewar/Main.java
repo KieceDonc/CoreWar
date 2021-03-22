@@ -26,10 +26,10 @@ public class Main{
     }
 
     public static void localGameTest(){
-        System.out.println("LANCEMENT DU TEST LOCAL");
+        System.out.println("--- LANCEMENT DU TEST LOCAL ----------\n");
         LocalGame lg = new LocalGame();
         lg.localTest();
-        System.out.println("FIN DU TEST LOCAL, SORTIE DU PROGRAMME");
+        System.out.println("\n--- FIN DU TEST LOCAL, SORTIE DU PROGRAMME-----------");
         System.exit(0);
     }
 

@@ -11,8 +11,9 @@ public class LocalGame {
 
 
     public void localTest(){
-        System.out.println("TEST");
-        System.exit(0);
+        
+        Instruction i = new Instruction(Mnemonique.MOV, new Operande(Mode.IMMEDIAT, new Adresse(0)), new Operande(new Adresse(3)));
+        System.out.println(i.toString());
     }
     
 }
