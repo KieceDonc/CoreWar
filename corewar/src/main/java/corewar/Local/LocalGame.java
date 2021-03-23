@@ -33,10 +33,8 @@ public class LocalGame {
         System.out.println(i4.toString());
         */
 
-    
+        Interpreteur.printI(Interpreteur.interpreter("CoreWars/corewar/src/main/java/corewar/Warriors/gemini.redcode"));
 
-        System.out.println("Sandbox:");
-        Interprete.sandbox1();
 
         
 
