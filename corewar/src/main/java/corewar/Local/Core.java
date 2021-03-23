@@ -43,6 +43,7 @@ public class Core {
                 res+="[-]";
             else
                 res+="["+this.read(i).getId()+"]";
+                //EN GRAS : res+="[\033[1m"+String.valueOf(this.read(i).getId())+"\033[0m]";
             i++;
             if(i%x == 0)
                 res+="\n";
@@ -57,6 +58,7 @@ public class Core {
     
 
     // Cette fonction sert à calculer la taille d'une ligne pour que toutes les lignes fassent la même taille et que le toString soit le plus carré possible.
+    // Soit len la taille du core, la taille d'une ligne est l'entier le plus proche de sqrt(len) qui est diviseur de len
     public static int bestLength(int length){
         int square = (int) Math.ceil(Math.sqrt(length));
         int res = 0;

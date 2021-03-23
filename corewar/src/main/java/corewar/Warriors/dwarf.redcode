@@ -1,4 +1,5 @@
 ADD #4, bomb
 MOV bomb, @bomb
+;commentaires
 JMP loop
-bomb DAT #0, #0
+bomb DAT #0, #0 ; encore commentaire

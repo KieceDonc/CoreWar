@@ -25,6 +25,28 @@ public class Instruction {
         this.op2 = new Operande(m2,a2);
     }
 
+    public Instruction(Mnemonique mnq, Operande op1){
+        if(mnq == Mnemonique.DAT || mnq == Mnemonique.JMP ){
+            this.mnq = mnq;
+            this.op1 = op1;
+            this.op2 = null;
+        }
+        else 
+            System.out.println("Instruction à une opérande éronée");
+    }
+
+    public Instruction(Mnemonique mnq, Mode m1, int a1){
+        if(mnq == Mnemonique.DAT || mnq == Mnemonique.JMP ){
+            this.mnq = mnq;
+            this.op1 = new Operande(m1,a1);
+            this.op2 = null;
+        }
+        else 
+            System.out.println("Instruction à une opérande éronée");
+    }
+
+
+
     public Instruction(Instruction i){
         this.setMnq(i.getMnq());
         this.setOp1(i.getOp1());
@@ -32,7 +54,12 @@ public class Instruction {
     }
 
     public String toString(){
-        return mnq.toString() + " " + op1.toString() + " " + op2.toString();
+        String res = "";
+        if(op2 == null)
+            res = mnq.toString() + "\t" + op1.toString();
+        else
+            res =mnq.toString() + "\t" + op1.toString() + "\t" + op2.toString();
+        return res;
     }
     
 

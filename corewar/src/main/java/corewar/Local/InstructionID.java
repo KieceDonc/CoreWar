@@ -17,6 +17,16 @@ public class InstructionID extends Instruction {
         this.setId(id);
     }
 
+    public InstructionID(Mnemonique mnq, Mode m1, int a1, char id){
+        super(mnq,m1,a1);
+        this.setId(id);
+    }
+
+    public InstructionID(Mnemonique mnq, Operande op1, char id){
+        super(mnq,op1);
+        this.setId(id);
+    }
+
     public InstructionID(Instruction i, char id){
         super(i);
         this.setId(id);

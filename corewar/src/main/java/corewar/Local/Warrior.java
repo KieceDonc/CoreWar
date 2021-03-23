@@ -11,19 +11,19 @@ public class Warrior {
 
     private LinkedList<Instruction> instructions;
     private LinkedList<Integer> pointeurs;
-    private String id;
+    private String nom;
     
     public LinkedList<Instruction> getInstructions() { return this.instructions; }
     public LinkedList<Integer> getPointeurs() { return this.pointeurs; }
-    public String getId() { return this.id; }
+    public String getId() { return this.nom; }
 
     public void setInstructions(LinkedList<Instruction> instructions) { this.instructions = instructions; }
     public void setPointeurs(LinkedList<Integer> pointeurs) { this.pointeurs = pointeurs; }
-    public void setId(String id) { this.id = id; }
+    public void setId(String nom) { this.nom = nom; }
 
-    public Warrior(LinkedList<Instruction> instructions, String id){
+    public Warrior(LinkedList<Instruction> instructions, String nom){
         this.setInstructions(instructions);
-        this.setId(id);
+        this.setId(nom);
         this.setPointeurs(null);
     }
 
