@@ -19,6 +19,18 @@ public class Instruction {
         this.op2 = op2;
     }
 
+    public Instruction(Mnemonique mnq, Mode m1, int a1, Mode m2, int a2){
+        this.mnq = mnq;
+        this.op1 = new Operande(m1,a1);
+        this.op2 = new Operande(m2,a2);
+    }
+
+    public Instruction(Instruction i){
+        this.setMnq(i.getMnq());
+        this.setOp1(i.getOp1());
+        this.setOp2(i.getOp2());
+    }
+
     public String toString(){
         return mnq.toString() + " " + op1.toString() + " " + op2.toString();
     }

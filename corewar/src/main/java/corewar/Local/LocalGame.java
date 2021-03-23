@@ -11,9 +11,12 @@ public class LocalGame {
 
 
     public void localTest(){
-        
-        Instruction i = new Instruction(Mnemonique.MOV, new Operande(Mode.IMMEDIAT, new Adresse(0)), new Operande(new Adresse(3)));
-        System.out.println(i.toString());
+
+        Core c = new Core(800);
+        Instruction i = new Instruction(Mnemonique.MOV, Mode.IMMEDIAT, 0, Mode.DIRECT, 3);
+        InstructionID in = new InstructionID(i,'a');
+        c.write(1605,in);
+        System.out.println(c.toString());
     }
     
 }
