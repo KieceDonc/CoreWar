@@ -10,12 +10,14 @@ public class SocketCommunication implements Serializable{
   public static final int END_COMM = -1;
   public static final int GET_RANKING = 0;
   public static final int IS_PLAYER_NAME_TAKEN = 1;
-  public static final int CREATE_PARTY = 2;
-  public static final int SUBSCRIBE_PARTY_EVENT = 3;
-  public static final int PLAYER_JOINED_PARTY = 4;
-  public static final int PLAYER_JOIN_PARTY = 5;
-  public static final int GET_PARTY_LIST_PRINTER = 6;
-  public static final int CANCEL_PARTY = 7;
+  public static final int CREATE_GAME = 2;
+  public static final int SUBSCRIBE_GAME_EVENT = 3;
+  public static final int PLAYER_JOINED_GAME = 4;
+  public static final int PLAYER_JOIN_GAME = 5;
+  public static final int GET_GAME_LIST_PRINTER = 6;
+  public static final int CANCEL_GAME = 7;
+  public static final int PLAYER_LEAVE_GAME = 8;
+  public static final int PLAYER_LEFT_GAME = 9;
 
   private int APICallType;
   private Object object;  

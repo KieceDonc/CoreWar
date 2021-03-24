@@ -2,17 +2,17 @@ package corewar.ServerSide;
 
 import java.io.Serializable;
 
-public class ClientPrinterPartyList implements Serializable {
+public class ClientPrinterGameList implements Serializable {
 
     private static final long serialVersionUID = -4582253561152039497L;
     
     private String toPrint;
-    private int partyListSize;
+    private int gameListSize;
     private int[] allIDS;
 
-    public ClientPrinterPartyList(String toPrint, int partyListSize, int[] allIDS){
+    public ClientPrinterGameList(String toPrint, int gameListSize, int[] allIDS){
       this.toPrint = toPrint;
-      this.partyListSize = partyListSize;
+      this.gameListSize = gameListSize;
       this.allIDS = allIDS;
     }
 
@@ -21,7 +21,7 @@ public class ClientPrinterPartyList implements Serializable {
     }
 
     public int getSize(){
-      return this.partyListSize;
+      return this.gameListSize;
     }
 
     public int getByID(int ID){
@@ -29,14 +29,14 @@ public class ClientPrinterPartyList implements Serializable {
         return -1;
       }
 
-      int partyID = -1;
+      int gameID = -1;
       int index = 0;
       boolean founded = false;
   
       do{
-        int currentPartyID = allIDS[index];
-        if(currentPartyID==ID){
-          partyID = currentPartyID;
+        int currentGameID = allIDS[index];
+        if(currentGameID==ID){
+          gameID = currentGameID;
           founded = true;
         }
         index++;
@@ -45,6 +45,6 @@ public class ClientPrinterPartyList implements Serializable {
       if(!founded){
         System.err.println("La partie avec l'ID "+ID+" n'existe pas");
       }
-      return partyID;
+      return gameID;
     }
   }

@@ -7,8 +7,12 @@ import corewar.Network.SocketCommunication;
 import corewar.ObjectModel.Player;
 import corewar.ObjectModel.PlayersRanking;
 import corewar.ObjectModel.Program;
-import corewar.ServerSide.ClientPrinterPartyList;
+import corewar.ServerSide.ClientPrinterGameList;
 
+/*
+  Gère le client de façon générale
+  Appeler "new Client()" pour intialiser un nouveau client
+*/
 public class Client {
 
   private Player currentPlayer;
@@ -18,6 +22,9 @@ public class Client {
     mainMenu();
   }
 
+  /*
+    Initialise le joueur en lui choissisant un pseudo valide ( valide = pas déjà prit )
+  */
   private void initPlayer() {
     String playerName = "";
     try {
@@ -80,11 +87,11 @@ public class Client {
 
     switch (choice) {
       case 1: {
-        createParty();
+        createGame();
         break;
       }
       case 2: {
-        joinParty();
+        joinGame();
         break;
       }
       case 3: {
@@ -106,47 +113,47 @@ public class Client {
     mainMenu();
   }
 
-  public void createParty() {
+  public void createGame() {
     try {
-      Party party = Party.create(currentPlayer);
-      party.start();
-      party.join();
+      Game game = Game.create(currentPlayer);
+      game.start();
+      game.join();
     } catch (Exception e) {
       e.printStackTrace();
     }
   }
 
-  public void joinParty() {
-    ClientPrinterPartyList partyList = getPartyList();
-    if (partyList.getSize() == 0) {
+  public void joinGame() {
+    ClientPrinterGameList gameList = getGameList();
+    if (gameList.getSize() == 0) {
       System.out.println("Aucune partie disponible");
     } else {
       boolean firstSetup = true;
-      int partyID = 0;
+      int gameID = 0;
       do {
         if (!firstSetup) {
-          partyList = getPartyList();
+          gameList = getGameList();
         } else {
           firstSetup = false;
         }
         System.out.println("------------------------------------------------------------------------------------------");
         System.out.println("");
-        partyList.print();
+        gameList.print();
         System.out.println("");
         System.out.println("Entrer -10 pour annuler votre action");
         System.out.println("");
         System.out.print("Veuillez écrire l'id de la partie que vous souhaitez rejoindre : ");
-        partyID = Read.i();
+        gameID = Read.i();
         System.out.println("");
         System.out.println("");
         System.out.println("------------------------------------------------------------------------------------------");
-      } while (partyList.getByID(partyID) == -1);
+      } while (gameList.getByID(gameID) == -1);
       
-      if(partyID!=-10){
+      if(gameID!=-10){
         try {
-          Party party = Party.join(currentPlayer, partyID);
-          party.start();
-          party.join();
+          Game game = Game.join(currentPlayer, gameID);
+          game.start();
+          game.join();
         } catch (InterruptedException e) {
           e.printStackTrace();
         }
@@ -166,12 +173,12 @@ public class Client {
     return null;
   }
 
-  public ClientPrinterPartyList getPartyList(){
+  public ClientPrinterGameList getGameList(){
     try {
-      Connexion connexion = new Connexion(new SocketCommunication(SocketCommunication.GET_PARTY_LIST_PRINTER, null));
+      Connexion connexion = new Connexion(new SocketCommunication(SocketCommunication.GET_GAME_LIST_PRINTER, null));
       connexion.start();
       connexion.join();
-      return (ClientPrinterPartyList)connexion.getReceivedObject();
+      return (ClientPrinterGameList)connexion.getReceivedObject();
     } catch (IOException | InterruptedException e) {
       e.printStackTrace();
     }

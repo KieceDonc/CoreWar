@@ -14,6 +14,10 @@ public class EventsSubscriber{
         oosList.add(oos);
     }
 
+    public void remove(ObjectOutputStream oos){
+        oosList.remove(oos);
+    }
+
     public void sendAll(SocketCommunication socketCommunication) throws IOException {
         for(int x=0;x<this.getSize();x++){
             ObjectOutputStream currentOos = oosList.get(x);

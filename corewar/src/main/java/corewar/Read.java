@@ -8,7 +8,11 @@ import java.io.*;
 public class Read{
 
 
-      public static String S(){ // Lire un String
+      /*
+            Lit un string 
+            * return {String}
+      */
+      public static String S(){
             boolean error = false;
             String tmp = "";
             char C='\0';

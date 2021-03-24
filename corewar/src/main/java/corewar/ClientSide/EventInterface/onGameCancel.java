@@ -1,5 +1,5 @@
 package corewar.ClientSide.EventInterface;
 
-public interface onPartyCancel {
+public interface onGameCancel {
     void dothis();
 }

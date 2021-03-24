@@ -3,15 +3,16 @@ package corewar.ClientSide;
 import java.io.IOException;
 
 import corewar.Read;
-import corewar.ClientSide.EventInterface.onPartyCancel;
-import corewar.ClientSide.EventInterface.onPlayerJoinParty;
+import corewar.ClientSide.EventInterface.onGameCancel;
+import corewar.ClientSide.EventInterface.onPlayerJoinGame;
+import corewar.ClientSide.EventInterface.onPlayerLeftGame;
 import corewar.Network.SocketCommunication;
 import corewar.ObjectModel.Player;
 import corewar.ObjectModel.PlayersList;
 
-public class Party extends Thread {
+public class Game extends Thread {
 
-    private PartyCommunicationHandler partyCommunicationHandler;
+    private GameCommunicationHandler gameCommunicationHandler;
     private PlayersList playersList;
     private Player currentPlayer;
     private boolean isHost = false; // security issue
@@ -19,18 +20,18 @@ public class Party extends Thread {
 
     private final int ID;
 
-    public Party(int ID) {
+    public Game(int ID) {
         this.ID = ID;
         try {
-            this.partyCommunicationHandler = new PartyCommunicationHandler(this.ID);
-            this.partyCommunicationHandler.start();
+            this.gameCommunicationHandler = new GameCommunicationHandler(this.ID);
+            this.gameCommunicationHandler.start();
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("Fatal error");
             System.exit(0);
         }
 
-        partyCommunicationHandler.onPlayerJoinParty(new onPlayerJoinParty() {
+        gameCommunicationHandler.onPlayerJoinGame(new onPlayerJoinGame() {
 
             @Override
             public void update(Player player) {
@@ -41,7 +42,7 @@ public class Party extends Thread {
             }
         });
 
-        partyCommunicationHandler.onPartyCancel(new onPartyCancel() {
+        gameCommunicationHandler.onGameCancel(new onGameCancel() {
 
             @Override
             public void dothis() {
@@ -56,17 +57,28 @@ public class Party extends Thread {
                 stop = true;
             }
         });
+
+        gameCommunicationHandler.onPlayerLeftGame(new onPlayerLeftGame(){
+        
+            @Override
+            public void update(Player player) {
+                playersList.remove(player);
+                System.out.println("");
+                System.out.println("");
+                printWaitingMenuFirstPart();
+            }
+        });
     }
 
-    // player joining party constructor
-    public Party(int ID, Player currentPlayer, PlayersList playersList) {
+    // player joining game constructor
+    public Game(int ID, Player currentPlayer, PlayersList playersList) {
         this(ID);
         this.currentPlayer = currentPlayer;
         this.playersList = playersList;
     }
 
     // host constructor
-    public Party(int ID, boolean isHost, Player currentPlayer) {
+    public Game(int ID, boolean isHost, Player currentPlayer) {
         this(ID);
         this.isHost = isHost;
         this.currentPlayer = currentPlayer;
@@ -90,7 +102,14 @@ public class Party extends Thread {
         System.out.println("");
         for (int x = 0; x < playersList.getSize(); x++) {
             Player currentPlayerInList = playersList.getByIndex(x);
-            System.out.println("Joueur " + x + " : " + currentPlayerInList.getName() + " ( Programme : " + currentPlayerInList.getProgram().getName() + " )");
+            String toPrint = "";
+            if(x==0){
+                toPrint+="-- Hôte de la partie --";
+            }else{
+                toPrint+="--    Joueur n° "+(x+1)+"    --";
+            }
+            toPrint+= " "+currentPlayerInList.getName() + " ( Programme : " + currentPlayerInList.getProgram().getName() + " )";
+            System.out.println(toPrint);
         }
         System.out.println("");
         System.out.println("Options :");
@@ -109,9 +128,7 @@ public class Party extends Thread {
         int choice = 0;
         do {
             printWaitingMenuFirstPart();
-            if(!Read.isReading){
-                choice = Read.i();
-            }
+            choice = Read.i();
 
             if(!stop){
                 System.out.println("");
@@ -131,7 +148,7 @@ public class Party extends Thread {
             switch (choice) {
                 case 1: {
                     if (isHost) {
-                        startParty();
+                        startGame();
                     } else {
                         leave();
                     }
@@ -152,16 +169,19 @@ public class Party extends Thread {
         }
     }
 
-    private void startParty() {
-        /// TODO handle when host when to start party
+    private void startGame() {
+        /// TODO handle when host when to start game
         // don't forget to check is playersList.size()>=2
         System.out.println("TODO");
     }
 
     private void leave() {
-        // TODO handle when user when to leave "waiting screen"
         stop = true;
-        System.out.println("TODO");
+        try {
+            gameCommunicationHandler.leaveGame(currentPlayer);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void cancel() {
@@ -171,7 +191,7 @@ public class Party extends Thread {
         System.out.println("");
         System.out.println("------------------------------------------------------------------------------------------");
         try {
-            partyCommunicationHandler.cancelParty();
+            gameCommunicationHandler.cancelGame();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -182,32 +202,32 @@ public class Party extends Thread {
         return this.ID;
     }
 
-    public static Party create(Player currentPlayer) {
+    public static Game create(Player currentPlayer) {
         Connexion connexion;
         try {
-            connexion = new Connexion(new SocketCommunication(SocketCommunication.CREATE_PARTY, currentPlayer));
+            connexion = new Connexion(new SocketCommunication(SocketCommunication.CREATE_GAME, currentPlayer));
             connexion.start();
             connexion.join();
-            return new Party((int) connexion.getReceivedObject(), true, currentPlayer);
+            return new Game((int) connexion.getReceivedObject(), true, currentPlayer);
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
-            System.out.println("Fatal error, failed to create party");
+            System.out.println("Fatal error, failed to create game");
             System.exit(0);
         }
         return null;
     }
 
-    public static Party join(Player currentPlayer, int partyID) {
+    public static Game join(Player currentPlayer, int gameID) {
         Connexion connexion;
         try {
-            Object[] allObject = { partyID, currentPlayer };
-            connexion = new Connexion(new SocketCommunication(SocketCommunication.PLAYER_JOIN_PARTY, allObject));
+            Object[] allObject = { gameID, currentPlayer };
+            connexion = new Connexion(new SocketCommunication(SocketCommunication.PLAYER_JOIN_GAME, allObject));
             connexion.start();
             connexion.join();
-            return new Party(partyID, currentPlayer, (PlayersList) connexion.getReceivedObject());
+            return new Game(gameID, currentPlayer, (PlayersList) connexion.getReceivedObject());
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
-            System.out.println("Fatal error, failed to create party");
+            System.out.println("Fatal error, failed to create game");
             System.exit(0);
         }
         return null;

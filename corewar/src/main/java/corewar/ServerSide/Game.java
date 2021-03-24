@@ -10,7 +10,7 @@ import corewar.ObjectModel.PlayersRanking;
 import corewar.Network.SocketCommunication;
 import corewar.ObjectModel.EventsSubscriber;
 
-public class Party implements Serializable {
+public class Game implements Serializable {
 
     private static final long serialVersionUID = -6158548070086506523L;
     
@@ -19,7 +19,7 @@ public class Party implements Serializable {
     private EventsSubscriber socketEventsSubscriber;
     private final int ID;
 
-    public Party(Server server) {
+    public Game(Server server) {
         this.server = server;
         this.playersList = new PlayersList();
         this.socketEventsSubscriber = new EventsSubscriber();
@@ -29,7 +29,17 @@ public class Party implements Serializable {
     public void onPlayerJoin(ObjectOutputStream oosToExcept, Player player) {
         playersList.add(player);
         try {
-            socketEventsSubscriber.sendAllExceptOne(new SocketCommunication(SocketCommunication.PLAYER_JOINED_PARTY, player), oosToExcept);
+            socketEventsSubscriber.sendAllExceptOne(new SocketCommunication(SocketCommunication.PLAYER_JOINED_GAME, player), oosToExcept);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void onPlayerLeave(ObjectOutputStream oosToExcept, Player player){
+        playersList.remove(player);
+        socketEventsSubscriber.remove(oosToExcept);
+        try {
+            socketEventsSubscriber.sendAll(new SocketCommunication(SocketCommunication.PLAYER_LEFT_GAME, player));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -41,7 +51,7 @@ public class Party implements Serializable {
 
     public void cancel(ObjectOutputStream oosToExcept) {
         try {
-            socketEventsSubscriber.sendAllExceptOne(new SocketCommunication(SocketCommunication.CANCEL_PARTY, null),oosToExcept);
+            socketEventsSubscriber.sendAllExceptOne(new SocketCommunication(SocketCommunication.CANCEL_GAME, null),oosToExcept);
         } catch (IOException e) {
             e.printStackTrace();
         }

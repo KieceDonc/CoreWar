@@ -1,6 +1,7 @@
 package corewar;
 
 import corewar.ServerSide.Server;
+
 import corewar.ClientSide.Client;
 import corewar.Local.*;
 
@@ -33,6 +34,10 @@ public class Main{
         System.exit(0);
     }
 
+    /*
+        Imprime le menu pour savoir si on souhaite lancer le serveur ou le client
+        * return {int} 1 représente le choix de rejoindre en tant que joueur, 2 représente le choix de vouloir lancer le serveur
+    */
     public static int serverOrClient(){
         int choice = 0;
         do{
@@ -49,12 +54,9 @@ public class Main{
         return choice;
     }
 
-    public static void DebugMessage(String str){
-        if(DEBUG_VALUE){
-            System.out.println("DEBUG : "+str);
-        }
-    }
-
+    /*
+        Imprime le logo de core war 
+    */
     public static void printLogo(){
         System.out.println("------------------------------------------------------------------------------------------");
         System.out.println("@@@@@@@@@@@@@@@@@@@@@@&@@@@@@@@@@@@@@@%@@@@@@@@@@@@@@@@@@@&@@&@@@@@@@@@@@@@@@@@@");

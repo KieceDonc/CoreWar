@@ -66,6 +66,30 @@ public class PlayersList implements Serializable{
     return player;
   }
 
+  public int getPlayerIndex(Player player){
+    if(getSize()==0){
+      return 0;
+    }
+    
+    int index = 0;
+    boolean founded = false;
+
+    do{
+      Player currentPlayer = playersList.get(index);
+      if(currentPlayer.getName().equals(player.getName())){
+        founded = true;
+      }
+      index++;
+    }while(!founded && index<this.getSize());
+    index-=1;
+
+    if(!founded){
+      return -1;
+    }else{
+      return index;
+    }
+  }
+
   public Player get(Player player){
     return this.getByName(player.getName());
   }
@@ -76,6 +100,17 @@ public class PlayersList implements Serializable{
 
   public boolean isInList(String playerName){
     return this.getByName(playerName)!=null;
+  }
+
+  public void remove(Player player){
+    int playerIndex = this.getPlayerIndex(player);
+    if(playerIndex==-1){
+      System.out.println("Fatal error, trying to remove a player from playersList but player isn't in list");
+      System.out.println("Player trying to find : "+player.toString());
+      System.out.println("Player List : "+playersList.toString());
+      System.exit(0);
+    }
+    playersList.remove(playerIndex);
   }
 
   public int getSize(){

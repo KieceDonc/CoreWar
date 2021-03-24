@@ -9,7 +9,7 @@ public class Player implements Serializable {
   private Program program;
   private String name;
   private int score;
-  private int partyScore;
+  private int gameScore;
 
   public Player(String name){
     this.name = name;
@@ -28,24 +28,24 @@ public class Player implements Serializable {
   }
 
   public void updateScore(){
-    this.score+=this.partyScore;
+    this.score+=this.gameScore;
   }
 
   public int getScore(){
     return this.score;
   }
 
-  public int getPartyScore(){
-    return this.partyScore;
+  public int getGameScore(){
+    return this.gameScore;
   }
 
-  public void updatePartyScore(int partyScore){
-    this.partyScore+=partyScore;
-    this.resetPartyScore();
+  public void updateGameScore(int gameScore){
+    this.gameScore+=gameScore;
+    this.resetGameScore();
   }
 
-  public void resetPartyScore(){
-    this.partyScore = 0;
+  public void resetGameScore(){
+    this.gameScore = 0;
   }
 
   public boolean equals(Player player2){

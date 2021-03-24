@@ -8,12 +8,17 @@ import corewar.Main;
 import corewar.ObjectModel.PlayersRanking;
 import corewar.Read;
 
+/*
+  Représente le serveur qui reçoit / envoit des données
+  Il est également chargé d'exécuté les parties / s'occuper des connexions / gérer les appels de l'api
+  Son ip et son port sont les deux premiers attributs de cette classe
+*/
 public class Server{
 
   public static final String ip = "localhost";
   public static final int port = 5487;
   
-  private PartyList partyList = new PartyList();
+  private GameList gameList = new GameList();
   private PlayersRanking ranking = new PlayersRanking();
   private ServerSocket server;
 
@@ -24,6 +29,10 @@ public class Server{
     stopHandler();
   }
 
+  /*
+    Méthode qui gère l'arriver de toutes nouvelles connexion
+    Pour cela elle démarre le thread APIHandler 
+  */
   public void apiHandler() {
     Server thisServer = this;
     new Thread(new Runnable() {
@@ -76,8 +85,8 @@ public class Server{
     }
   }
 
-  public PartyList getPartyList(){
-    return this.partyList;
+  public GameList getGameList(){
+    return this.gameList;
   }
 
   public PlayersRanking getRanking(){

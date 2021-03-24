@@ -58,24 +58,28 @@ public class APIHandler extends Thread{
         isPlayerNameTakenHandler(InComingAPICallType, InComingObject);
         break;
       }
-      case SocketCommunication.CREATE_PARTY:{
-        createPartyHandler(InComingAPICallType,InComingObject);
+      case SocketCommunication.CREATE_GAME:{
+        createGameHandler(InComingAPICallType,InComingObject);
         break;
       }
-      case SocketCommunication.SUBSCRIBE_PARTY_EVENT:{
-        subscribePartyEventHandler(InComingAPICallType, InComingObject);
+      case SocketCommunication.SUBSCRIBE_GAME_EVENT:{
+        subscribeGameEventHandler(InComingAPICallType, InComingObject);
         break;
       }
-      case SocketCommunication.PLAYER_JOIN_PARTY:{
-        playerJoinPartyHandler(InComingAPICallType,InComingObject);
+      case SocketCommunication.PLAYER_JOIN_GAME:{
+        playerJoinGameHandler(InComingAPICallType,InComingObject);
         break;
       }
-      case SocketCommunication.GET_PARTY_LIST_PRINTER:{
-        getPartyListPrinterHandler(InComingAPICallType);
+      case SocketCommunication.GET_GAME_LIST_PRINTER:{
+        getGameListPrinterHandler(InComingAPICallType);
         break;
       }
-      case SocketCommunication.CANCEL_PARTY:{
-        cancelPartyHandler(InComingObject);
+      case SocketCommunication.CANCEL_GAME:{
+        cancelGameHandler(InComingObject);
+        break;
+      }
+      case SocketCommunication.PLAYER_LEAVE_GAME:{
+        playerLeaveGameHandler(InComingObject);
       }
     }
   }
@@ -90,10 +94,10 @@ public class APIHandler extends Thread{
     boolean isPlayerNameTaken = server.getRanking().isInList(playerName);
 
     if(!isPlayerNameTaken){
-      PartyList partyList = server.getPartyList();
-      for(int x=0;x<partyList.getSize();x++){
-        Party currentParty = partyList.getByIndex(x);
-        PlayersList playersList = currentParty.getPlayersList();
+      GameList gameList = server.getGameList();
+      for(int x=0;x<gameList.getSize();x++){
+        Game currentGame = gameList.getByIndex(x);
+        PlayersList playersList = currentGame.getPlayersList();
         if(playersList.isInList(playerName)){
           isPlayerNameTaken = true;
         }
@@ -103,43 +107,52 @@ public class APIHandler extends Thread{
     respond(new SocketCommunication(InComingAPICallType, isPlayerNameTaken));
   }
 
-  public void createPartyHandler(int InComingAPICallType, Object InComingObject){
+  public void createGameHandler(int InComingAPICallType, Object InComingObject){
     Player player = (Player) InComingObject;
-    Party party = new Party(this.server);
-    server.getPartyList().add(party);
-    party.getPlayersList().add(player);
-    respond(new SocketCommunication(InComingAPICallType, party.getID()));
+    Game game = new Game(this.server);
+    server.getGameList().add(game);
+    game.getPlayersList().add(player);
+    respond(new SocketCommunication(InComingAPICallType, game.getID()));
   }
 
-  public void subscribePartyEventHandler(int InComingAPICallType, Object InComingObject){
-    int partyID = (Integer)InComingObject;
-    server.getPartyList().getByID(partyID).subscribeEvent(this.oos);
+  public void subscribeGameEventHandler(int InComingAPICallType, Object InComingObject){
+    int gameID = (Integer)InComingObject;
+    server.getGameList().getByID(gameID).subscribeEvent(this.oos);
   }
 
-  public void playerJoinPartyHandler(int InComingAPICallType, Object InComingObject){
+  public void playerJoinGameHandler(int InComingAPICallType, Object InComingObject){
     Object[] allObjects = (Object[]) InComingObject;
-    int partyID = (int) allObjects[0];
+    int gameID = (int) allObjects[0];
     Player player = (Player) allObjects[1];
-    Party currentParty = server.getPartyList().getByID(partyID);
-    currentParty.onPlayerJoin(this.oos,player);
-    respond(new SocketCommunication(InComingAPICallType, currentParty.getPlayersList()));
+    Game currentGame = server.getGameList().getByID(gameID);
+    currentGame.onPlayerJoin(this.oos,player);
+    respond(new SocketCommunication(InComingAPICallType, currentGame.getPlayersList()));
   }
 
-  public void getPartyListPrinterHandler(int InComingAPICallType){
-    ClientPrinterPartyList partyList = server.getPartyList().getClientPrinterObject();
-    respond(new SocketCommunication(InComingAPICallType, partyList));
+  public void getGameListPrinterHandler(int InComingAPICallType){
+    ClientPrinterGameList gameList = server.getGameList().getClientPrinterObject();
+    respond(new SocketCommunication(InComingAPICallType, gameList));
   }
 
-  public void cancelPartyHandler(Object InComingObject){
-    int PartyID = (int) InComingObject;
-    Party currentParty = server.getPartyList().getByID(PartyID);
-    currentParty.cancel(this.oos);
-    server.getPartyList().remove(currentParty);
+  public void cancelGameHandler(Object InComingObject){
+    int gameID = (int) InComingObject;
+    Game currentGame = server.getGameList().getByID(gameID);
+    currentGame.cancel(this.oos);
+    server.getGameList().remove(currentGame);
+  }
+
+  public void playerLeaveGameHandler(Object InComingObject){
+    System.out.println("called received");
+    Object[] allObjects = (Object[]) InComingObject;
+    int gameID = (int) allObjects[0];
+    Player player = (Player) allObjects[1];
+    Game currentGame = server.getGameList().getByID(gameID);
+    currentGame.onPlayerLeave(this.oos, player);
   }
 
   public void respond(SocketCommunication toSendObject){
     try{
-      oos.writeObject(toSendObject);
+      this.oos.writeObject(toSendObject);
     }catch(IOException e){
       e.printStackTrace();
     }
