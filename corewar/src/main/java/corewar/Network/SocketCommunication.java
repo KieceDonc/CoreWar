@@ -18,6 +18,9 @@ public class SocketCommunication implements Serializable{
   public static final int CANCEL_GAME = 7;
   public static final int PLAYER_LEAVE_GAME = 8;
   public static final int PLAYER_LEFT_GAME = 9;
+  public static final int START_GAME = 10;
+  public static final int GAME_STARTING = 11;
+  public static final int GAME_STOP = 12;
 
   private int APICallType;
   private Object object;  

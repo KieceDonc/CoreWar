@@ -55,10 +55,24 @@ public class GameList{
       return this.gameList.size();
   }
 
-  public int[] getAllIDS(){
-    int allIDS[] = new int[this.getSize()];
+  // retourne le nombre de partie qui sont dans l'attente de joueur
+  public int getWaitingGameLength(){
+    int cmpt = 0;
     for(int x=0;x<this.getSize();x++){
-      allIDS[x] = this.gameList.get(0).getID();
+      Game currentGame = this.gameList.get(x);
+      if(!currentGame.hasStart()){
+        cmpt+=1;
+      }
+    }
+    return cmpt;
+  }
+  public int[] getAllIDS(){
+    int allIDS[] = new int[this.getWaitingGameLength()];
+    for(int x=0;x<this.getSize();x++){
+      Game currentGame = this.gameList.get(x);
+      if(!currentGame.hasStart()){
+        allIDS[x] = currentGame.getID();
+      }
     }
     return allIDS;
   }
@@ -67,8 +81,10 @@ public class GameList{
     String toPrint = "";
     for(int x=0;x<gameList.size();x++){
       Game currentGame = gameList.get(x);
-      toPrint+="Partie id : "+currentGame.getID()+", Nombre de joueurs : "+currentGame.getPlayersList().getSize()+"\n";
+      if(!currentGame.hasStart()){
+        toPrint+="Partie id : "+currentGame.getID()+", Nombre de joueurs : "+currentGame.getPlayersList().getSize()+"\n";
+      }
     }
-    return new ClientPrinterGameList(toPrint,gameList.size(),this.getAllIDS());
+    return new ClientPrinterGameList(toPrint,this.getAllIDS());
   }
 }

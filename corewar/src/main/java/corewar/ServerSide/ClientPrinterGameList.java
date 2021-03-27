@@ -7,12 +7,10 @@ public class ClientPrinterGameList implements Serializable {
     private static final long serialVersionUID = -4582253561152039497L;
     
     private String toPrint;
-    private int gameListSize;
     private int[] allIDS;
 
-    public ClientPrinterGameList(String toPrint, int gameListSize, int[] allIDS){
+    public ClientPrinterGameList(String toPrint, int[] allIDS){
       this.toPrint = toPrint;
-      this.gameListSize = gameListSize;
       this.allIDS = allIDS;
     }
 
@@ -21,7 +19,7 @@ public class ClientPrinterGameList implements Serializable {
     }
 
     public int getSize(){
-      return this.gameListSize;
+      return this.allIDS.length;
     }
 
     public int getByID(int ID){

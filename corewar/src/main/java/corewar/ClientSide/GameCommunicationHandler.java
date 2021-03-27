@@ -9,10 +9,13 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 
 import corewar.ClientSide.EventInterface.onGameCancel;
+import corewar.ClientSide.EventInterface.onGameStarting;
+import corewar.ClientSide.EventInterface.onGameStop;
 import corewar.ClientSide.EventInterface.onPlayerJoinGame;
 import corewar.ClientSide.EventInterface.onPlayerLeftGame;
 import corewar.Network.SocketCommunication;
 import corewar.ObjectModel.Player;
+import corewar.ObjectModel.PlayersRanking;
 import corewar.ServerSide.Server;
 
 public class GameCommunicationHandler extends Thread{
@@ -24,6 +27,8 @@ public class GameCommunicationHandler extends Thread{
   private ArrayList<onPlayerJoinGame> playerJoinGameListeners = new ArrayList<>();
   private ArrayList<onGameCancel> gameCancelListeners = new ArrayList<>();
   private ArrayList<onPlayerLeftGame> playerLeftGameListeners = new ArrayList<>();
+  private ArrayList<onGameStarting> gameStartingListeners = new ArrayList<>();
+  private ArrayList<onGameStop> gameStopListeners = new ArrayList<>();
 
   public GameCommunicationHandler(int gameID) throws UnknownHostException, IOException {
     this.socket = new Socket(Server.ip,Server.port);
@@ -81,6 +86,14 @@ public class GameCommunicationHandler extends Thread{
         playerLeftGameHandler(player);
         break;
       }
+      case SocketCommunication.GAME_STARTING:{
+        gameStartingHandler();
+        break;
+      }
+      case SocketCommunication.GAME_STOP:{
+        PlayersRanking ranking = (PlayersRanking) InComingObject;
+        gameStopHandler(ranking);
+      }
     }
   }
 
@@ -102,6 +115,18 @@ public class GameCommunicationHandler extends Thread{
     }
   }
 
+  private void gameStartingHandler(){
+    for(int x=0;x<gameStartingListeners.size();x++){
+      this.gameStartingListeners.get(x).dothis();
+    }
+  }
+
+  private void gameStopHandler(PlayersRanking ranking){
+    for(int x=0;x<gameStartingListeners.size();x++){
+      this.gameStopListeners.get(x).dothis(ranking);
+    }
+  }
+
   public void onPlayerJoinGame(onPlayerJoinGame playerJoinGameListener){
     this.playerJoinGameListeners.add(playerJoinGameListener);
   }
@@ -112,6 +137,14 @@ public class GameCommunicationHandler extends Thread{
 
   public void onPlayerLeftGame(onPlayerLeftGame playerLeftGameListener){
     this.playerLeftGameListeners.add(playerLeftGameListener);
+  }
+
+  public void onGameStarting(onGameStarting onGameStartingListener){
+    this.gameStartingListeners.add(onGameStartingListener);
+  }
+
+  public void onGameStop(onGameStop onGameStopListener){
+    this.gameStopListeners.add(onGameStopListener);
   }
 
   public void joinGame(Player player) throws IOException {
@@ -128,5 +161,9 @@ public class GameCommunicationHandler extends Thread{
     Object[] listObjects = {gameID,player};
     this.send(new SocketCommunication(SocketCommunication.PLAYER_LEAVE_GAME, listObjects));
     this.send(new SocketCommunication(SocketCommunication.END_COMM, null));
+  }
+
+  public void startGame() throws IOException{
+    this.send(new SocketCommunication(SocketCommunication.START_GAME, gameID));
   }
 }

@@ -29,6 +29,7 @@ public class Player implements Serializable {
 
   public void updateScore(){
     this.score+=this.gameScore;
+    this.resetGameScore();
   }
 
   public int getScore(){
@@ -39,9 +40,8 @@ public class Player implements Serializable {
     return this.gameScore;
   }
 
-  public void updateGameScore(int gameScore){
-    this.gameScore+=gameScore;
-    this.resetGameScore();
+  public void setGameScore(int gameScore){
+    this.gameScore=gameScore;
   }
 
   public void resetGameScore(){

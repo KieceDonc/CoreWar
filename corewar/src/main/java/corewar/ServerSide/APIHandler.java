@@ -80,6 +80,11 @@ public class APIHandler extends Thread{
       }
       case SocketCommunication.PLAYER_LEAVE_GAME:{
         playerLeaveGameHandler(InComingObject);
+        break;
+      }
+      case SocketCommunication.START_GAME:{
+        startGameHandler(InComingObject);
+        break;
       }
     }
   }
@@ -102,6 +107,10 @@ public class APIHandler extends Thread{
           isPlayerNameTaken = true;
         }
       }
+    }
+
+    if(!isPlayerNameTaken){
+      server.getRanking().add(new Player(playerName));
     }
 
     respond(new SocketCommunication(InComingAPICallType, isPlayerNameTaken));
@@ -142,12 +151,17 @@ public class APIHandler extends Thread{
   }
 
   public void playerLeaveGameHandler(Object InComingObject){
-    System.out.println("called received");
     Object[] allObjects = (Object[]) InComingObject;
     int gameID = (int) allObjects[0];
     Player player = (Player) allObjects[1];
     Game currentGame = server.getGameList().getByID(gameID);
     currentGame.onPlayerLeave(this.oos, player);
+  }
+
+  public void startGameHandler(Object InComingObject){
+    int gameID = (int) InComingObject;
+    Game currentGame = server.getGameList().getByID(gameID);
+    currentGame.start(this.oos);
   }
 
   public void respond(SocketCommunication toSendObject){

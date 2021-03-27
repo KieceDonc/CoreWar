@@ -4,11 +4,14 @@ import java.io.IOException;
 
 import corewar.Read;
 import corewar.ClientSide.EventInterface.onGameCancel;
+import corewar.ClientSide.EventInterface.onGameStarting;
+import corewar.ClientSide.EventInterface.onGameStop;
 import corewar.ClientSide.EventInterface.onPlayerJoinGame;
 import corewar.ClientSide.EventInterface.onPlayerLeftGame;
 import corewar.Network.SocketCommunication;
 import corewar.ObjectModel.Player;
 import corewar.ObjectModel.PlayersList;
+import corewar.ObjectModel.PlayersRanking;
 
 public class Game extends Thread {
 
@@ -17,6 +20,7 @@ public class Game extends Thread {
     private Player currentPlayer;
     private boolean isHost = false; // security issue
     private boolean stop = false;
+    private boolean gameHasStart = false;
 
     private final int ID;
 
@@ -66,6 +70,25 @@ public class Game extends Thread {
                 System.out.println("");
                 System.out.println("");
                 printWaitingMenuFirstPart();
+            }
+        });
+
+        gameCommunicationHandler.onGameStarting(new onGameStarting(){
+        
+            @Override
+            public void dothis() {
+                gameHasStart = true;
+                System.out.println("");
+                System.out.println("");
+                begin();
+            }
+        });
+
+        gameCommunicationHandler.onGameStop(new onGameStop(){
+        
+            @Override
+            public void dothis(PlayersRanking ranking) {
+                end(ranking);
             }
         });
     }
@@ -129,6 +152,9 @@ public class Game extends Thread {
         do {
             printWaitingMenuFirstPart();
             choice = Read.i();
+            if(gameHasStart){
+                stop = true;
+            }
 
             if(!stop){
                 System.out.println("");
@@ -170,9 +196,21 @@ public class Game extends Thread {
     }
 
     private void startGame() {
-        /// TODO handle when host when to start game
-        // don't forget to check is playersList.size()>=2
-        System.out.println("TODO");
+        if(playersList.getSize()<2){
+            System.out.println("------------------------------------------------------------------------------------------");
+            System.out.println("");
+            System.out.println("Impossible de lancer la partie, pas assez de joueur");
+            System.out.println("");
+            System.out.println("------------------------------------------------------------------------------------------");
+        }else{
+            try {
+                gameCommunicationHandler.startGame();
+                gameHasStart = true;
+                begin();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private void leave() {
@@ -196,6 +234,28 @@ public class Game extends Thread {
             e.printStackTrace();
         }
         stop = true;
+    }
+
+    private void begin(){
+        System.out.println("------------------------------------------------------------------------------------------");
+        System.out.println("");
+        System.out.println("La partie commence, vous pouvez appuyer sur n'importe qu'elle touche d'un entier pour quitter la partie");
+        System.out.println("Votre score de cette partie sera tout de même comptabilisé");
+        System.out.println("");
+        System.out.println("------------------------------------------------------------------------------------------");
+        if(isHost){
+            Read.i();
+            stop = true;
+        }
+    }
+
+    private void end(PlayersRanking ranking){
+        ranking.print();
+        System.out.println("------------------------------------------------------------------------------------------");
+        System.out.println("");
+        System.out.println("La partie est terminé, vous pouvez appuyer sur n'importe qu'elle touche d'un entier pour quitter la partie");
+        System.out.println("");
+        System.out.println("------------------------------------------------------------------------------------------");
     }
 
     public int getID() {

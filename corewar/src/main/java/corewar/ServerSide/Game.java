@@ -18,6 +18,7 @@ public class Game implements Serializable {
     private PlayersList playersList;
     private EventsSubscriber socketEventsSubscriber;
     private final int ID;
+    private boolean hasStart = false;
 
     public Game(Server server) {
         this.server = server;
@@ -45,8 +46,14 @@ public class Game implements Serializable {
         }
     }
 
-    public void start() {
-
+    public void start(ObjectOutputStream oosToExcept) {
+        hasStart = true;
+        try {
+            socketEventsSubscriber.sendAllExceptOne(new SocketCommunication(SocketCommunication.GAME_STARTING, null), oosToExcept);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        onEnd();
     }
 
     public void cancel(ObjectOutputStream oosToExcept) {
@@ -58,14 +65,23 @@ public class Game implements Serializable {
     }
 
     public void onEnd() {
+        for(int x = 0;x<playersList.getSize();x++){
+            Player currentPlayer = playersList.getByIndex(x);
+            int random = (int)(Math.random()*100);
+            currentPlayer.setGameScore(random);
+            currentPlayer.updateScore();
+        }
+
         PlayersRanking playersRanking = server.getRanking();
         for (int x = 0; x < playersList.getSize(); x++) {
             Player currentPlayer = playersList.getByIndex(x);
-            if (playersRanking.isInList(currentPlayer)) {
-                playersRanking.get(currentPlayer).updateScore();
-            } else {
-                playersRanking.add(currentPlayer);
-            }
+            playersRanking.get(currentPlayer).updateScore();
+        }
+
+        try {
+            socketEventsSubscriber.sendAll(new SocketCommunication(SocketCommunication.GAME_STOP, server.getRanking()));
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -79,6 +95,10 @@ public class Game implements Serializable {
 
     public int getID(){
         return this.ID;
+    }
+
+    public boolean hasStart(){
+        return this.hasStart;
     }
 
     public static class IDGenerator{
