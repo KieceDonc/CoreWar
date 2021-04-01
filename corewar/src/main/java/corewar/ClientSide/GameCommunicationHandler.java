@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import corewar.ClientSide.EventInterface.onGameCancel;
 import corewar.ClientSide.EventInterface.onGameStarting;
 import corewar.ClientSide.EventInterface.onGameStop;
+import corewar.ClientSide.EventInterface.onGameUpdate;
 import corewar.ClientSide.EventInterface.onPlayerJoinGame;
 import corewar.ClientSide.EventInterface.onPlayerLeftGame;
 import corewar.Network.SocketCommunication;
@@ -23,12 +24,14 @@ public class GameCommunicationHandler extends Thread{
   private Socket socket;
   private ObjectOutputStream oos;
   private int gameID;
+  private boolean comOpen = true;
 
   private ArrayList<onPlayerJoinGame> playerJoinGameListeners = new ArrayList<>();
   private ArrayList<onGameCancel> gameCancelListeners = new ArrayList<>();
   private ArrayList<onPlayerLeftGame> playerLeftGameListeners = new ArrayList<>();
   private ArrayList<onGameStarting> gameStartingListeners = new ArrayList<>();
   private ArrayList<onGameStop> gameStopListeners = new ArrayList<>();
+  private ArrayList<onGameUpdate> gameUpdateListeners = new ArrayList<>();
 
   public GameCommunicationHandler(int gameID) throws UnknownHostException, IOException {
     this.socket = new Socket(Server.ip,Server.port);
@@ -40,14 +43,14 @@ public class GameCommunicationHandler extends Thread{
       oos = new ObjectOutputStream(socket.getOutputStream());
       this.send(new SocketCommunication(SocketCommunication.SUBSCRIBE_GAME_EVENT, gameID));
       ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
-      boolean shouldStop = false;
-      while (!shouldStop){
+    
+      while (comOpen){
         try{
           Object object = ois.readObject();
           SocketCommunication receivedObject = (SocketCommunication) object;
         
           if(receivedObject.getAPICallType()==SocketCommunication.END_COMM){
-            shouldStop = true;
+            comOpen = false;
           }else{
             HandleIncomingObject(receivedObject);
           }
@@ -55,6 +58,7 @@ public class GameCommunicationHandler extends Thread{
           
         }
       }
+      oos.close();
       ois.close();
       socket.close();
     }catch(IOException | ClassNotFoundException e){
@@ -64,7 +68,9 @@ public class GameCommunicationHandler extends Thread{
   }
 
   public void send(SocketCommunication socketCommunication) throws IOException {
-    oos.writeObject(socketCommunication);
+    if(comOpen){
+      this.oos.writeObject(socketCommunication);
+    }
   }
     
   private void HandleIncomingObject(SocketCommunication receivedObject){
@@ -93,6 +99,11 @@ public class GameCommunicationHandler extends Thread{
       case SocketCommunication.GAME_STOP:{
         PlayersRanking ranking = (PlayersRanking) InComingObject;
         gameStopHandler(ranking);
+        break;
+      }
+      case SocketCommunication.GAME_UPDATE:{
+        String status = (String) InComingObject;
+        gameUpdateHandler(status);
       }
     }
   }
@@ -125,6 +136,13 @@ public class GameCommunicationHandler extends Thread{
     for(int x=0;x<gameStartingListeners.size();x++){
       this.gameStopListeners.get(x).dothis(ranking);
     }
+    endCom();
+  }
+
+  private void gameUpdateHandler(String status){
+    for(int x=0;x<gameUpdateListeners.size();x++){
+      this.gameUpdateListeners.get(x).dothis(status);
+    }
   }
 
   public void onPlayerJoinGame(onPlayerJoinGame playerJoinGameListener){
@@ -147,6 +165,10 @@ public class GameCommunicationHandler extends Thread{
     this.gameStopListeners.add(onGameStopListener);
   }
 
+  public void onGameUpdate(onGameUpdate onGameUpdateListener){
+    this.gameUpdateListeners.add(onGameUpdateListener);
+  }
+
   public void joinGame(Player player) throws IOException {
     Object[] listObjects = {gameID,player};
     this.send(new SocketCommunication(SocketCommunication.PLAYER_JOIN_GAME, listObjects));
@@ -154,16 +176,27 @@ public class GameCommunicationHandler extends Thread{
 
   public void cancelGame() throws IOException{
     this.send(new SocketCommunication(SocketCommunication.CANCEL_GAME, gameID));
-    this.send(new SocketCommunication(SocketCommunication.END_COMM, null));
+    endCom();
   }
 
   public void leaveGame(Player player) throws IOException{
     Object[] listObjects = {gameID,player};
     this.send(new SocketCommunication(SocketCommunication.PLAYER_LEAVE_GAME, listObjects));
-    this.send(new SocketCommunication(SocketCommunication.END_COMM, null));
+    endCom();
   }
 
   public void startGame() throws IOException{
     this.send(new SocketCommunication(SocketCommunication.START_GAME, gameID));
+  }
+
+  public void endCom(){
+    if(comOpen){
+      try {
+        this.send(new SocketCommunication(SocketCommunication.END_COMM, this.gameID));
+        comOpen = false;
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
   }
 }

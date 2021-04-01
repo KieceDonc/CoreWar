@@ -40,10 +40,6 @@ public class GameList{
       index++;
     }while(!founded && index<this.getSize());
     
-    if(!founded){
-      System.err.println("Game "+ID+" not founded");
-      System.out.print(this.toString());
-    }
     return game;
   }
 

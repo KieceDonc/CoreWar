@@ -6,6 +6,7 @@ import corewar.Read;
 import corewar.ClientSide.EventInterface.onGameCancel;
 import corewar.ClientSide.EventInterface.onGameStarting;
 import corewar.ClientSide.EventInterface.onGameStop;
+import corewar.ClientSide.EventInterface.onGameUpdate;
 import corewar.ClientSide.EventInterface.onPlayerJoinGame;
 import corewar.ClientSide.EventInterface.onPlayerLeftGame;
 import corewar.Network.SocketCommunication;
@@ -21,6 +22,7 @@ public class Game extends Thread {
     private boolean isHost = false; // security issue
     private boolean stop = false;
     private boolean gameHasStart = false;
+    private boolean gameHasFinish = false;
 
     private final int ID;
 
@@ -89,6 +91,15 @@ public class Game extends Thread {
             @Override
             public void dothis(PlayersRanking ranking) {
                 end(ranking);
+                gameHasFinish = true;
+            }
+        });
+
+        gameCommunicationHandler.onGameUpdate(new onGameUpdate(){
+        
+            @Override
+            public void dothis(String status) {
+                update(status);
             }
         });
     }
@@ -113,6 +124,7 @@ public class Game extends Thread {
         while(!stop){
             printWaitingMenu();
         }
+        gameCommunicationHandler.endCom();
     }
 
     private void printWaitingMenuFirstPart(){
@@ -237,16 +249,33 @@ public class Game extends Thread {
     }
 
     private void begin(){
-        System.out.println("------------------------------------------------------------------------------------------");
-        System.out.println("");
-        System.out.println("La partie commence, vous pouvez appuyer sur n'importe qu'elle touche d'un entier pour quitter la partie");
-        System.out.println("Votre score de cette partie sera tout de même comptabilisé");
-        System.out.println("");
-        System.out.println("------------------------------------------------------------------------------------------");
         if(isHost){
-            Read.i();
+            do{
+                System.out.println("------------------------------------------------------------------------------------------");
+                System.out.println("");
+                System.out.println("La partie commence, vous ne pouvez pas quitter la partie");
+                System.out.println("( il s'agit d'un bug que je n'ai toujours pas trouvé qui empêche l'host de partir )");
+                System.out.println("( La requête pour partir est bien envoyé mais n'est reçu qu'à la fin de game du côté serveur )");
+                System.out.println("( Hors socket.close() est appelé avant du côté client et fait tout planté puisque le serveur continue d'envoyer des données )");
+                System.out.println("( Si vous voyez ceci je n'ai pas réussi à fix bug, j'ai déjà passer 10h dessus et j'en ai marre )");
+                System.out.println("( Donc l'host n'a pas le droit de quitter la game )");
+                System.out.println("");
+                System.out.println("------------------------------------------------------------------------------------------");
+                Read.i();
+            }while(!gameHasFinish);
             stop = true;
+        }else{
+            System.out.println("------------------------------------------------------------------------------------------");
+            System.out.println("");
+            System.out.println("La partie commence, vous pouvez appuyer sur n'importe qu'elle touche d'un entier pour quitter la partie");
+            System.out.println("Votre score de cette partie sera tout de même comptabilisé");
+            System.out.println("");
+            System.out.println("------------------------------------------------------------------------------------------");
         }
+    }
+
+    private void update(String status){
+        System.out.println(status);
     }
 
     private void end(PlayersRanking ranking){
@@ -284,7 +313,16 @@ public class Game extends Thread {
             connexion = new Connexion(new SocketCommunication(SocketCommunication.PLAYER_JOIN_GAME, allObject));
             connexion.start();
             connexion.join();
-            return new Game(gameID, currentPlayer, (PlayersList) connexion.getReceivedObject());
+            if(connexion.getReceivedObject() instanceof Integer){
+                System.out.println("------------------------------------------------------------------------------------------");
+                System.out.println("");
+                System.out.println("Trop tard, la partie a déjà commencé");
+                System.out.println("");
+                System.out.println("------------------------------------------------------------------------------------------");
+                return null;
+            }else{
+                return new Game(gameID, currentPlayer, (PlayersList) connexion.getReceivedObject());
+            }
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
             System.out.println("Fatal error, failed to create game");

@@ -71,4 +71,8 @@ public class Connexion extends Thread{
   public Object getReceivedObject(){
     return receivedCom.getObject();
   }
+
+  public int getAPICallType(){
+    return receivedCom.getAPICallType();
+  }
 }
