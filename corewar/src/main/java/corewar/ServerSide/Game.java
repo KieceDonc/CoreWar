@@ -74,16 +74,11 @@ public class Game{
     }
 
     public void onEnd() {
-        for(int x = 0;x<playersList.getSize();x++){
-            Player currentPlayer = playersList.getByIndex(x);
-            int random = (int)(Math.random()*100);
-            currentPlayer.setGameScore(random);
-            currentPlayer.updateScore();
-        }
 
         PlayersRanking playersRanking = server.getRanking();
         for (int x = 0; x < playersList.getSize(); x++) {
             Player currentPlayer = playersList.getByIndex(x);
+            playersRanking.get(currentPlayer).setGameScore((int)(Math.random()*100));
             playersRanking.get(currentPlayer).updateScore();
         }
 
