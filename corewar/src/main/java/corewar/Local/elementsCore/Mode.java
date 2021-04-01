@@ -1,4 +1,4 @@
-package corewar.Local;
+package corewar.Local.elementsCore;
 
 import java.util.regex.Pattern;
 
@@ -8,11 +8,13 @@ public enum Mode {
     IMMEDIAT{ public String toString() { return "#" ; } }, 
     INDIRECT{ public String toString() { return "@" ; } };
 
+
+    // Retourne un regex faisant un OU logique de tous les modes sauf direct (puisqu'il correspond à aucun caractère)
     public static Pattern getPattern(){
-        String res = "(#|@)";
-        return Pattern.compile(res);
+        return Pattern.compile("(#|@)");
     }
 
+    // Traduit le string en mode
     public static Mode toMode(String mode){
         Mode res = null;
         if(mode == null) res = Mode.DIRECT;
@@ -20,7 +22,6 @@ public enum Mode {
             if(mode.equals("#")) res = Mode.IMMEDIAT;
             if(mode.equals("@")) res = Mode.INDIRECT;
         }
-
         return res;
     }
 }

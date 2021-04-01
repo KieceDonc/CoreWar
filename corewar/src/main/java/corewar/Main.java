@@ -1,9 +1,8 @@
 package corewar;
 
 import corewar.ServerSide.Server;
-
 import corewar.ClientSide.Client;
-import corewar.Local.*;
+import corewar.Local.Partie.LocalGame;
 
 public class Main{
 
@@ -11,8 +10,8 @@ public class Main{
     
     public static void main(String[] args){
 
-        // Tests du jeu en LOCAL (à mettre en commentaire pour tester serveurs)
-        //localGameTest();
+        //Tests du jeu en LOCAL (à mettre en commentaire pour tester serveurs)
+        localGameTest();
 
         printLogo();
         switch(serverOrClient()){

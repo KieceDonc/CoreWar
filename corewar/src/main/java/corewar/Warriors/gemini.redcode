@@ -4,7 +4,7 @@ back MOV     @-2,    @-1 ; start address
     SNE     -3,     #9
     JMP     skip
     ADD     #1,     -5
-    ADD     #1,     -5
-    JMP     -5  
-skip MOV    #99,    93
+    Add     #1,     -5
+    jmp     back  
+skip mov    #99,    93
     JMP     93

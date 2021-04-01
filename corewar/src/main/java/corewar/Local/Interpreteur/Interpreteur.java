@@ -1,4 +1,6 @@
-package corewar.Local;
+package corewar.Local.Interpreteur;
+import corewar.Local.elementsCore.*;
+
 import java.io.FileReader;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
@@ -41,7 +43,7 @@ public class Interpreteur {
         int i = 0;
         for(String ligne : code){
             Scanner scan = new Scanner(ligne);
-            Pattern cmp = toPattern(Mnemonique.values(),false); // On récupère toutes les mnémoniques
+            Pattern cmp = Mnemonique.getPattern(); // On récupère toutes les mnémoniques
 
             if(!scan.hasNext(cmp)){ // Si la ligne suivante ne commence pas par un mnémonique, c'est un label.
                 labels.put(scan.next(), i);
@@ -109,33 +111,24 @@ public class Interpreteur {
         return warrior;
     }
 
+
+
     public static ArrayList<Instruction> interpreter(String chemin){
         ArrayList<Instruction> warrior = null;
-        try {
-            ArrayList<String> code = toList(chemin);
-            code = treatLabels(code);
-            warrior = interpreter(code);
-        } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        try{ 
+            try {
+                ArrayList<String> code = toList(chemin);
+                code = treatLabels(code);
+                warrior = interpreter(code);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+        catch(Exception e){
+            System.out.println("Erreur lors de l'interprétation du fichier -> sortie du programme.");
+            System.exit(0);
         }
         return warrior;
-    }
-
-
-
-
-    // sandbox
-    public static void sandbox1(){
-        try {
-            ArrayList<String> code = toList("CoreWars/corewar/src/main/java/corewar/Warriors/dwarf.redcode");
-            code = treatLabels(code);
-            ArrayList<Instruction> warrior = interpreter(code);
-            //printI(warrior);
-        } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
     }
 
 

@@ -1,4 +1,6 @@
-package corewar.Local;
+package corewar.Local.elementsCore;
+
+import java.util.regex.Pattern;
 
 /*
 DAT -- data (kills the process)
@@ -26,4 +28,9 @@ public enum Mnemonique {
     DAT, MOV, ADD, SUB, MUL, DIV, MOD, JMP, 
     JMZ, JMN, DJN, SPL, CMP, SEQ, SNE, SLT,
     LDP, STP, NOP;
+
+    // Retourne un regex faisant un OU logique de toutes les mnémoniques (insensible à la casse)
+    public static Pattern getPattern(){
+        return Pattern.compile("(DAT|MOV|ADD|SUB|MUL|DIV|MOD|JMP|JMZ|JMN|DJN|SPL|CMP|SEQ|SNE|SLT|LDP|STP|NOP)",Pattern.CASE_INSENSITIVE);
+    }
 }

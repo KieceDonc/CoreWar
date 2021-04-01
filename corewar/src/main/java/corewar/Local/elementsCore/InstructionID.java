@@ -1,4 +1,4 @@
-package corewar.Local;
+package corewar.Local.elementsCore;
 
 public class InstructionID extends Instruction {
 
@@ -34,3 +34,4 @@ public class InstructionID extends Instruction {
 
 
 }
+

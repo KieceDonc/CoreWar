@@ -1,4 +1,4 @@
-package corewar.Local;
+package corewar.Local.elementsCore;
 
 public class Instruction {
     private Mnemonique mnq;
@@ -62,3 +62,4 @@ public class Instruction {
     
 
 }
+
