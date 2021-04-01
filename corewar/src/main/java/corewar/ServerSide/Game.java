@@ -2,18 +2,16 @@ package corewar.ServerSide;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
+import java.util.concurrent.TimeUnit;
 
 import corewar.ObjectModel.Player;
 import corewar.ObjectModel.PlayersList;
 import corewar.ObjectModel.PlayersRanking;
 import corewar.Network.SocketCommunication;
-import corewar.ObjectModel.EventsSubscriber;
+import corewar.Network.EventsSubscriber;
 
-public class Game implements Serializable {
+public class Game{
 
-    private static final long serialVersionUID = -6158548070086506523L;
-    
     private Server server;
     private PlayersList playersList;
     private EventsSubscriber socketEventsSubscriber;
@@ -30,13 +28,14 @@ public class Game implements Serializable {
     public void onPlayerJoin(ObjectOutputStream oosToExcept, Player player) {
         playersList.add(player);
         try {
-            socketEventsSubscriber.sendAllExceptOne(new SocketCommunication(SocketCommunication.PLAYER_JOINED_GAME, player), oosToExcept);
+            socketEventsSubscriber.sendAllExceptOne(
+                    new SocketCommunication(SocketCommunication.PLAYER_JOINED_GAME, player), oosToExcept);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public void onPlayerLeave(ObjectOutputStream oosToExcept, Player player){
+    public void onPlayerLeave(ObjectOutputStream oosToExcept, Player player) {
         playersList.remove(player);
         socketEventsSubscriber.remove(oosToExcept);
         try {
@@ -49,11 +48,47 @@ public class Game implements Serializable {
     public void start(ObjectOutputStream oosToExcept) {
         hasStart = true;
         try {
-            socketEventsSubscriber.sendAllExceptOne(new SocketCommunication(SocketCommunication.GAME_STARTING, null), oosToExcept);
+            socketEventsSubscriber.sendAllExceptOne(new SocketCommunication(SocketCommunication.GAME_STARTING, null),
+                    oosToExcept);
         } catch (IOException e) {
             e.printStackTrace();
         }
+        main();
+    }
+
+    public void main() {
+        try {
+            for (int x = 0; x < 10; x++) {
+                TimeUnit.SECONDS.sleep(1);
+                String currentStatus ="------------------------------------------------------------------------------------------\n";
+                currentStatus+="\n";
+                currentStatus+="Mise à jour n°"+x+"\n";
+                currentStatus+="\n";
+                currentStatus+="------------------------------------------------------------------------------------------";
+                socketEventsSubscriber.sendAll(new SocketCommunication(SocketCommunication.GAME_UPDATE, currentStatus));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         onEnd();
+    }
+
+    public void onEnd() {
+
+        PlayersRanking playersRanking = server.getRanking();
+        for (int x = 0; x < playersList.getSize(); x++) {
+            Player currentPlayer = playersList.getByIndex(x);
+            playersRanking.get(currentPlayer).setGameScore((int)(Math.random()*100));
+            playersRanking.get(currentPlayer).updateScore();
+        }
+
+        try {
+            socketEventsSubscriber.sendAll(new SocketCommunication(SocketCommunication.GAME_STOP, server.getRanking()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        server.getGameList().remove(this);
     }
 
     public void cancel(ObjectOutputStream oosToExcept) {
@@ -64,29 +99,12 @@ public class Game implements Serializable {
         }
     }
 
-    public void onEnd() {
-        for(int x = 0;x<playersList.getSize();x++){
-            Player currentPlayer = playersList.getByIndex(x);
-            int random = (int)(Math.random()*100);
-            currentPlayer.setGameScore(random);
-            currentPlayer.updateScore();
-        }
-
-        PlayersRanking playersRanking = server.getRanking();
-        for (int x = 0; x < playersList.getSize(); x++) {
-            Player currentPlayer = playersList.getByIndex(x);
-            playersRanking.get(currentPlayer).updateScore();
-        }
-
-        try {
-            socketEventsSubscriber.sendAll(new SocketCommunication(SocketCommunication.GAME_STOP, server.getRanking()));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     public void subscribeEvent(ObjectOutputStream oos){
         socketEventsSubscriber.add(oos);
+    }
+
+    public void unsubscribeEvent(ObjectOutputStream oos){
+        socketEventsSubscriber.remove(oos);
     }
 
     public PlayersList getPlayersList(){

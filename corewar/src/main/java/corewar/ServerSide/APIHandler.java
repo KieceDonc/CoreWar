@@ -28,10 +28,16 @@ public class APIHandler extends Thread{
       while (!shouldStop){
         Object object = ois.readObject();
         SocketCommunication receivedObject = (SocketCommunication) object;
-        
         if(receivedObject!=null){
           if(receivedObject.getAPICallType()==SocketCommunication.END_COMM){
             shouldStop = true;
+            if(receivedObject.getObject()!=null){
+              int gameID = (int)receivedObject.getObject();
+              Game currentGame = server.getGameList().getByID(gameID);
+              if(currentGame!=null && currentGame.hasStart()){
+                currentGame.unsubscribeEvent(this.oos);
+              }
+            }
           }else{
             HandleIncomingObject(receivedObject);
           }
@@ -45,10 +51,9 @@ public class APIHandler extends Thread{
     }
   }
 
-  public void HandleIncomingObject(SocketCommunication receivedObject){
+  private void HandleIncomingObject(SocketCommunication receivedObject){
     int InComingAPICallType = receivedObject.getAPICallType();
     Object InComingObject = receivedObject.getObject();
-    
     switch(InComingAPICallType){
       case SocketCommunication.GET_RANKING:{
         getRankingHandler(InComingAPICallType);
@@ -89,11 +94,11 @@ public class APIHandler extends Thread{
     }
   }
 
-  public void getRankingHandler(int InComingAPICallType){
+  private void getRankingHandler(int InComingAPICallType){
     respond(new SocketCommunication(InComingAPICallType, server.getRanking()));
   }
 
-  public void isPlayerNameTakenHandler(int InComingAPICallType, Object InComingObject){
+  private void isPlayerNameTakenHandler(int InComingAPICallType, Object InComingObject){
     String playerName = (String)InComingObject;
 
     boolean isPlayerNameTaken = server.getRanking().isInList(playerName);
@@ -116,7 +121,7 @@ public class APIHandler extends Thread{
     respond(new SocketCommunication(InComingAPICallType, isPlayerNameTaken));
   }
 
-  public void createGameHandler(int InComingAPICallType, Object InComingObject){
+  private void createGameHandler(int InComingAPICallType, Object InComingObject){
     Player player = (Player) InComingObject;
     Game game = new Game(this.server);
     server.getGameList().add(game);
@@ -124,33 +129,37 @@ public class APIHandler extends Thread{
     respond(new SocketCommunication(InComingAPICallType, game.getID()));
   }
 
-  public void subscribeGameEventHandler(int InComingAPICallType, Object InComingObject){
+  private void subscribeGameEventHandler(int InComingAPICallType, Object InComingObject){
     int gameID = (Integer)InComingObject;
     server.getGameList().getByID(gameID).subscribeEvent(this.oos);
   }
 
-  public void playerJoinGameHandler(int InComingAPICallType, Object InComingObject){
+  private void playerJoinGameHandler(int InComingAPICallType, Object InComingObject){
     Object[] allObjects = (Object[]) InComingObject;
     int gameID = (int) allObjects[0];
     Player player = (Player) allObjects[1];
     Game currentGame = server.getGameList().getByID(gameID);
-    currentGame.onPlayerJoin(this.oos,player);
-    respond(new SocketCommunication(InComingAPICallType, currentGame.getPlayersList()));
+    if(!currentGame.hasStart()){
+      currentGame.onPlayerJoin(this.oos,player);
+      respond(new SocketCommunication(InComingAPICallType, currentGame.getPlayersList()));
+    }else{
+      respond(new SocketCommunication(InComingAPICallType, -1));
+    }
   }
 
-  public void getGameListPrinterHandler(int InComingAPICallType){
+  private void getGameListPrinterHandler(int InComingAPICallType){
     ClientPrinterGameList gameList = server.getGameList().getClientPrinterObject();
     respond(new SocketCommunication(InComingAPICallType, gameList));
   }
 
-  public void cancelGameHandler(Object InComingObject){
+  private void cancelGameHandler(Object InComingObject){
     int gameID = (int) InComingObject;
     Game currentGame = server.getGameList().getByID(gameID);
     currentGame.cancel(this.oos);
     server.getGameList().remove(currentGame);
   }
 
-  public void playerLeaveGameHandler(Object InComingObject){
+  private void playerLeaveGameHandler(Object InComingObject){
     Object[] allObjects = (Object[]) InComingObject;
     int gameID = (int) allObjects[0];
     Player player = (Player) allObjects[1];
@@ -158,13 +167,13 @@ public class APIHandler extends Thread{
     currentGame.onPlayerLeave(this.oos, player);
   }
 
-  public void startGameHandler(Object InComingObject){
+  private void startGameHandler(Object InComingObject){
     int gameID = (int) InComingObject;
     Game currentGame = server.getGameList().getByID(gameID);
     currentGame.start(this.oos);
   }
 
-  public void respond(SocketCommunication toSendObject){
+  private void respond(SocketCommunication toSendObject){
     try{
       this.oos.writeObject(toSendObject);
     }catch(IOException e){

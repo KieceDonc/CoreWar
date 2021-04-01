@@ -152,8 +152,10 @@ public class Client {
       if(gameID!=-10){
         try {
           Game game = Game.join(currentPlayer, gameID);
-          game.start();
-          game.join();
+          if(game!=null){
+            game.start();
+            game.join();
+          }
         } catch (InterruptedException e) {
           e.printStackTrace();
         }

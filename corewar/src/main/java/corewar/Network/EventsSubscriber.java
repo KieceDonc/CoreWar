@@ -1,10 +1,8 @@
-package corewar.ObjectModel;
+package corewar.Network;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-
-import corewar.Network.SocketCommunication;
 
 public class EventsSubscriber{
 
@@ -15,7 +13,12 @@ public class EventsSubscriber{
     }
 
     public void remove(ObjectOutputStream oos){
-        oosList.remove(oos);
+        for(int x=0;x<this.getSize();x++){
+            ObjectOutputStream currentOos = oosList.get(x);
+            if(currentOos.equals(oos)){
+                oosList.remove(x);
+            }
+        }
     }
 
     public void sendAll(SocketCommunication socketCommunication) throws IOException {
