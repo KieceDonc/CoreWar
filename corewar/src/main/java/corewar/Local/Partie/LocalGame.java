@@ -34,16 +34,21 @@ public class LocalGame {
         J1.setNom("Gemini");
         J1.setId('G');
         J1.setInstructions(Interpreteur.interpreter("corewar/src/main/java/corewar/Warriors/gemini.redcode"),J1.getId());
+        J1.setCouleur("blue");
 
         Warrior J2 = new Warrior();
         J2.setNom("Dwarf");
         J2.setId('D');
         J2.setInstructions(Interpreteur.interpreter("corewar/src/main/java/corewar/Warriors/dwarf.redcode"),J2.getId());
+        J2.setCouleur("red");
 
         Warrior J3 = new Warrior();
         J3.setNom("BigDwarf");
         J3.setId('B');
         J3.setInstructions(Interpreteur.interpreter("corewar/src/main/java/corewar/Warriors/mice.redcode"),J3.getId());
+        J3.setCouleur("green");
+
+        
 
 
         Warriors w = new Warriors();
@@ -51,13 +56,16 @@ public class LocalGame {
         w.add(J2);
         w.add(J3);
 
-        Core c = new Core(200);
-        c.addRandom(J1);
-        c.addRandom(J2);
-        c.addRandom(J3);
+        Core c = new Core(15*15);
+        c.setWarriors(w);
+        c.load();
 
+        J1.addPointeur(8);
+        J1.addPointeur(15);
+        J1.addPointeur(59);
+        J1.addPointeur(13);
 
-        System.out.println(c.toString());
+        System.out.println(c.toString()+"\n"+w.toString());
 
 
 

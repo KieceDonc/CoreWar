@@ -3,3 +3,13 @@ MOV bomb, @bomb
 ;commentaires inutiles mais placés ici pour fins de test
 JMP loop
 bomb DAT #0 ; encore des commentaires inutiles :(
+loop    ADD #4,     bomb
+MOV bomb, @bomb
+;commentaires inutiles mais placés ici pour fins de test
+JMP loop
+bomb DAT #0 ; encore des commentaires inutiles :(
+loop    ADD #4,     bomb
+MOV bomb, @bomb
+;commentaires inutiles mais placés ici pour fins de test
+JMP loop
+bomb DAT #0 ; encore des commentaires inutiles :(
