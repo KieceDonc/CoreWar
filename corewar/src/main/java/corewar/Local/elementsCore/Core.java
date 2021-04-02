@@ -5,7 +5,7 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Queue;
+import java.util.Deque;
 
 /*
 Le core est la mémoire dans laquelle les programmes s'affrontent. 
@@ -16,17 +16,17 @@ public class Core {
 
     private InstructionID[] memoire;
     private Warriors warriors;
-    private ArrayDeque<Integer> ordre;
+    private ArrayDeque<Warrior> ordre;
 
     public InstructionID[] getMemoire() { return this.memoire; }
     public Warriors getWarriors() { return this.warriors; }
-    public ArrayDeque<Integer> getOrdre() { return this.ordre; }
+    public ArrayDeque<Warrior> getOrdre() { return this.ordre; }
 
     public void setMemoire(InstructionID[] memoire) { this.memoire = memoire; }
     public void setWarriors(Warriors warriors) { this.warriors = warriors; }
-    public void setOrdre(ArrayDeque<Integer> ordre) {this.ordre = ordre; }
+    public void setOrdre(ArrayDeque<Warrior> ordre) {this.ordre = ordre; }
 
-    public Core(InstructionID[] memoire, Warriors warriors, ArrayDeque<Integer> ordre){
+    public Core(InstructionID[] memoire, Warriors warriors, ArrayDeque<Warrior> ordre){
         this.setMemoire(memoire);
         this.setWarriors(warriors);
         this.setOrdre(ordre);
@@ -63,16 +63,13 @@ public class Core {
 
         int incr = 0;
         
-        for(int i = 0 ; i < length() ; i++){
-            if(this.read(i) != null ){
-                for(int j = 0 ; j <= 2*intervalle ; j++){
+        for(int i = 0 ; i < length() ; i++)
+            if(this.read(i) != null )
+                for(int j = 0 ; j <= 2*intervalle ; j++)
                     if(temp[Math.floorMod(i-intervalle+j,length())] == 0){
                         temp[Math.floorMod(i-intervalle+j,length())] = 1;
                         incr++;
                     }
-                }
-            }
-        }
 
         int rand = (int) Math.floor(Math.random()*(length()-incr));
         int i = 0;
@@ -88,9 +85,8 @@ public class Core {
 
     public void load(){
         Arrays.fill(getMemoire(),null);
-        System.out.println(getWarriors().getWarriors().size());
         for(int i = 0 ; i < getWarriors().getWarriors().size() ; i++){
-            if(i == 0) {add(getWarriors().get(i),0); System.out.println("dans 0");}
+            if(i == 0) add(getWarriors().get(i),0); 
             else addRandom(getWarriors().get(i));
         }
 
@@ -100,7 +96,7 @@ public class Core {
         return this.getMemoire()[adresse];
     }
 
-    // toString renvoyant x case par lignes
+    // toString renvoyant x cases par lignes
     public String toString(int x){
         String res = "";
         int len = this.length();
@@ -109,16 +105,16 @@ public class Core {
         HashMap<Integer,Warrior> pointeurs = getWarriors().mapPointeurs();
 
         while(i < len){
-            if(this.read(i) == null)
-                res+="[-]";
-            else
-                if(pointeurs.containsKey(i)){
-                    res+=pointeurs.get(i).couleurAnsi()+"["+String.valueOf(this.read(i).getId())+"]"+ANSI_RESET;
-                }
-                else{
-                res+="["+this.read(i).getId()+"]";
-                }
+            if(this.read(i) == null){
+                if(pointeurs.containsKey(i)) res+=pointeurs.get(i).couleurAnsi()+"[-]"+ANSI_RESET;
+                else res+= "[-]";
+                    
+            }
+            else{
+                if(pointeurs.containsKey(i)) res+=pointeurs.get(i).couleurAnsi()+"["+String.valueOf(this.read(i).getId())+"]"+ANSI_RESET;
+                else res+="["+this.read(i).getId()+"]";
                 //EN GRAS : res+="[\033[1m"+String.valueOf(this.read(i).getId())+"\033[0m]";
+            }
             i++;
             if(i%x == 0)
                 res+="\n";
@@ -153,9 +149,30 @@ public class Core {
     }
     
     // GESTION TOUR DE JEU
+    public void initOrdre(){
+        setOrdre(new ArrayDeque<Warrior>());
+        for(Warrior w : getWarriors().getWarriors())
+            ordre.offerLast(w);
+    }
 
+    public Warrior firstWarrior(){
+        return getOrdre().peekFirst();
+    }
 
+    public void cycle(){
+        getOrdre().peekFirst().cycle();
+        getOrdre().offerLast(getOrdre().pollFirst());
+    }
 
+    public String ordreString(){
+        String res = "> ";
+        if(!getOrdre().isEmpty()){
+    
+        for(Warrior w : getOrdre()){
+            res+=w.toString()+"\n";
+        }}
+        return res;
 
+    }
 
 }

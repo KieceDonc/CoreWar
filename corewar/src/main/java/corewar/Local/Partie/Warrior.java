@@ -87,7 +87,7 @@ public class Warrior {
     }
 
     public void cycle(){
-        getPointeurs().offerLast(getPointeurs().pollFirst());
+        addPointeur(getPointeurs().pollFirst());
     }
 
     public String PointeursString(){

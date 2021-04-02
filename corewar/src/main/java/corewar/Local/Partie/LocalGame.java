@@ -65,7 +65,15 @@ public class LocalGame {
         J1.addPointeur(59);
         J1.addPointeur(13);
 
-        System.out.println(c.toString()+"\n"+w.toString());
+        c.initOrdre();
+        
+
+
+        c.cycle();
+
+        System.out.println(c.toString()+"\n"+c.ordreString());
+
+
 
 
 
