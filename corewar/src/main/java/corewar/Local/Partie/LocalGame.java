@@ -1,5 +1,8 @@
 package corewar.Local.Partie;
 import corewar.Local.elementsCore.*;
+
+import java.util.concurrent.TimeUnit;
+
 import corewar.Local.Interpreteur.*;
 
 public class LocalGame {
@@ -28,7 +31,7 @@ public class LocalGame {
         System.out.println(i2.toString());
         System.out.println(i3.toString());
         System.out.println(i4.toString());
-        */
+        
 
         Warrior J1 = new Warrior();
         J1.setNom("Gemini");
@@ -67,23 +70,53 @@ public class LocalGame {
 
         c.initOrdre();
         
-
+        while(true){
+        
+        try {
+            TimeUnit.SECONDS.sleep(1);
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
         c.cycle();
 
         System.out.println(c.toString()+"\n"+c.ordreString());
-
-
-
-
+        }*/
 
         
+
+        Core c = new Core (10*10);
+
+        InstructionID ins1 = new InstructionID(Mnemonique.MOV, new Operande(Mode.DIRECT,3),new Operande(Mode.DIRECT,2),'a');
+        InstructionID ins2 = new InstructionID(Mnemonique.DAT, Mode.IMMEDIAT, 42, 'a');
+        InstructionID ins3 = new InstructionID(Mnemonique.MOV, new Operande(Mode.INDIRECT,-2),new Operande(Mode.DIRECT,-2),'a');
+
+        c.write(5,ins1);
+        c.write(93,ins2);
+        c.write(13,ins3);
+
+        c.testInstruction(Mnemonique.MOV);
+
+
+        /*
+
+        //
+
+        c.write(5,ins1);
+        //c.write(3,ins2);
+        c.executer(5);
+
+        pr(c.testString());
+        pr("1: "+c.read(1).toString()+"\n5: "+c.read(5));*/
 
 
     }
 
     
-    
+    public static void pr(Object o){
+        System.out.println(o);
+    }
     
     
 }

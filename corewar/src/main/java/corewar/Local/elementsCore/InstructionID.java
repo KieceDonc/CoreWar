@@ -32,6 +32,11 @@ public class InstructionID extends Instruction {
         this.setId(id);
     }
 
+    public InstructionID(int i, char id){
+        super(i);
+        this.setId(id);
+    }
+
 
 }
 

@@ -34,13 +34,17 @@ public class Instruction {
     public Instruction(Mnemonique mnq, Operande op1){
         this.mnq = mnq;
         this.op1 = op1;
-        this.op2 = null;
+        this.op2 = new Operande(Mode.IMMEDIAT,0);
     }
 
     public Instruction(Mnemonique mnq, Mode m1, int a1){
         this.mnq = mnq;
         this.op1 = new Operande(m1,a1);
-        this.op2 = null;
+        this.op2 = new Operande(Mode.IMMEDIAT,0);
+    }
+
+    public Instruction(int i){
+        this(Mnemonique.DAT,new Operande(Mode.IMMEDIAT,i));
     }
 
 
