@@ -8,6 +8,8 @@ public class Program implements Serializable {
   
   private String name;
   private String path;
+  private int score;
+  private int gameScore;
 
   public Program(String name,String path){
     this.name = name;
@@ -20,6 +22,31 @@ public class Program implements Serializable {
 
   public String getPath(){
     return path;
+  }
+
+  public void updateScore(){
+    this.score+=this.gameScore;
+    this.resetGameScore();
+  }
+
+  public int getScore(){
+    return this.score;
+  }
+
+  public int getGameScore(){
+    return this.gameScore;
+  }
+
+  public void setGameScore(int gameScore){
+    this.gameScore=gameScore;
+  }
+
+  public void resetGameScore(){
+    this.gameScore = 0;
+  }
+
+  public boolean isValid(){
+    return true;
   }
 
   public boolean equals(Program program){

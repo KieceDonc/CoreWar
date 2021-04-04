@@ -2,10 +2,10 @@ package corewar.ServerSide;
 
 import java.io.IOException;
 import java.net.ServerSocket;
-import java.net.SocketException;
 
 import corewar.Main;
 import corewar.ObjectModel.PlayersRanking;
+import corewar.ObjectModel.ProgramRanking;
 import corewar.Read;
 
 /*
@@ -20,6 +20,7 @@ public class Server{
   
   private GameList gameList = new GameList();
   private PlayersRanking ranking = new PlayersRanking();
+  private ProgramRanking programRanking = new ProgramRanking();
   private ServerSocket server;
 
   private boolean stopServer = false;
@@ -62,16 +63,8 @@ public class Server{
           Read.S();
           stopServer = true;
           server.close();
-        } catch (SocketException e){
-          /* 
-            On arrête le server alors qu'il attend d'accepter de nouveau stocket
-            Cela va afficher une erreur
-            Pour éviter cela on ajoute ce bloc 
-            Comme ça on a l'impression qu'on a bien codé et aucune erreur apparaît 
-            TODO fix SocketException cuz while u close the server, he's waiting to accept new socket
-          */
-        } catch (IOException e) {
-          e.printStackTrace();
+        } catch (Exception e){
+
         }
         Main.printLogo();
       }
@@ -91,6 +84,10 @@ public class Server{
 
   public PlayersRanking getRanking(){
     return this.ranking;
+  }
+
+  public ProgramRanking getProgramRanking(){
+    return this.programRanking;
   }
 
 }

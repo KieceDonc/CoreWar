@@ -22,6 +22,8 @@ public class SocketCommunication implements Serializable{
   public static final int GAME_STARTING = 11;
   public static final int GAME_STOP = 12;
   public static final int GAME_UPDATE = 13;
+  public static final int GET_PROGRAM_RANKING = 14;
+  public static final int PLAYER_ADDED_PROGRAM = 15;
 
   private int APICallType;
   private Object object;  

@@ -8,6 +8,8 @@ import java.net.Socket;
 import corewar.Network.SocketCommunication;
 import corewar.ObjectModel.Player;
 import corewar.ObjectModel.PlayersList;
+import corewar.ObjectModel.Program;
+import corewar.ObjectModel.ProgramRanking;
 
 public class APIHandler extends Thread{
   
@@ -91,6 +93,14 @@ public class APIHandler extends Thread{
         startGameHandler(InComingObject);
         break;
       }
+      case SocketCommunication.GET_PROGRAM_RANKING:{
+        getProgramRankingHandler(InComingAPICallType);
+        break;
+      }
+      case SocketCommunication.PLAYER_ADDED_PROGRAM:{
+        playerAddedProgramHandker(InComingAPICallType, InComingObject);
+        break;
+      }
     }
   }
 
@@ -171,6 +181,21 @@ public class APIHandler extends Thread{
     int gameID = (int) InComingObject;
     Game currentGame = server.getGameList().getByID(gameID);
     currentGame.start(this.oos);
+  }
+
+  private void getProgramRankingHandler(int InComingAPICallType){
+    ProgramRanking programRanking = server.getProgramRanking();
+    respond(new SocketCommunication(InComingAPICallType, programRanking));
+  }
+
+  private void playerAddedProgramHandker(int InComingAPICallType, Object InComingObject){
+    Program program = (Program) InComingObject;
+
+    if(!server.getProgramRanking().isInList(program)){
+      server.getProgramRanking().add(program);
+    }
+    
+    respond(new SocketCommunication(InComingAPICallType, null));
   }
 
   private void respond(SocketCommunication toSendObject){

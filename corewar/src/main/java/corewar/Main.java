@@ -11,7 +11,7 @@ public class Main{
     public static void main(String[] args){
 
         //Tests du jeu en LOCAL (à mettre en commentaire pour tester serveurs)
-        localGameTest();
+        //localGameTest();
 
         printLogo();
         switch(serverOrClient()){

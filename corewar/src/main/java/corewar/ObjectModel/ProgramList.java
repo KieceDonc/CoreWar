@@ -1,9 +1,12 @@
 package corewar.ObjectModel;
 
+import java.io.Serializable;
 import java.util.ArrayList; 
 
-public class ProgramList{
+public class ProgramList implements Serializable{
 
+  private static final long serialVersionUID = 1188504167358879685L;
+  
   protected ArrayList<Program> programList;
 
   public ProgramList(){
@@ -15,6 +18,9 @@ public class ProgramList{
   }
 
   public Program getByPath(String path){
+    if(this.getSize()==0){
+      return null;
+    }
     Program program = null;
     int index = 0;
     boolean founded = false;
@@ -33,6 +39,31 @@ public class ProgramList{
       System.out.print(this.toString());
     }
     return program;
+  }
+
+  /*
+    Retourne le programme de la liste avec l'index donné en paramètre
+    * {int} index: Position du joueur dans la position 
+    * return {Program} si le joueur n'est pas trouvé renvoie null
+  */
+  public Program getByIndex(int index){
+    if(getSize()==0){
+      return null;
+    }
+    if(index<0 && index>=programList.size()){
+      System.err.println("index "+index+" in program list out of bound");
+      System.out.print(this.toString());
+      return null;
+    }
+    return this.programList.get(index);
+  }
+
+  public Program get(Program program){
+    return this.getByPath(program.getPath());
+  }
+
+  public boolean isInList(Program program){
+    return this.get(program)!=null;
   }
 
   public int getSize(){

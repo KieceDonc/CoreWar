@@ -34,7 +34,7 @@ public class Connexion extends Thread{
         if (toSendCom.getAPICallType()==receivedCom.getAPICallType()){
           respondReceived = true;
           shouldStop = true;
-          if(receivedCom.getObject().equals(SocketCommunication.BAD_COMM)){
+          if(receivedCom.getObject() !=null && receivedCom.getObject().equals(SocketCommunication.BAD_COMM)){
             System.out.println("Bad communication");
             System.out.println(toSendCom.toString());
             System.exit(0);

@@ -7,6 +7,7 @@ import corewar.Network.SocketCommunication;
 import corewar.ObjectModel.Player;
 import corewar.ObjectModel.PlayersRanking;
 import corewar.ObjectModel.Program;
+import corewar.ObjectModel.ProgramRanking;
 import corewar.ServerSide.ClientPrinterGameList;
 
 /*
@@ -51,10 +52,9 @@ public class Client {
       e.printStackTrace();
     }
     currentPlayer = new Player(playerName);
-    currentPlayer.setProgram(new Program("default program lul ", "none"));
   }
 
-  public boolean isPlayerNameTaken(String playerName) {
+  private boolean isPlayerNameTaken(String playerName) {
     try {
       Connexion connexion = new Connexion(new SocketCommunication(SocketCommunication.IS_PLAYER_NAME_TAKEN, playerName));
       connexion.start();
@@ -68,16 +68,18 @@ public class Client {
     return true;
   }
 
-  public void mainMenu() {
+  private void mainMenu() {
     int choice = 0;
-    int maxChoice = 4;
+    int maxChoice = 6;
     do {
       System.out.println("------------------------------------------------------------------------------------------");
       System.out.println("");
       System.out.println("1 - Crée une partie");
       System.out.println("2 - Rejoindre une partie");
       System.out.println("3 - Voir le classement des joueurs");
-      System.out.println("4 - Fermer");
+      System.out.println("4 - Voir le classement des programmes");
+      System.out.println("5 - Ajouter un programme");
+      System.out.println("6 - Fermer");
       System.out.println("");
       System.out.print("Votre choix : ");
       choice = Read.i();
@@ -87,11 +89,19 @@ public class Client {
 
     switch (choice) {
       case 1: {
-        createGame();
+        if(currentPlayer.getProgram()!=null && currentPlayer.getProgram().isValid()){
+          createGame();
+        }else{
+          invalidProgram();
+        }
         break;
       }
       case 2: {
-        joinGame();
+        if(currentPlayer.getProgram()!=null && currentPlayer.getProgram().isValid()){
+          joinGame(); 
+        }else{
+          invalidProgram();
+        }
         break;
       }
       case 3: {
@@ -99,6 +109,15 @@ public class Client {
         break;
       }
       case 4: {
+        getProgramRanking().print();
+        break;
+      }
+      case 5:{
+        currentPlayer.setProgram(new Program("default program lul ", "none"));
+        playerAddedProgram(currentPlayer.getProgram());
+        break;
+      }
+      case 6:{
         System.exit(0);
         break;
       }
@@ -107,13 +126,20 @@ public class Client {
         System.out.println("Normally it happend when you don't incremente maxChoice in clientMainMenu()");
         System.exit(0);
       }
-    }
-    ;
+    };
 
     mainMenu();
   }
 
-  public void createGame() {
+  private void invalidProgram(){
+    System.out.println("------------------------------------------------------------------------------------------");
+    System.out.println("");
+    System.out.println("Vous devez choisir un programme avant ");
+    System.out.println("");
+    System.out.println("------------------------------------------------------------------------------------------");
+  }
+
+  private void createGame() {
     try {
       Game game = Game.create(currentPlayer);
       game.start();
@@ -123,10 +149,14 @@ public class Client {
     }
   }
 
-  public void joinGame() {
+  private void joinGame() {
     ClientPrinterGameList gameList = getGameList();
     if (gameList.getSize() == 0) {
+      System.out.println("------------------------------------------------------------------------------------------");
+      System.out.println("");
       System.out.println("Aucune partie disponible");
+      System.out.println("");
+      System.out.println("------------------------------------------------------------------------------------------");
     } else {
       boolean firstSetup = true;
       int gameID = 0;
@@ -163,7 +193,7 @@ public class Client {
     }
    }
 
-  public PlayersRanking getRanking() {
+   private PlayersRanking getRanking() {
     try {
       Connexion connexion = new Connexion(new SocketCommunication(SocketCommunication.GET_RANKING, null));
       connexion.start();
@@ -175,7 +205,39 @@ public class Client {
     return null;
   }
 
-  public ClientPrinterGameList getGameList(){
+  private ProgramRanking getProgramRanking() {
+    try {
+      Connexion connexion = new Connexion(new SocketCommunication(SocketCommunication.GET_PROGRAM_RANKING, null));
+      connexion.start();
+      connexion.join();
+      return (ProgramRanking)connexion.getReceivedObject();
+    } catch (IOException | InterruptedException e) {
+      e.printStackTrace();
+    }
+    return null;
+  }
+  
+  private void playerAddedProgram(Program program){
+    System.out.println("------------------------------------------------------------------------------------------");
+    System.out.println("");
+    System.out.println("Envoie du programme au serveur ...");
+    System.out.println("");
+    System.out.println("------------------------------------------------------------------------------------------");
+    try {
+      Connexion connexion = new Connexion(new SocketCommunication(SocketCommunication.PLAYER_ADDED_PROGRAM, program));
+      connexion.start();
+      connexion.join();
+      System.out.println("------------------------------------------------------------------------------------------");
+      System.out.println("");
+      System.out.println("Programme reçu");
+      System.out.println("");
+      System.out.println("------------------------------------------------------------------------------------------");
+    } catch (IOException | InterruptedException e) {
+      e.printStackTrace();
+    }
+  }
+
+  private ClientPrinterGameList getGameList(){
     try {
       Connexion connexion = new Connexion(new SocketCommunication(SocketCommunication.GET_GAME_LIST_PRINTER, null));
       connexion.start();
