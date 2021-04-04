@@ -212,71 +212,68 @@ public class Core {
     }
 
     // Evalue l'operande (OP.A ou OP.B) de l'adresse passées en paramètres
-    public int evalAdresse(OP op, int adresseIn){
-        InstructionID ins = read(adresseIn);
-        int adresse = 0;
-        Mode mode = Mode.IMMEDIAT;
-        switch(op){
-            case A :{
-                adresse = ins.getOp1().getAdresse();
-                mode = ins.getOp1().getMode();
-                break;
+    public Integer evalAdresse(OP op, int adresseIn){
+        try{
+            InstructionID ins = read(adresseIn);
+            int adresse = 0;
+            Mode mode = Mode.IMMEDIAT;
+            switch(op){
+                case A :{
+                    adresse = ins.getOp1().getAdresse();
+                    mode = ins.getOp1().getMode();
+                    break;
+                }
+                case B : {
+                    adresse = ins.getOp2().getAdresse();
+                    mode = ins.getOp2().getMode();
+                    break;
+                }
             }
-            case B : {
-                adresse = ins.getOp2().getAdresse();
-                mode = ins.getOp2().getMode();
-                break;
-            }
-        }
 
-        switch(mode){
-            case IMMEDIAT : { //#
-                return 0;
+            switch(mode){
+                case IMMEDIAT : { //#
+                    return 0;
+                }
+                case DIRECT : { // $
+                    return mod(adresseIn+adresse);
+                }
+                case INDIRECT : { //@
+                    if(read(adresseIn+adresse).getMnq() == Mnemonique.DAT)
+                        return mod((read(adresseIn+adresse).getOp1().getAdresse())+adresseIn+adresse);
+                }
+                default :{
+                    return 0;
+                }
             }
-            case DIRECT : { // $
-                return mod(adresseIn+adresse);
-            }
-            case INDIRECT : { //@
-                if(read(adresseIn+adresse).getMnq() == Mnemonique.DAT)
-                    return mod((read(adresseIn+adresse).getOp1().getAdresse())+adresseIn+adresse);
-            }
-            default :{
-                return 0;
-            }
-        }
+        }catch(NullPointerException e) { return null; } 
     }
 
     // Rend la valeur pointée par l'opérande indiquée, si elle existe. Sinon renvoie null.
     public Integer evalData(OP op, int adresseIn){
-        
-        InstructionID ins = read(adresseIn);
-        
-        switch(op){
-            case A :{
-                if(ins.getOp1().getMode() == Mode.IMMEDIAT){
-                    return ins.getOp1().getAdresse();
+        try{
+            InstructionID ins = read(adresseIn);
+            
+            switch(op){
+                case A :{
+                    if(ins.getOp1().getMode() == Mode.IMMEDIAT)
+                        return ins.getOp1().getAdresse();
+                    else
+                        if( read(evalAdresse(OP.A,adresseIn)).getMnq() == Mnemonique.DAT)
+                            return read(evalAdresse(OP.A,adresseIn)).getOp1().getAdresse();
+                    return null;
                 }
-                else{
-                    if(read(evalAdresse(OP.A,adresseIn)).getMnq() == Mnemonique.DAT){
-                        return read(evalAdresse(OP.A,adresseIn)).getOp1().getAdresse();
+                case B : {
+                    if(ins.getOp2().getMode() == Mode.IMMEDIAT)
+                        return ins.getOp2().getAdresse();
+                    else{
+                        if(read(evalAdresse(OP.B,adresseIn)).getMnq() == Mnemonique.DAT)
+                            return read(evalAdresse(OP.B,adresseIn)).getOp1().getAdresse();
                     }
+                    return null;
                 }
-                return null;
             }
-            case B : {
-                if(ins.getOp2().getMode() == Mode.IMMEDIAT){
-                    return ins.getOp2().getAdresse();
-                }
-                else{
-                    if(read(evalAdresse(OP.B,adresseIn)).getMnq() == Mnemonique.DAT){
-                        return read(evalAdresse(OP.B,adresseIn)).getOp1().getAdresse();
-                    }
-                }
-                return null;
-            }
-        }
-        return null;
-        
+            return null;
+        } catch(NullPointerException e) { return null; }  
     }
 
 
@@ -315,13 +312,22 @@ public class Core {
 
             // ADD -- add (adds one number to another)
             case ADD : {
-                Integer valA = evalData(OP.A,adresse);
+                Integer valA = null;
+                if(evalData(OP.A,adresse) != null){
+                    valA = evalData(OP.A,adresse);
+                    return null;
+                }
                 Instruction readIns = read(evalAdresse(OP.B,adresse));
                 if(valA!=null && readIns.getMnq() == Mnemonique.DAT){
-                    readIns.getOp1().setAdresse(mod(readIns.getOp1().getAdresse()+valA));
+
+                        readIns.getOp1().setAdresse(mod(readIns.getOp1().getAdresse()+valA));
+                        return adresse+1;
+
                 }
                 else return null;
             }
+
+            case 
         }
 
         return null;
@@ -388,8 +394,24 @@ NOP -- no operation (does nothing)
                 pr(c.executer(0)+"\n");
                 pr(c.testString());
                 break;
+            }
 
-
+            case ADD : {
+                InstructionID ins1 = new InstructionID(10,'X');
+                InstructionID ins3 = new InstructionID(-5,'X');
+                InstructionID ins4 = new InstructionID(18,'X');
+                InstructionID ins5 = new InstructionID(-9,'X');
+                InstructionID ins2 = new InstructionID(Mnemonique.ADD,Mode.INDIRECT,25,Mode.INDIRECT,10,'X');
+                c.write(20,ins1);
+                c.write(15,ins2);
+                c.write(25,ins3);
+                c.write(30,ins4);
+                c.write(40,ins5);
+                pr(c.testString());
+                pr("-------------------\nExecution 15 :");
+                pr(c.executer(15)+"\n");
+                pr(c.testString());
+                break;
             }
         }
     }

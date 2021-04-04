@@ -96,7 +96,7 @@ public class LocalGame {
         c.write(93,ins2);
         c.write(13,ins3);
 
-        c.testInstruction(Mnemonique.MOV);
+        c.testInstruction(Mnemonique.ADD);
 
 
         /*
