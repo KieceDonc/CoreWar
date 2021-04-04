@@ -89,15 +89,17 @@ public class LocalGame {
         Core c = new Core (10*10);
 
         InstructionID ins1 = new InstructionID(Mnemonique.MOV, new Operande(Mode.DIRECT,3),new Operande(Mode.DIRECT,2),'a');
-        InstructionID ins2 = new InstructionID(Mnemonique.DAT, Mode.IMMEDIAT, 42, 'a');
+        InstructionID ins2 = new InstructionID(Mnemonique.DAT, Mode.IMMEDIAT, -2, 'a');
         InstructionID ins3 = new InstructionID(Mnemonique.MOV, new Operande(Mode.INDIRECT,-2),new Operande(Mode.DIRECT,-2),'a');
+        InstructionID ins4 = new InstructionID(5,'a');
 
         c.write(5,ins1);
-        c.write(93,ins2);
+        c.write(11,ins2);
         c.write(13,ins3);
+        c.write(9,ins4);
 
-        c.testInstruction(Mnemonique.ADD);
-
+        c.testInstruction(Mnemonique.JMP);
+        //pr(c.evalData(Core.OP.A, 13));
 
         /*
 

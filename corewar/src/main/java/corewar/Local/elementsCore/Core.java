@@ -250,45 +250,43 @@ public class Core {
 
     // Rend la valeur pointée par l'opérande indiquée, si elle existe. Sinon renvoie null.
     public Integer evalData(OP op, int adresseIn){
-        try{
+        
             InstructionID ins = read(adresseIn);
+            if(ins == null) return null;
             
             switch(op){
                 case A :{
-                    if(ins.getOp1().getMode() == Mode.IMMEDIAT)
+                    if(ins.getOp1().getMode() == Mode.IMMEDIAT) // Si mode immediat, on retourne l'adresse contenue dans l'opérande
                         return ins.getOp1().getAdresse();
-                    else
-                        if( read(evalAdresse(OP.A,adresseIn)).getMnq() == Mnemonique.DAT)
-                            return read(evalAdresse(OP.A,adresseIn)).getOp1().getAdresse();
+                    Instruction read = read(evalAdresse(OP.A,adresseIn));
+                    if(read != null && read.getMnq() == Mnemonique.DAT) return read.getOp1().getAdresse();  // Sinon c'est une instruction DAT, et on rend l'adresse de l'op 1
                     return null;
                 }
-                case B : {
+                case B : { // Idem operande B
                     if(ins.getOp2().getMode() == Mode.IMMEDIAT)
-                        return ins.getOp2().getAdresse();
-                    else{
-                        if(read(evalAdresse(OP.B,adresseIn)).getMnq() == Mnemonique.DAT)
-                            return read(evalAdresse(OP.B,adresseIn)).getOp1().getAdresse();
-                    }
+                        return ins.getOp1().getAdresse();
+                    Instruction read = read(evalAdresse(OP.B,adresseIn));
+                    if(read != null && read.getMnq() == Mnemonique.DAT) return read.getOp1().getAdresse();
                     return null;
                 }
             }
             return null;
-        } catch(NullPointerException e) { return null; }  
+        
     }
 
 
-    // Return la prochaine position du pointeur. Si null, le processus doit mourir. (INTEGER)
+    // Retourne la prochaine position du pointeur. Si null, le processus doit mourir. (INTEGER)
     public Integer executer(int adresse){
+
         InstructionID ins = read(adresse);
-        Mnemonique mnq = ins.getMnq();
+        if(ins == null) return null;
 
         // On récupère tous les éléments de l'instruction pour que ce soit plus simple à traiter
-        Operande opA = ins.getOp1();
-        Operande opB = ins.getOp2();
-        int adA = opA.getAdresse();
-        int adB = opB.getAdresse();
-        Mode modeA = opA.getMode();
-        Mode modeB = opB.getMode();
+        Mnemonique mnq = ins.getMnq();
+        Operande opA = ins.getOp1(), opB = ins.getOp2();
+        int adA = opA.getAdresse(), adB = opB.getAdresse();
+        Mode modeA = opA.getMode(), modeB = opB.getMode();
+        Integer evalA = evalAdresse(OP.A, adresse), evalB = evalAdresse(OP.B, adresse); // On évalue forcément les opérandes, même si le processus sera tué.
         char id = ins.getId();
 
         switch(mnq){
@@ -301,33 +299,57 @@ public class Core {
             // MOV -- move (copies data from one address to another) - OK
             case MOV : {
                 if(opA.getMode() == Mode.IMMEDIAT){ 
-                    write(evalAdresse(OP.B,adresse),new InstructionID(adA,id));
-                    return adresse+1;
+                    write(evalB,new InstructionID(adA,id));
+                    return mod(adresse+1);
                 }
-                else if(read(evalAdresse(OP.A,adresse)) != null){
-                    write(evalAdresse(OP.B,adresse),new InstructionID(read(adresse),id));
-                    return adresse+1;
-                } else return null;
+                Instruction read = read(evalA);
+                if(read != null){
+                    write(evalB,new InstructionID(read(adresse),id));
+                    return mod(adresse+1);
+                } 
+                return null;
             }
 
             // ADD -- add (adds one number to another)
             case ADD : {
-                Integer valA = null;
-                if(evalData(OP.A,adresse) != null){
-                    valA = evalData(OP.A,adresse);
-                    return null;
-                }
-                Instruction readIns = read(evalAdresse(OP.B,adresse));
-                if(valA!=null && readIns.getMnq() == Mnemonique.DAT){
-
+                Integer valA = evalData(OP.A,adresse);
+                Instruction readIns = read(evalB);
+                if(valA!=null && readIns!=null && readIns.getMnq() == Mnemonique.DAT){
                         readIns.getOp1().setAdresse(mod(readIns.getOp1().getAdresse()+valA));
-                        return adresse+1;
-
+                        return mod(adresse+1);
                 }
-                else return null;
+                return null;
             }
 
-            case 
+            //SUB -- subtract (subtracts one number from another)
+            case SUB : {
+                Integer valA = -evalData(OP.A,adresse);
+                Instruction readIns = read(evalB);
+                if(valA!=null && readIns!=null && readIns.getMnq() == Mnemonique.DAT){
+                    readIns.getOp1().setAdresse(mod(readIns.getOp1().getAdresse()+valA));
+                    return mod(adresse+1);
+                }
+                return null;    
+            }
+
+            //JMP -- jump (continues execution from another address)
+            case JMP : {
+                if(modeA == Mode.IMMEDIAT)
+                    return null;
+                return evalA;
+            }
+
+            //JMZ -- jump if zero (tests a number and jumps to an address if it's 0)
+            case JMZ : {
+                if(evalData(OP.B,adresse) == null)
+                    return null;
+                
+
+            }
+
+
+
+            
         }
 
         return null;
@@ -337,16 +359,24 @@ public class Core {
 
 
 
+/*
+MOV -- move (copies data from one address to another)
+ADD -- add (adds one number to another)
 SUB -- subtract (subtracts one number from another)
+JMP -- jump (continues execution from another address)
+JMZ -- jump if zero (tests a number and jumps to an address if it's 0)
+JMG -- jump if greater than zero
+JMN -- jump if not zero (tests a number and jumps if it isn't 0)
+DJN -- decrement and jump if not zero (decrements a number by one, and jumps unless the result is 0)
+DJZ -- decrement and jump if zero ((decrements a number by one, and jumps if the result is zero)
+CMP -- compare (same as SEQ)
+SPL -- split (creates new process)
+DAT -- data (kills the process)
+
+// REDCODE ETENDU :
 MUL -- multiply (multiplies one number with another)
 DIV -- divide (divides one number with another)
 MOD -- modulus (divides one number with another and gives the remainder)
-JMP -- jump (continues execution from another address)
-JMZ -- jump if zero (tests a number and jumps to an address if it's 0)
-JMN -- jump if not zero (tests a number and jumps if it isn't 0)
-DJN -- decrement and jump if not zero (decrements a number by one, and jumps unless the result is 0)
-SPL -- split (starts a second process at another address)
-CMP -- compare (same as SEQ)
 SEQ -- skip if equal (compares two instructions, and skips the next instruction if they are equal)
 SNE -- skip if not equal (compares two instructions, and skips the next instruction if they aren't equal)
 SLT -- skip if lower than (compares two values, and skips the next instruction if the first is lower than the second)
@@ -400,7 +430,7 @@ NOP -- no operation (does nothing)
                 InstructionID ins1 = new InstructionID(10,'X');
                 InstructionID ins3 = new InstructionID(-5,'X');
                 InstructionID ins4 = new InstructionID(18,'X');
-                InstructionID ins5 = new InstructionID(-9,'X');
+                InstructionID ins5 = new InstructionID(-10,'X');
                 InstructionID ins2 = new InstructionID(Mnemonique.ADD,Mode.INDIRECT,25,Mode.INDIRECT,10,'X');
                 c.write(20,ins1);
                 c.write(15,ins2);
@@ -412,6 +442,23 @@ NOP -- no operation (does nothing)
                 pr(c.executer(15)+"\n");
                 pr(c.testString());
                 break;
+            }
+
+            case JMP : {
+                InstructionID ins1 = new InstructionID(5, 'X');
+                InstructionID ins2 = new InstructionID(12, 'X');
+                InstructionID ins3 = new InstructionID(Mnemonique.JMP,Mode.DIRECT,-20,Mode.IMMEDIAT,0,'X');
+                InstructionID ins4 = new InstructionID(Mnemonique.JMP,Mode.INDIRECT,-10,Mode.IMMEDIAT,0,'X');
+                c.write(6,ins1);
+                c.write(12,ins2);
+                c.write(25,ins3);
+                c.write(15,ins4);
+                pr(c.testString());
+                pr("-------------------\nExecution 15 et 25 :");
+                pr(c.executer(15)+"  ||  "+c.executer(25)+"\n");
+                pr(c.testString());
+                
+
             }
         }
     }
