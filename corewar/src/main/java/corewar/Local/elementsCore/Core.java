@@ -211,41 +211,41 @@ public class Core {
 
     }
 
-    // Evalue l'operande (OP.A ou OP.B) de l'adresse passées en paramètres
+    // Evalue l'operande (OP.A ou OP.B) de l'adresse passées en paramètres. Rend son adresse et la valeur.
     public Integer evalAdresse(OP op, int adresseIn){
-        try{
-            InstructionID ins = read(adresseIn);
-            int adresse = 0;
-            Mode mode = Mode.IMMEDIAT;
-            switch(op){
-                case A :{
-                    adresse = ins.getOp1().getAdresse();
-                    mode = ins.getOp1().getMode();
-                    break;
-                }
-                case B : {
-                    adresse = ins.getOp2().getAdresse();
-                    mode = ins.getOp2().getMode();
-                    break;
-                }
+        
+        InstructionID ins = read(adresseIn);
+        int adresse = 0;
+        Mode mode = Mode.IMMEDIAT;
+        switch(op){
+            case A :{
+                adresse = ins.getOp1().getAdresse();
+                mode = ins.getOp1().getMode();
+                break;
             }
+            case B : {
+                adresse = ins.getOp2().getAdresse();
+                mode = ins.getOp2().getMode();
+                break;
+            }
+        }
 
-            switch(mode){
-                case IMMEDIAT : { //#
-                    return 0;
-                }
-                case DIRECT : { // $
-                    return mod(adresseIn+adresse);
-                }
-                case INDIRECT : { //@
-                    if(read(adresseIn+adresse).getMnq() == Mnemonique.DAT)
-                        return mod((read(adresseIn+adresse).getOp1().getAdresse())+adresseIn+adresse);
-                }
-                default :{
-                    return 0;
-                }
+        switch(mode){
+            case IMMEDIAT : { //#
+                return null;
             }
-        }catch(NullPointerException e) { return null; } 
+            case DIRECT : { // $
+                return mod(adresseIn+adresse);
+            }
+            case INDIRECT : { //@
+                InstructionID insInd = read(adresseIn+adresse);
+                if(insInd != null && insInd.getMnq() == Mnemonique.DAT)
+                    return mod((read(adresseIn+adresse).getOp1().getAdresse())+adresseIn+adresse);
+            }
+            default :{
+                return null;
+            }
+        }
     }
 
     // Rend la valeur pointée par l'opérande indiquée, si elle existe. Sinon renvoie null.
@@ -286,8 +286,11 @@ public class Core {
         Operande opA = ins.getOp1(), opB = ins.getOp2();
         int adA = opA.getAdresse(), adB = opB.getAdresse();
         Mode modeA = opA.getMode(), modeB = opB.getMode();
-        Integer evalA = evalAdresse(OP.A, adresse), evalB = evalAdresse(OP.B, adresse); // On évalue forcément les opérandes, même si le processus sera tué.
+        Integer evalA = evalAdresse(OP.A, adresse), evalB = evalAdresse(OP.B, adresse);
+        Integer valA = null, valB = null;// On évalue forcément les opérandes, même si le processus sera tué.
         char id = ins.getId();
+        if(evalA != null) valA = evalData(OP.A,adresse);
+        if(evalB != null) valB = evalData(OP.B,adresse);
 
         switch(mnq){
 
@@ -312,7 +315,6 @@ public class Core {
 
             // ADD -- add (adds one number to another)
             case ADD : {
-                Integer valA = evalData(OP.A,adresse);
                 Instruction readIns = read(evalB);
                 if(valA!=null && readIns!=null && readIns.getMnq() == Mnemonique.DAT){
                         readIns.getOp1().setAdresse(mod(readIns.getOp1().getAdresse()+valA));
@@ -323,7 +325,7 @@ public class Core {
 
             //SUB -- subtract (subtracts one number from another)
             case SUB : {
-                Integer valA = -evalData(OP.A,adresse);
+                valA = -valA;
                 Instruction readIns = read(evalB);
                 if(valA!=null && readIns!=null && readIns.getMnq() == Mnemonique.DAT){
                     readIns.getOp1().setAdresse(mod(readIns.getOp1().getAdresse()+valA));
@@ -341,13 +343,57 @@ public class Core {
 
             //JMZ -- jump if zero (tests a number and jumps to an address if it's 0)
             case JMZ : {
-                if(evalData(OP.B,adresse) == null)
+                if(evalB == null || valB == null)
                     return null;
-                
-
+                if(valB == 0) return evalA;
+                return mod(adresse+1);
             }
 
+            //JMG -- jump if greater than zero
+            case JMG : {
+                if(evalB == null || valB == null)
+                    return null;
+                if(valB > 0) return evalA;
+                return mod(adresse+1);
+            }
 
+            //JMN -- jump if not zero (tests a number and jumps if it isn't 0)
+            case JMN : {
+                if(evalB == null || valB == null)
+                    return null;
+                if(valB != 0) return evalA;
+                return mod(adresse+1);
+            }
+
+            //DJN -- decrement and jump if not zero (decrements a number by one, and jumps unless the result is 0)
+            case DJN : {
+                if(evalB == null || valB == null || read(evalB).getMnq() != Mnemonique.DAT)
+                    return null;
+                valB = valB-1;
+                read(evalB).getOp1().setAdresse(valB);
+                if(valB != 0) return evalA;
+                return mod(adresse+1);
+            }
+
+            //DJZ -- decrement and jump if zero ((decrements a number by one, and jumps if the result is zero)
+            case DJZ : {
+                if(evalB == null || valB == null || read(evalB).getMnq() != Mnemonique.DAT)
+                    return null;
+                valB = valB-1;
+                read(evalB).getOp1().setAdresse(valB);
+                if(valB == 0) return evalA;
+                return mod(adresse+1);
+            }
+
+            //CMP -- compare (same as SEQ)
+            case CMP : {
+                if(evalB == null || valB == null || read(evalB).getMnq() != Mnemonique.DAT)
+                    return null;
+                valB = valB-1;
+                read(evalB).getOp1().setAdresse(valB);
+                if(valB == 0) return evalA;
+                return mod(adresse+1);
+            }
 
             
         }
@@ -457,8 +503,40 @@ NOP -- no operation (does nothing)
                 pr("-------------------\nExecution 15 et 25 :");
                 pr(c.executer(15)+"  ||  "+c.executer(25)+"\n");
                 pr(c.testString());
-                
+            }
 
+            case DJN : {
+                InstructionID ins1 = new InstructionID(3, 'X');
+                InstructionID ins2 = new InstructionID(1, 'X');
+                InstructionID ins3 = new InstructionID(-10, 'X');
+                InstructionID ins4 = new InstructionID(Mnemonique.DJN,Mode.DIRECT,10,Mode.DIRECT,-15,'X');
+                InstructionID ins5 = new InstructionID(Mnemonique.DJN,Mode.DIRECT,15,Mode.DIRECT,-20,'X');
+                c.write(5,ins1);
+                c.write(10,ins2);
+                c.write(15,ins3);
+                c.write(20,ins4);
+                c.write(30,ins5);
+                pr(c.testString());
+                pr("-------------------\nExecution 20 et 30 :");
+                pr(c.executer(20)+"  ||  "+c.executer(30)+"\n");
+                pr(c.testString());
+            }
+
+            case DJZ : {
+                InstructionID ins1 = new InstructionID(3, 'X');
+                InstructionID ins2 = new InstructionID(1, 'X');
+                InstructionID ins3 = new InstructionID(-10, 'X');
+                InstructionID ins4 = new InstructionID(Mnemonique.DJZ,Mode.DIRECT,10,Mode.DIRECT,-15,'X');
+                InstructionID ins5 = new InstructionID(Mnemonique.DJZ,Mode.DIRECT,15,Mode.DIRECT,-20,'X');
+                c.write(5,ins1);
+                c.write(10,ins2);
+                c.write(15,ins3);
+                c.write(20,ins4);
+                c.write(30,ins5);
+                pr(c.testString());
+                pr("-------------------\nExecution 20 et 30 :");
+                pr(c.executer(20)+"  ||  "+c.executer(30)+"\n");
+                pr(c.testString());
             }
         }
     }

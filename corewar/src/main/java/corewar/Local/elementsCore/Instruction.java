@@ -63,6 +63,16 @@ public class Instruction {
             res =mnq.toString() + "\t" + op1.toString() + "\t" + op2.toString();
         return res;
     }
+
+    public boolean equals(Instruction comp){
+        if(this.getMnq() != comp.getMnq()) return false;
+        if(this.getOp1().getAdresse() != comp.getOp1().getAdresse()) return false;
+        if(this.getOp1().getMode() != comp.getOp1().getMode()) return false;
+        if(this.getOp2().getMode() != comp.getOp2().getMode()) return false;
+        if(this.getOp2().getAdresse() != comp.getOp2().getAdresse()) return false;
+        
+        return true;
+    }
     
 
 }

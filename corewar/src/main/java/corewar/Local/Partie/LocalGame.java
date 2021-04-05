@@ -92,13 +92,15 @@ public class LocalGame {
         InstructionID ins2 = new InstructionID(Mnemonique.DAT, Mode.IMMEDIAT, -2, 'a');
         InstructionID ins3 = new InstructionID(Mnemonique.MOV, new Operande(Mode.INDIRECT,-2),new Operande(Mode.DIRECT,-2),'a');
         InstructionID ins4 = new InstructionID(5,'a');
+        InstructionID ins5 = new InstructionID(5,'a');
 
         c.write(5,ins1);
         c.write(11,ins2);
         c.write(13,ins3);
         c.write(9,ins4);
 
-        c.testInstruction(Mnemonique.JMP);
+        //c.testInstruction(Mnemonique.DJZ);
+        pr(ins4.equals(ins3));
         //pr(c.evalData(Core.OP.A, 13));
 
         /*
