@@ -1,6 +1,5 @@
 package corewar.Local.Partie;
 import corewar.Local.elementsCore.*;
-import corewar.Local.Interpreteur.*;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -86,8 +85,18 @@ public class Warrior {
         return getPointeurs().peekFirst();
     }
 
-    public void cycle(){
-        addPointeur(getPointeurs().pollFirst());
+    // return true si le warrior est en vie, sinon return false
+    public boolean cycle(Integer adresse){
+        if(adresse == null){
+            getPointeurs().removeFirst();
+            if(this.isDead())
+                return false;
+        }
+        else{
+            getPointeurs().removeFirst();
+            addPointeur(adresse);
+        }
+        return true;
     }
 
     public String PointeursString(){

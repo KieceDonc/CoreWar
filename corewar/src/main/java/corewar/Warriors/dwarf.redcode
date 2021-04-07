@@ -1,15 +1,8 @@
-loop    ADD #4,     bomb
+bombb DAT #0
+loop    ADD #3,     bomb
+SUB #3, bombb
 MOV bomb, @bomb
-;commentaires inutiles mais placés ici pour fins de test
-JMP loop
-bomb DAT #0 ; encore des commentaires inutiles :(
-loop    ADD #4,     bomb
-MOV bomb, @bomb
-;commentaires inutiles mais placés ici pour fins de test
-JMP loop
-bomb DAT #0 ; encore des commentaires inutiles :(
-loop    ADD #4,     bomb
-MOV bomb, @bomb
+MOV bombb, @bombb
 ;commentaires inutiles mais placés ici pour fins de test
 JMP loop
 bomb DAT #0 ; encore des commentaires inutiles :(

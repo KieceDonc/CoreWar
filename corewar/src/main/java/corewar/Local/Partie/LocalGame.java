@@ -31,44 +31,36 @@ public class LocalGame {
         System.out.println(i2.toString());
         System.out.println(i3.toString());
         System.out.println(i4.toString());
-        
+        */
 
         Warrior J1 = new Warrior();
-        J1.setNom("Gemini");
-        J1.setId('G');
-        J1.setInstructions(Interpreteur.interpreter("corewar/src/main/java/corewar/Warriors/gemini.redcode"),J1.getId());
+        pr("j1 test");
+        J1.setNom("J1");
+        J1.setId('1');
+        J1.setInstructions(Interpreteur.interpreter("corewar/src/main/java/corewar/Warriors/dwarf.redcode"),J1.getId());
         J1.setCouleur("blue");
+        pr("j1");
 
         Warrior J2 = new Warrior();
-        J2.setNom("Dwarf");
-        J2.setId('D');
-        J2.setInstructions(Interpreteur.interpreter("corewar/src/main/java/corewar/Warriors/dwarf.redcode"),J2.getId());
+        J2.setNom("J2");
+        J2.setId('2');
+        J2.setInstructions(Interpreteur.interpreter("corewar/src/main/java/corewar/Warriors/imp.redcode"),J2.getId());
         J2.setCouleur("red");
-
-        Warrior J3 = new Warrior();
-        J3.setNom("BigDwarf");
-        J3.setId('B');
-        J3.setInstructions(Interpreteur.interpreter("corewar/src/main/java/corewar/Warriors/mice.redcode"),J3.getId());
-        J3.setCouleur("green");
-
-        
+        pr("j2");
 
 
         Warriors w = new Warriors();
         w.add(J1);
         w.add(J2);
-        w.add(J3);
 
         Core c = new Core(15*15);
         c.setWarriors(w);
         c.load();
 
-        J1.addPointeur(8);
-        J1.addPointeur(15);
-        J1.addPointeur(59);
-        J1.addPointeur(13);
+        Manche m = new Manche(w,c);
 
-        c.initOrdre();
+        m.traitementPartie();
+        /*
         
         while(true){
         
@@ -82,7 +74,7 @@ public class LocalGame {
         c.cycle();
 
         System.out.println(c.toString()+"\n"+c.ordreString());
-        }*/
+        }*//*
 
         
 
@@ -120,6 +112,15 @@ public class LocalGame {
     
     public static void pr(Object o){
         System.out.println(o);
+    }
+
+    public static void wait(int s){
+        try {
+            TimeUnit.MILLISECONDS.sleep(30);
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
     
     
