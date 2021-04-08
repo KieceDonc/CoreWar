@@ -69,11 +69,8 @@ public class LocalGame {
     }
 
     public static void clearScreen() {
-        wait(2000);
-
-        for(int x=0;x<50;x++){
-            System.out.println("\n");
-        }
+        System.out.println("\033[H");
+        System.out.println("\033[2J");
      
      }
     

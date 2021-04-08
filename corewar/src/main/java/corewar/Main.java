@@ -12,7 +12,7 @@ public class Main{
 
         //Tests du jeu en LOCAL (à mettre en commentaire pour tester serveurs)
         localGameTest();
-
+        
         printLogo();
         switch(serverOrClient()){
             case 1:{ 
