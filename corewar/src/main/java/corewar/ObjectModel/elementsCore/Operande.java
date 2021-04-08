@@ -1,4 +1,4 @@
-package corewar.Local.elementsCore;
+package corewar.ObjectModel.elementsCore;
 
 public class Operande {
    

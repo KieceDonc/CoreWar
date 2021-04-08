@@ -6,8 +6,8 @@ import corewar.Read;
 import corewar.Network.SocketCommunication;
 import corewar.ObjectModel.Player;
 import corewar.ObjectModel.PlayersRanking;
-import corewar.ObjectModel.Program;
-import corewar.ObjectModel.ProgramRanking;
+import corewar.ObjectModel.Warrior;
+import corewar.ObjectModel.WarriorsRanking;
 import corewar.ServerSide.ClientPrinterGameList;
 
 /*
@@ -89,7 +89,7 @@ public class Client {
 
     switch (choice) {
       case 1: {
-        if(currentPlayer.getProgram()!=null && currentPlayer.getProgram().isValid()){
+        if(currentPlayer.getWarrior()!=null && currentPlayer.getWarrior().isReady()){
           createGame();
         }else{
           invalidProgram();
@@ -97,7 +97,7 @@ public class Client {
         break;
       }
       case 2: {
-        if(currentPlayer.getProgram()!=null && currentPlayer.getProgram().isValid()){
+        if(currentPlayer.getWarrior()!=null && currentPlayer.getWarrior().isReady()){
           joinGame(); 
         }else{
           invalidProgram();
@@ -113,8 +113,7 @@ public class Client {
         break;
       }
       case 5:{
-        currentPlayer.setProgram(new Program("default program lul ", "none"));
-        playerAddedProgram(currentPlayer.getProgram());
+        playerAddedWarrior(null);
         break;
       }
       case 6:{
@@ -205,31 +204,31 @@ public class Client {
     return null;
   }
 
-  private ProgramRanking getProgramRanking() {
+  private WarriorsRanking getProgramRanking() {
     try {
       Connexion connexion = new Connexion(new SocketCommunication(SocketCommunication.GET_PROGRAM_RANKING, null));
       connexion.start();
       connexion.join();
-      return (ProgramRanking)connexion.getReceivedObject();
+      return (WarriorsRanking)connexion.getReceivedObject();
     } catch (IOException | InterruptedException e) {
       e.printStackTrace();
     }
     return null;
   }
   
-  private void playerAddedProgram(Program program){
+  private void playerAddedWarrior(Warrior warrior){
     System.out.println("------------------------------------------------------------------------------------------");
     System.out.println("");
-    System.out.println("Envoie du programme au serveur ...");
+    System.out.println("Envoie du warrior au serveur ...");
     System.out.println("");
     System.out.println("------------------------------------------------------------------------------------------");
     try {
-      Connexion connexion = new Connexion(new SocketCommunication(SocketCommunication.PLAYER_ADDED_PROGRAM, program));
+      Connexion connexion = new Connexion(new SocketCommunication(SocketCommunication.PLAYER_ADDED_WARRIOR, warrior));
       connexion.start();
       connexion.join();
       System.out.println("------------------------------------------------------------------------------------------");
       System.out.println("");
-      System.out.println("Programme reçu");
+      System.out.println("Warrior reçu");
       System.out.println("");
       System.out.println("------------------------------------------------------------------------------------------");
     } catch (IOException | InterruptedException e) {
@@ -248,4 +247,6 @@ public class Client {
     }
     return null;
   }
+
+
 }

@@ -7,7 +7,8 @@ import java.util.concurrent.TimeUnit;
 import corewar.ObjectModel.Player;
 import corewar.ObjectModel.PlayersList;
 import corewar.ObjectModel.PlayersRanking;
-import corewar.ObjectModel.ProgramRanking;
+import corewar.ObjectModel.Warrior;
+import corewar.ObjectModel.WarriorsRanking;
 import corewar.Network.SocketCommunication;
 import corewar.Network.EventsSubscriber;
 
@@ -77,14 +78,13 @@ public class Game{
     public void onEnd() {
 
         PlayersRanking playersRanking = server.getRanking();
-        ProgramRanking programRanking = server.getProgramRanking();
+        WarriorsRanking warriorsRanking = server.getProgramRanking();
         for (int x = 0; x < playersList.getSize(); x++) {
-            Player currentPlayer = playersList.getByIndex(x);
-            int randomscore = (int)(Math.random()*100);
-            playersRanking.get(currentPlayer).setGameScore(randomscore);
-            programRanking.get(currentPlayer.getProgram()).setGameScore(randomscore);
-            playersRanking.get(currentPlayer).updateScore();
-            programRanking.get(currentPlayer.getProgram()).updateScore();
+            Player currentPlayer = playersRanking.get(playersList.get(x));
+            Warrior currentWarrior = warriorsRanking.get(currentPlayer.getWarrior());
+            currentPlayer.setScore(100);
+            currentWarrior.setScore(100);
+            // TODO UPDATE LES SCORES ICI
         }
 
         try {

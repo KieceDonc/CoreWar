@@ -4,24 +4,24 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.Comparator;
 
-public class ProgramRanking extends ProgramList implements Serializable{
+public class WarriorsRanking extends Warriors implements Serializable{
 
   private static final long serialVersionUID = 1L;
 
-  public ProgramRanking() {
+  public WarriorsRanking() {
     super();
   }
 
   public synchronized void sort(){
-    Collections.sort(this.programList,new Comparator<Program>() {
+    Collections.sort(this.warriors,new Comparator<Warrior>() {
       @Override
-      public int compare(Program program1, Program program2) {
+      public int compare(Warrior warrior1, Warrior warrior2) {
         //return -1 for less than, 0 for equals, and 1 for more than
-        int program1Score = program1.getScore();
-        int program2Score = program2.getScore();
-        if(program1Score>program2Score){
+        int warrior1Score = warrior1.getScore();
+        int warrior2Score = warrior2.getScore();
+        if(warrior1Score>warrior2Score){
           return 1;
-        }else if(program1Score<program2Score){
+        }else if(warrior2Score<warrior2Score){
           return -1;
         }else{
           return 0;
@@ -34,14 +34,14 @@ public class ProgramRanking extends ProgramList implements Serializable{
     this.sort();
     System.out.println("------------------------------------------------------------------------------------------");
     System.out.println("");
-    System.out.println("Classement des programmes :");
+    System.out.println("Classement des warrios :");
     System.out.println("");
     if(this.getSize()==0){
-      System.out.println("Aucun programme dans le classement");
+      System.out.println("Aucun warrior dans le classement");
     }else{
       for(int x=0;x<this.getSize();x++){
-        Program currentProgram = this.getByIndex(x);
-        System.out.println("Programme n°"+x+": "+currentProgram.getName()+", score : "+currentProgram.getScore());
+        Warrior currentWarrior = this.get(x);
+        System.out.println("Warrior n°"+x+": "+currentWarrior.getNom()+", score : "+currentWarrior.getScore());
       }
     }
     System.out.println("");

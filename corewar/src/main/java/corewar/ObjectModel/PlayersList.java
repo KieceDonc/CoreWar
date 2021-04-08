@@ -28,7 +28,7 @@ public class PlayersList implements Serializable{
     * {int} index: Position du joueur dans la position 
     * return {Player} si le joueur n'est pas trouvé renvoie null
   */
-  public synchronized Player getByIndex(int index){
+  public synchronized Player get(int index){
     if(getSize()==0){
       return null;
     }
@@ -45,7 +45,7 @@ public class PlayersList implements Serializable{
     * {String} PlayerName 
     * return {Player} si le joueur n'est pas trouvé renvoie null
   */
-  public synchronized Player getByName(String PlayerName){
+  public synchronized Player get(String PlayerName){
     if(getSize()==0){
       return null;
     }
@@ -91,15 +91,15 @@ public class PlayersList implements Serializable{
   }
 
   public synchronized Player get(Player player){
-    return this.getByName(player.getName());
+    return this.get(player.getName());
   }
 
   public synchronized boolean isInList(Player player){
-    return this.getByName(player.getName())!=null;
+    return this.get(player.getName())!=null;
   }
 
   public synchronized boolean isInList(String playerName){
-    return this.getByName(playerName)!=null;
+    return this.get(playerName)!=null;
   }
 
   public synchronized void remove(Player player){
@@ -123,7 +123,7 @@ public class PlayersList implements Serializable{
     toReturn+="Players list info : \n";
     toReturn+="Size = "+this.getSize()+"\n";
     for(int x=0;x<this.getSize();x++){
-      toReturn+="Player index n°"+x+" = "+this.getByIndex(x).toString()+"\n";
+      toReturn+="Player index n°"+x+" = "+this.get(x).toString()+"\n";
     }
     return toReturn;
   }

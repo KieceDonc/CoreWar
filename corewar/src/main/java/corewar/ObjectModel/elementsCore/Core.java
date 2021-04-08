@@ -1,5 +1,6 @@
-package corewar.Local.elementsCore;
-import corewar.Local.Partie.*;
+package corewar.ObjectModel.elementsCore;
+
+import corewar.ObjectModel.*;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -430,7 +431,6 @@ public class Core {
                 case SEQ : {
                     if(valB == null || valA == null)
                         return null;
-                    LocalGame.pr(valA+"A | B"+valB);
                     if(valB == valA) return mod(adresse+2);
                     return mod(adresse+1);
                 }

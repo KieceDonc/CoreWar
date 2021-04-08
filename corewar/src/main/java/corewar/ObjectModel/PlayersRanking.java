@@ -39,7 +39,7 @@ public class PlayersRanking extends PlayersList{
       System.out.println("Aucun joueur dans le classement");
     }else{
       for(int x=0;x<this.getSize();x++){
-        Player currentPlayer = this.getByIndex(x);
+        Player currentPlayer = this.get(x);
         System.out.println("Joueur n°"+x+": "+currentPlayer.getName()+", score : "+currentPlayer.getScore());
       }
     }

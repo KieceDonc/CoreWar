@@ -136,14 +136,14 @@ public class Game extends Thread {
         System.out.println("Liste des joueurs : " + playersList.getSize());
         System.out.println("");
         for (int x = 0; x < playersList.getSize(); x++) {
-            Player currentPlayerInList = playersList.getByIndex(x);
+            Player currentPlayerInList = playersList.get(x);
             String toPrint = "";
             if(x==0){
                 toPrint+="-- Hôte de la partie --";
             }else{
                 toPrint+="--    Joueur n° "+(x+1)+"    --";
             }
-            toPrint+= " "+currentPlayerInList.getName() + " ( Programme : " + currentPlayerInList.getProgram().getName() + " )";
+            toPrint+= " "+currentPlayerInList.getName() + " ( Warrior : " + currentPlayerInList.getWarrior().getNom() + " )";
             System.out.println(toPrint);
         }
         System.out.println("");

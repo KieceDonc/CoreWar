@@ -1,4 +1,4 @@
-package corewar.Local.elementsCore;
+package corewar.ObjectModel.elementsCore;
 
 import java.util.regex.Pattern;
 

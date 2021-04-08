@@ -1,6 +1,8 @@
-package corewar.Local.Partie;
-import corewar.Local.elementsCore.*;
+package corewar.ObjectModel;
 
+import corewar.ObjectModel.elementsCore.*;
+
+import java.io.Serializable;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 
@@ -9,7 +11,9 @@ import java.util.ArrayList;
  * Tant qu'il lui reste un pointeur d'instruction (tête de lecture), il est en vie. 
  */
 
-public class Warrior {
+public class Warrior implements Serializable {
+
+    private static final long serialVersionUID = 5672484260836002563L;
 
     private ArrayList<InstructionID> instructions;
     private ArrayDeque<Integer> pointeurs;
@@ -17,14 +21,17 @@ public class Warrior {
     private char id;
     private String couleur;
     private boolean ready;
+    private int score;
     
     public ArrayList<InstructionID> getInstructions() { return this.instructions; }
     public ArrayDeque<Integer> getPointeurs() { return this.pointeurs; }
     public String getNom() { return this.nom; }
     public char getId() { return this.id; }
     public String getCouleur() { return this.couleur; }
-    public boolean isRead() { return this.ready; }
+    public boolean isReady() { return this.ready; }
+    public int getScore(){ return this.score; }
 
+    public void setScore(int score){ this.score = score; }
     public void setInstructions(ArrayList<InstructionID> instructions) { this.instructions = instructions; }
     public void setInstructions(ArrayList<Instruction> instructions, char id) { this.setInstructions(toInstructionID(instructions,id)); }
     public void setPointeurs(ArrayDeque<Integer> pointeurs) { this.pointeurs = pointeurs; }
@@ -112,4 +119,28 @@ public class Warrior {
         }
         return res+"]";
     }
+
+    public boolean equals(Warrior w){
+        boolean flag = true;
+        if(!(this.getInstructions().equals(w.getInstructions()))) 
+            flag = false;
+        if(!(this.getPointeurs().equals(w.getPointeurs()))) 
+            flag = false;
+        if(!(this.getNom().equals(w.getNom()))) 
+            flag = false;
+        if(!(this.getId() == w.getId()))
+            flag = false;
+        if(!(this.getCouleur().equals(w.getCouleur()))) 
+            flag = false;
+        if(!(this.isReady() == w.isReady())) 
+            flag = false;
+        if(!(this.getScore() == w.getScore())) 
+            flag = false;
+        return flag;
+    }
+
+
+
 }
+
+

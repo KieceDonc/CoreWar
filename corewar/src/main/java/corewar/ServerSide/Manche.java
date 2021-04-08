@@ -1,7 +1,8 @@
-package corewar.Local.Partie;
+package corewar.ServerSide;
 import java.util.ArrayList;
 
-import corewar.Local.elementsCore.*;
+import corewar.ObjectModel.elementsCore.*;
+import corewar.ObjectModel.*;
 
 public class Manche {
 
@@ -25,7 +26,6 @@ public class Manche {
 
         getCore().initOrdre();
         printBoard();
-        LocalGame.wait(3000);
 
         while(winner.isEmpty() && incr <= tours ){
             
@@ -34,7 +34,6 @@ public class Manche {
             System.out.println(exec);
             } catch(Exception e){System.out.println("Aucune instruction executee");}
             
-            LocalGame.wait(10);
             Integer next = getCore().executer(getCore().firstPointeur());
             printBoard();
             getCore().cycle(next);
@@ -58,7 +57,6 @@ public class Manche {
     }
 
     public void printBoard(){
-        LocalGame.clearScreen();
         System.out.println(getCore().toString());
         System.out.println(getWarriors().toString());
     }

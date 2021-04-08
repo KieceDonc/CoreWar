@@ -1,5 +1,5 @@
-package corewar.Local.Interpreteur;
-import corewar.Local.elementsCore.*;
+package corewar.ClientSide;
+import corewar.ObjectModel.elementsCore.*;
 
 import java.io.FileReader;
 import java.io.FileNotFoundException;
