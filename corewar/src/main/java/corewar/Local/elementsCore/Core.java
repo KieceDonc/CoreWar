@@ -118,6 +118,7 @@ public class Core {
         int i = 0;
         String ANSI_RESET = "\u001B[0m";
         HashMap<Integer,Warrior> pointeurs = getWarriors().mapPointeurs();
+        HashMap<Character,String> id = getWarriors().mapId();
 
         while(i < len){
             if(this.read(i) == null){
@@ -126,8 +127,8 @@ public class Core {
                     
             }
             else{
-                if(pointeurs.containsKey(i)) res+=pointeurs.get(i).couleurAnsi()+"["+String.valueOf(this.read(i).getId())+"]"+ANSI_RESET;
-                else res+="["+this.read(i).getId()+"]";
+                if(pointeurs.containsKey(i)) res+=pointeurs.get(i).couleurAnsi()+"\033[1m["+String.valueOf(this.read(i).getId())+"]\033[0m"+ANSI_RESET;
+                else res+=id.get(read(i).getId())+"["+this.read(i).getId()+"]"+ANSI_RESET;
                 //EN GRAS : res+="[\033[1m"+String.valueOf(this.read(i).getId())+"\033[0m]";
             }
             i++;
@@ -196,21 +197,26 @@ public class Core {
     }
     
     // GESTION TOUR DE JEU
+
+    // Initialise Ordre dans l'ordre de la liste Warriors
     public void initOrdre(){
         setOrdre(new ArrayDeque<Warrior>());
         for(Warrior w : getWarriors().getWarriors())
             ordre.offerLast(w);
     }
 
+    // Retourne le premier warrior à jouer
     public Warrior firstWarrior(){
         return getOrdre().peekFirst();
     }
 
+    // Retourne le prochain pointeur à être executé
     public int firstPointeur(){
         return firstWarrior().firstPointeur();
     }
 
 
+    // Si le joueur est encore en vie, le met à la fin de la file Ordre, sinon le retire (= mort)
     public void cycle(Integer i){
         boolean alive = getOrdre().peekFirst().cycle(i);
         if(alive)
@@ -219,6 +225,7 @@ public class Core {
             getOrdre().removeFirst();
     }
 
+    // Retourne un string contenant l'ordre des joueurs et de leurs pointeurs
     public String ordreString(){
         String res = "> ";
         if(!getOrdre().isEmpty())
@@ -226,9 +233,9 @@ public class Core {
                 res+=w.toString()+"\n";
             
         return res;
-
     }
 
+    // Retourne le vainqueur s'il est unique, sinon null
     public Warrior isWinner(){
         if(getOrdre().size() <= 1)
             return getOrdre().getFirst();
@@ -238,39 +245,38 @@ public class Core {
 
     // Evalue l'operande (OP.A ou OP.B) de l'adresse passées en paramètres. Rend son adresse et la valeur.
     public Integer evalAdresse(OP op, int adresseIn){
-        
-        InstructionID ins = read(adresseIn);
-        int adresse = 0;
-        Mode mode = Mode.IMMEDIAT;
-        switch(op){
-            case A :{
-                adresse = ins.getOp1().getAdresse();
-                mode = ins.getOp1().getMode();
-                break;
+        try{
+            InstructionID ins = read(adresseIn);
+            int adresse = 0;
+            Mode mode = Mode.IMMEDIAT;
+            switch(op){
+                case A :{
+                    adresse = ins.getOp1().getAdresse();
+                    mode = ins.getOp1().getMode();
+                    break;
+                }
+                case B : {
+                    adresse = ins.getOp2().getAdresse();
+                    mode = ins.getOp2().getMode();
+                    break;
+                }
             }
-            case B : {
-                adresse = ins.getOp2().getAdresse();
-                mode = ins.getOp2().getMode();
-                break;
-            }
-        }
 
-        switch(mode){
-            case IMMEDIAT : { //#
-                return null;
+            switch(mode){
+                case IMMEDIAT : { //#
+                    return null;
+                }
+                case DIRECT : { // $
+                    return mod(adresseIn+adresse);
+                }
+                case INDIRECT : { //@
+                    InstructionID insInd = read(adresseIn+adresse);
+                    if(insInd != null && insInd.getMnq() == Mnemonique.DAT)
+                        return mod((read(adresseIn+adresse).getOp1().getAdresse())+adresseIn+adresse);
+                }
             }
-            case DIRECT : { // $
-                return mod(adresseIn+adresse);
-            }
-            case INDIRECT : { //@
-                InstructionID insInd = read(adresseIn+adresse);
-                if(insInd != null && insInd.getMnq() == Mnemonique.DAT)
-                    return mod((read(adresseIn+adresse).getOp1().getAdresse())+adresseIn+adresse);
-            }
-            default :{
-                return null;
-            }
-        }
+        }catch(NullPointerException e){return null;}
+        return null;
     }
 
     // Rend la valeur pointée par l'opérande indiquée, si elle existe. Sinon renvoie null.
@@ -305,137 +311,149 @@ public class Core {
     // Retourne la prochaine position du pointeur. Si null, le processus doit mourir. (INTEGER)
     public Integer executer(int adresse){
 
-        InstructionID ins = read(adresse);
-        if(ins == null) return null;
+        try{
+            InstructionID ins = read(adresse);
+            if(ins == null) return null;
 
-        // On récupère tous les éléments de l'instruction pour que ce soit plus simple à traiter
-        Mnemonique mnq = ins.getMnq();
-        Operande opA = ins.getOp1(), opB = ins.getOp2();
-        int adA = opA.getAdresse(), adB = opB.getAdresse();
-        Mode modeA = opA.getMode(), modeB = opB.getMode();
-        Integer evalA = evalAdresse(OP.A, adresse), evalB = evalAdresse(OP.B, adresse);
-        Integer valA = evalData(OP.A,adresse), valB = evalData(OP.B,adresse);// On évalue forcément les opérandes, même si le processus sera tué.
-        char id = ins.getId();
-        if(evalA != null) valA = evalData(OP.A,adresse);
-        if(evalB != null) valB = evalData(OP.B,adresse);
+            // On récupère tous les éléments de l'instruction pour que ce soit plus simple à traiter
+            Mnemonique mnq = ins.getMnq();
+            Operande opA = ins.getOp1(), opB = ins.getOp2();
+            int adA = opA.getAdresse(), adB = opB.getAdresse();
+            Mode modeA = opA.getMode(), modeB = opB.getMode();
+            Integer evalA = evalAdresse(OP.A, adresse), evalB = evalAdresse(OP.B, adresse);
+            Integer valA = evalData(OP.A,adresse), valB = evalData(OP.B,adresse);// On évalue forcément les opérandes, même si le processus sera tué.
+            char id = ins.getId();
+            if(evalA != null) valA = evalData(OP.A,adresse);
+            if(evalB != null) valB = evalData(OP.B,adresse);
 
-        switch(mnq){
+            //pr(evalA+" A | B "+evalB);
+            //pr(valA+" valA | valB "+valB);
 
-            // DAT -- data (kills the process) - OK
-            case DAT : {
-                return null;
-            }
+            switch(mnq){
 
-            // MOV -- move (copies data from one address to another) - OK
-            case MOV : {
-                if(opA.getMode() == Mode.IMMEDIAT){ 
-                    write(evalB,new InstructionID(adA,id));
-                    return mod(adresse+1);
+                // DAT -- data (kills the process) - OK
+                case DAT : {
+                    return null;
                 }
-                Instruction read = read(evalA);
-                if(read != null){
-                    try{write(evalB,new InstructionID(read(adresse),id));}
-                    catch(NullPointerException e) {return null;}
-                    return mod(adresse+1);
-                } 
-                return null;
-            }
 
-            // ADD -- add (adds one number to another)
-            case ADD : {
-                Instruction readIns = read(evalB);
-                if(readIns == null) return null;
-                pr(valA+" "+readIns.toString()+" "+readIns.getMnq());
-                if(valA!=null && readIns!=null && readIns.getMnq() == Mnemonique.DAT){
+                // MOV -- move (copies data from one address to another) - OK
+                case MOV : {
+                    if(opA.getMode() == Mode.IMMEDIAT){ 
+                        write(evalB,new InstructionID(adA,id));
+                        return mod(adresse+1);
+                    }
+                    Instruction read = read(evalA);
+                    if(read != null){
+                        try{write(evalB,new InstructionID(read(adresse),id));}
+                        catch(NullPointerException e) {return null;}
+                        return mod(adresse+1);
+                    } 
+                    return null;
+                }
+
+                // ADD -- add (adds one number to another)
+                case ADD : {
+                    Instruction readIns = read(evalB);
+                    if(readIns == null) return null;
+                    if(valA!=null && readIns!=null && readIns.getMnq() == Mnemonique.DAT){
+                            readIns.getOp1().setAdresse(mod(readIns.getOp1().getAdresse()+valA));
+                            return mod(adresse+1);
+                    }
+                    else
+                        return null;
+                }
+
+                //SUB -- subtract (subtracts one number from another)
+                case SUB : {
+                    valA = -valA;
+                    Instruction readIns = read(evalB);
+                    if(valA!=null && readIns!=null && readIns.getMnq() == Mnemonique.DAT){
                         readIns.getOp1().setAdresse(mod(readIns.getOp1().getAdresse()+valA));
                         return mod(adresse+1);
+                    }
+                    return null;    
                 }
-                else
-                    return null;
-            }
 
-            //SUB -- subtract (subtracts one number from another)
-            case SUB : {
-                valA = -valA;
-                Instruction readIns = read(evalB);
-                if(valA!=null && readIns!=null && readIns.getMnq() == Mnemonique.DAT){
-                    readIns.getOp1().setAdresse(mod(readIns.getOp1().getAdresse()+valA));
+                //JMP -- jump (continues execution from another address)
+                case JMP : {
+                    if(modeA == Mode.IMMEDIAT)
+                        return null;
+                    return evalA;
+                }
+
+                //JMZ -- jump if zero (tests a number and jumps to an address if it's 0)
+                case JMZ : {
+                    if(evalB == null || valB == null)
+                        return null;
+                    if(valB == 0) return evalA;
                     return mod(adresse+1);
                 }
-                return null;    
+
+                //JMG -- jump if greater than zero
+                case JMG : {
+                    if(evalB == null || valB == null)
+                        return null;
+                    if(valB > 0) return evalA;
+                    return mod(adresse+1);
+                }
+
+                //JMN -- jump if not zero (tests a number and jumps if it isn't 0)
+                case JMN : {
+                    if(evalB == null || valB == null)
+                        return null;
+                    if(valB != 0) return evalA;
+                    return mod(adresse+1);
+                }
+
+                //DJN -- decrement and jump if not zero (decrements a number by one, and jumps unless the result is 0)
+                case DJN : {
+                    if(evalB == null || valB == null || read(evalB).getMnq() != Mnemonique.DAT)
+                        return null;
+                    valB = valB-1;
+                    read(evalB).getOp1().setAdresse(valB);
+                    if(valB != 0) return evalA;
+                    return mod(adresse+1);
+                }
+
+                //DJZ -- decrement and jump if zero ((decrements a number by one, and jumps if the result is zero)
+                case DJZ : {
+                    if(evalB == null || valB == null || read(evalB).getMnq() != Mnemonique.DAT)
+                        return null;
+                    valB = valB-1;
+                    read(evalB).getOp1().setAdresse(valB);
+                    if(valB == 0) return evalA;
+                    return mod(adresse+1);
+                }
+
+                //CMP -- compare, SKIP IS EQUAL
+                case CMP :
+                case SEQ : {
+                    if(valB == null || valA == null)
+                        return null;
+                    LocalGame.pr(valA+"A | B"+valB);
+                    if(valB == valA) return mod(adresse+2);
+                    return mod(adresse+1);
+                }
+
+                //SNQ -- compare, SKIP IF NOT EQUAL
+                case SNE : {
+                    if(valB == null || valA == null)
+                        return null;
+                    if(valB != valA) return mod(adresse+2);
+                    return mod(adresse+1);
+                }
+
+                // SPL -- split (creates new process)
+                case SPL : {
+                    if(evalA == null)
+                        return null;
+                    firstWarrior().addPointeur(evalA);
+                    return mod(adresse+1);
+                }
             }
 
-            //JMP -- jump (continues execution from another address)
-            case JMP : {
-                if(modeA == Mode.IMMEDIAT)
-                    return null;
-                return evalA;
-            }
-
-            //JMZ -- jump if zero (tests a number and jumps to an address if it's 0)
-            case JMZ : {
-                if(evalB == null || valB == null)
-                    return null;
-                if(valB == 0) return evalA;
-                return mod(adresse+1);
-            }
-
-            //JMG -- jump if greater than zero
-            case JMG : {
-                if(evalB == null || valB == null)
-                    return null;
-                if(valB > 0) return evalA;
-                return mod(adresse+1);
-            }
-
-            //JMN -- jump if not zero (tests a number and jumps if it isn't 0)
-            case JMN : {
-                if(evalB == null || valB == null)
-                    return null;
-                if(valB != 0) return evalA;
-                return mod(adresse+1);
-            }
-
-            //DJN -- decrement and jump if not zero (decrements a number by one, and jumps unless the result is 0)
-            case DJN : {
-                if(evalB == null || valB == null || read(evalB).getMnq() != Mnemonique.DAT)
-                    return null;
-                valB = valB-1;
-                read(evalB).getOp1().setAdresse(valB);
-                if(valB != 0) return evalA;
-                return mod(adresse+1);
-            }
-
-            //DJZ -- decrement and jump if zero ((decrements a number by one, and jumps if the result is zero)
-            case DJZ : {
-                if(evalB == null || valB == null || read(evalB).getMnq() != Mnemonique.DAT)
-                    return null;
-                valB = valB-1;
-                read(evalB).getOp1().setAdresse(valB);
-                if(valB == 0) return evalA;
-                return mod(adresse+1);
-            }
-
-            //CMP -- compare (same as SEQ)
-            case CMP : {
-                if(evalB == null || valB == null || read(evalB).getMnq() != Mnemonique.DAT)
-                    return null;
-                valB = valB-1;
-                read(evalB).getOp1().setAdresse(valB);
-                if(valB == 0) return evalA;
-                return mod(adresse+1);
-            }
-
-            // SPL -- split (creates new process)
-            case SPL : {
-                if(evalA == null)
-                    return null;
-                firstWarrior().addPointeur(evalA);
-                return mod(adresse+1);
-            }
-        }
-
-        return null;
+            return null;
+        }catch(NullPointerException e) {e.printStackTrace(); return null; }
 
 
         /*
@@ -471,7 +489,7 @@ NOP -- no operation (does nothing)
 
 
 
-    // Print plus rapide et court
+    // Print plus court
     public static void pr(Object o){
         System.out.println(o);
     }

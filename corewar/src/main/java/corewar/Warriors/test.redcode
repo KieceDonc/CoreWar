@@ -1,8 +1,5 @@
-JMP 5
-d DAT #6 #0
-loop DJZ a d
-JMP loop
-a ADD #6 d
-SPL imp
-JMP loop
-imp MOV 0, 1
+MOV 3, @4
+ADD #6, 3
+JMP -2, 0
+DAT #0, #0
+DAT #2, #2

@@ -16,12 +16,14 @@ public class Warrior {
     private String nom;
     private char id;
     private String couleur;
+    private boolean ready;
     
     public ArrayList<InstructionID> getInstructions() { return this.instructions; }
     public ArrayDeque<Integer> getPointeurs() { return this.pointeurs; }
     public String getNom() { return this.nom; }
     public char getId() { return this.id; }
     public String getCouleur() { return this.couleur; }
+    public boolean isRead() { return this.ready; }
 
     public void setInstructions(ArrayList<InstructionID> instructions) { this.instructions = instructions; }
     public void setInstructions(ArrayList<Instruction> instructions, char id) { this.setInstructions(toInstructionID(instructions,id)); }
@@ -29,20 +31,23 @@ public class Warrior {
     public void setNom(String nom) { this.nom = nom; }
     public void setId(char id) { this.id = id; }
     public void setCouleur(String couleur) { this.couleur = couleur; }
+    public void setReady(boolean ready) { this.ready = ready; }
+
+    public Warrior(ArrayList<InstructionID> ins, ArrayDeque<Integer> p, String nom, char id, String col, Boolean rdy){
+        this.setInstructions(ins);
+        this.setPointeurs(p);
+        this.setNom(nom);
+        this.setId(id);
+        this.setCouleur(col);
+        this.setReady(rdy);
+    }
 
     public Warrior(){
-        this.setInstructions(null);
-        this.setNom(null);
-        this.setPointeurs(null);
-        this.setCouleur(null);
+        this(null, null, null, '0' , null, false);
     }
 
     public Warrior(String nom, char id){
-        this.setInstructions(null);
-        this.setPointeurs(null);
-        this.setNom(nom);
-        this.setId(id);
-        this.setCouleur(null);
+        this(null,null,nom,id,null,false);
     }
 
     public void setInstructionsNoID(ArrayList<Instruction> listeIns){

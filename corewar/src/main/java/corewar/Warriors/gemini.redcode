@@ -1,7 +1,7 @@
     DAT             0
     DAT             99
 back MOV     @-2,    @-1 ; start address
-    SNE     -3,     #9
+    SNE     -3,     #6
     JMP     skip
     ADD     #1,     -5
     Add     #1,     -5

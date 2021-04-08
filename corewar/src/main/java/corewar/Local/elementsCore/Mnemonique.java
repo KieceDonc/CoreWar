@@ -29,10 +29,10 @@ NOP -- no operation (does nothing)
 */
 
 public enum Mnemonique {
-    MOV,ADD,SUB,JMP,JMZ,JMG,JMN,DJN,DJZ,CMP,SPL,DAT;
+    MOV,ADD,SUB,JMP,JMZ,JMG,JMN,DJN,DJZ,CMP,SEQ,SNE,SPL,DAT;
 
     // Retourne un regex faisant un OU logique de toutes les mnémoniques (insensible à la casse)
     public static Pattern getPattern(){
-        return Pattern.compile("(MOV|ADD|SUB|JMP|JMZ|JMG|JMN|DJN|DJZ|CMP|SPL|DAT)",Pattern.CASE_INSENSITIVE);
+        return Pattern.compile("(MOV|ADD|SUB|JMP|JMZ|JMG|JMN|DJN|DJZ|CMP|SEQ|SNE|SPL|DAT)",Pattern.CASE_INSENSITIVE);
     }
 }

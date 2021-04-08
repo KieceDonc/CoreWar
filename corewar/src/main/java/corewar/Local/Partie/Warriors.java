@@ -41,6 +41,14 @@ public class Warriors {
         }
         return map;
     }
+
+    public HashMap<Character,String> mapId(){
+        HashMap<Character,String> map = new HashMap<Character,String>();
+        for(Warrior w : getWarriors()){
+            map.put(w.getId(),w.couleurAnsi());
+        }
+        return map;
+    }
     
     public String toString(){
         String res = "";

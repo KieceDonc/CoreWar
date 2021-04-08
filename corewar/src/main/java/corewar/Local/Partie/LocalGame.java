@@ -37,7 +37,7 @@ public class LocalGame {
         pr("j1 test");
         J1.setNom("J1");
         J1.setId('1');
-        J1.setInstructions(Interpreteur.interpreter("corewar/src/main/java/corewar/Warriors/dwarf.redcode"),J1.getId());
+        J1.setInstructions(Interpreteur.interpreter("corewar/src/main/java/corewar/Warriors/imp.redcode"),J1.getId());
         J1.setCouleur("blue");
         pr("j1");
 
@@ -53,60 +53,13 @@ public class LocalGame {
         w.add(J1);
         w.add(J2);
 
-        Core c = new Core(15*15);
+        Core c = new Core(2000);
         c.setWarriors(w);
         c.load();
 
         Manche m = new Manche(w,c);
 
-        m.traitementPartie();
-        /*
-        
-        while(true){
-        
-        try {
-            TimeUnit.SECONDS.sleep(1);
-        } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
-        c.cycle();
-
-        System.out.println(c.toString()+"\n"+c.ordreString());
-        }*//*
-
-        
-
-        Core c = new Core (10*10);
-
-        InstructionID ins1 = new InstructionID(Mnemonique.MOV, new Operande(Mode.DIRECT,3),new Operande(Mode.DIRECT,2),'a');
-        InstructionID ins2 = new InstructionID(Mnemonique.DAT, Mode.IMMEDIAT, -2, 'a');
-        InstructionID ins3 = new InstructionID(Mnemonique.MOV, new Operande(Mode.INDIRECT,-2),new Operande(Mode.DIRECT,-2),'a');
-        InstructionID ins4 = new InstructionID(5,'a');
-        InstructionID ins5 = new InstructionID(5,'a');
-
-        c.write(5,ins1);
-        c.write(11,ins2);
-        c.write(13,ins3);
-        c.write(9,ins4);
-
-        //c.testInstruction(Mnemonique.DJZ);
-        pr(ins4.equals(ins3));
-        //pr(c.evalData(Core.OP.A, 13));
-
-        /*
-
-        //
-
-        c.write(5,ins1);
-        //c.write(3,ins2);
-        c.executer(5);
-
-        pr(c.testString());
-        pr("1: "+c.read(1).toString()+"\n5: "+c.read(5));*/
-
-
+        m.traitementPartie(100);
     }
 
     
@@ -114,14 +67,22 @@ public class LocalGame {
         System.out.println(o);
     }
 
-    public static void wait(int s){
+    public static void wait(int ms){
         try {
-            TimeUnit.MILLISECONDS.sleep(30);
+            TimeUnit.MILLISECONDS.sleep(ms);
         } catch (InterruptedException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
+
+    public static void clearScreen() {  
+
+        System.out.print("\033[H\033[2J");  
+     
+        System.out.flush();  
+     
+     }
     
     
 }

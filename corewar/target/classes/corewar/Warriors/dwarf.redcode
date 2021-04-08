@@ -1,8 +1,4 @@
-bombb DAT #0
-loop    ADD #3,     bomb
-SUB #3, bombb
-MOV bomb, @bomb
-MOV bombb, @bombb
-;commentaires inutiles mais placés ici pour fins de test
-JMP loop
-bomb DAT #0 ; encore des commentaires inutiles :(
+ADD #4, 3        ; execution begins here
+        MOV 2, @2
+        JMP -2
+        DAT #0, #0
