@@ -6,11 +6,11 @@ public class GameList{
 
   private ArrayList<Game> gameList = new ArrayList<>();
 
-  public void add(Game game){
+  public synchronized void add(Game game){
     this.gameList.add(game);
   }
 
-  public Game getByIndex(int index){
+  public synchronized Game getByIndex(int index){
     if(index<0 || index>this.getSize()){
       return null;
     }else{
@@ -23,7 +23,7 @@ public class GameList{
     * {int} ID 
     * return {Game} si la partie n'est pas trouvé renvoit null
   */
-  public Game getByID(int ID){
+  public synchronized Game getByID(int ID){
     if(getSize()==0){
       return null;
     }
@@ -43,16 +43,16 @@ public class GameList{
     return game;
   }
 
-  public void remove(Game game){
+  public synchronized void remove(Game game){
     gameList.remove(game);
   }
 
-  public int getSize(){
-      return this.gameList.size();
+  public synchronized int getSize(){
+    return this.gameList.size();
   }
 
   // retourne le nombre de partie qui sont dans l'attente de joueur
-  public int getWaitingGameLength(){
+  public synchronized int getWaitingGameLength(){
     int cmpt = 0;
     for(int x=0;x<this.getSize();x++){
       Game currentGame = this.gameList.get(x);
@@ -62,7 +62,8 @@ public class GameList{
     }
     return cmpt;
   }
-  public int[] getAllIDS(){
+
+  public synchronized int[] getAllIDS(){
     int allIDS[] = new int[this.getWaitingGameLength()];
     for(int x=0;x<this.getSize();x++){
       Game currentGame = this.gameList.get(x);
@@ -73,7 +74,7 @@ public class GameList{
     return allIDS;
   }
 
-  public ClientPrinterGameList getClientPrinterObject(){
+  public synchronized ClientPrinterGameList getClientPrinterObject(){
     String toPrint = "";
     for(int x=0;x<gameList.size();x++){
       Game currentGame = gameList.get(x);

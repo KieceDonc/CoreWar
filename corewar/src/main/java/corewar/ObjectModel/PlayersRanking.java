@@ -11,7 +11,7 @@ public class PlayersRanking extends PlayersList{
     super();
   }
 
-  public void sort(){
+  public synchronized void sort(){
     Collections.sort(this.playersList,new Comparator<Player>() {
       @Override
       public int compare(Player player1, Player player2) {
@@ -29,7 +29,7 @@ public class PlayersRanking extends PlayersList{
     });
   }
 
-  public void print(){
+  public synchronized void print(){
     this.sort();
     System.out.println("------------------------------------------------------------------------------------------");
     System.out.println("");

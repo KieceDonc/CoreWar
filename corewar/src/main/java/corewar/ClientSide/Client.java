@@ -177,7 +177,7 @@ public class Client {
         System.out.println("");
         System.out.println("");
         System.out.println("------------------------------------------------------------------------------------------");
-      } while (gameList.getByID(gameID) == -1);
+      } while (gameID!=-10 && gameList.getByID(gameID) == -1);
       
       if(gameID!=-10){
         try {

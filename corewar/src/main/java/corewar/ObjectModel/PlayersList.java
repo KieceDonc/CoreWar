@@ -13,7 +13,7 @@ public class PlayersList implements Serializable{
     this.playersList = new ArrayList<Player>();
   }
 
-  public void add(Player player){
+  public synchronized void add(Player player){
     if(isInList(player)){
       System.err.println("player already in list");
       System.out.println(this.toString());
@@ -28,7 +28,7 @@ public class PlayersList implements Serializable{
     * {int} index: Position du joueur dans la position 
     * return {Player} si le joueur n'est pas trouvé renvoie null
   */
-  public Player getByIndex(int index){
+  public synchronized Player getByIndex(int index){
     if(getSize()==0){
       return null;
     }
@@ -45,7 +45,7 @@ public class PlayersList implements Serializable{
     * {String} PlayerName 
     * return {Player} si le joueur n'est pas trouvé renvoie null
   */
-  public Player getByName(String PlayerName){
+  public synchronized Player getByName(String PlayerName){
     if(getSize()==0){
       return null;
     }
@@ -66,7 +66,7 @@ public class PlayersList implements Serializable{
     return player;
   }
 
-  public int getPlayerIndex(Player player){
+  public synchronized int getPlayerIndex(Player player){
     if(getSize()==0){
       return 0;
     }
@@ -90,19 +90,19 @@ public class PlayersList implements Serializable{
     }
   }
 
-  public Player get(Player player){
+  public synchronized Player get(Player player){
     return this.getByName(player.getName());
   }
 
-  public boolean isInList(Player player){
+  public synchronized boolean isInList(Player player){
     return this.getByName(player.getName())!=null;
   }
 
-  public boolean isInList(String playerName){
+  public synchronized boolean isInList(String playerName){
     return this.getByName(playerName)!=null;
   }
 
-  public void remove(Player player){
+  public synchronized void remove(Player player){
     int playerIndex = this.getPlayerIndex(player);
     if(playerIndex==-1){
       System.out.println("Fatal error, trying to remove a player from playersList but player isn't in list");
@@ -113,12 +113,12 @@ public class PlayersList implements Serializable{
     playersList.remove(playerIndex);
   }
 
-  public int getSize(){
+  public synchronized int getSize(){
     return this.playersList.size();
   }
 
   @Override
-  public String toString(){
+  public synchronized String toString(){
     String toReturn = "";
     toReturn+="Players list info : \n";
     toReturn+="Size = "+this.getSize()+"\n";

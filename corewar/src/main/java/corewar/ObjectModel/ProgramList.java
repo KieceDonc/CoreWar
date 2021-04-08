@@ -13,11 +13,11 @@ public class ProgramList implements Serializable{
     this.programList = new ArrayList<Program>();
   }
 
-  public void add(Program program){
+  public synchronized void add(Program program){
     this.programList.add(program);
   }
 
-  public Program getByPath(String path){
+  public synchronized Program getByPath(String path){
     if(this.getSize()==0){
       return null;
     }
@@ -46,7 +46,7 @@ public class ProgramList implements Serializable{
     * {int} index: Position du joueur dans la position 
     * return {Program} si le joueur n'est pas trouvé renvoie null
   */
-  public Program getByIndex(int index){
+  public synchronized Program getByIndex(int index){
     if(getSize()==0){
       return null;
     }
@@ -58,15 +58,15 @@ public class ProgramList implements Serializable{
     return this.programList.get(index);
   }
 
-  public Program get(Program program){
+  public synchronized Program get(Program program){
     return this.getByPath(program.getPath());
   }
 
-  public boolean isInList(Program program){
+  public synchronized boolean isInList(Program program){
     return this.get(program)!=null;
   }
 
-  public int getSize(){
+  public synchronized int getSize(){
     return this.programList.size();
   }
 }

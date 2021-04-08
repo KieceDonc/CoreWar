@@ -12,7 +12,7 @@ public class ProgramRanking extends ProgramList implements Serializable{
     super();
   }
 
-  public void sort(){
+  public synchronized void sort(){
     Collections.sort(this.programList,new Comparator<Program>() {
       @Override
       public int compare(Program program1, Program program2) {
