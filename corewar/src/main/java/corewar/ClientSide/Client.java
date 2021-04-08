@@ -1,8 +1,10 @@
 package corewar.ClientSide;
 
+import java.io.File;
 import java.io.IOException;
 
 import corewar.Read;
+import corewar.Utils;
 import corewar.Network.SocketCommunication;
 import corewar.ObjectModel.Player;
 import corewar.ObjectModel.PlayersRanking;
@@ -74,7 +76,7 @@ public class Client {
     do {
       System.out.println("------------------------------------------------------------------------------------------");
       System.out.println("");
-      System.out.println("1 - Crée une partie");
+      System.out.println("1 - Créer une partie");
       System.out.println("2 - Rejoindre une partie");
       System.out.println("3 - Voir le classement des joueurs");
       System.out.println("4 - Voir le classement des programmes");
@@ -113,7 +115,8 @@ public class Client {
         break;
       }
       case 5:{
-        playerAddedWarrior(null);
+        addWarrior();
+        //playerAddedWarrior(null);
         break;
       }
       case 6:{
@@ -122,12 +125,52 @@ public class Client {
       }
       default: {
         System.out.println("wtf, unhandled choice, max choice =" + maxChoice + ", current choice = " + choice);
-        System.out.println("Normally it happend when you don't incremente maxChoice in clientMainMenu()");
+        System.out.println("Normally it happens when you don't increment maxChoice in clientMainMenu()");
         System.exit(0);
       }
     };
 
     mainMenu();
+  }
+
+  // Méthode ajoutant un programme à un joueur, seulement s'il est valide.
+  private void addWarrior() {
+    String[] pathnames;
+    String source = "corewar/src/main/java/corewar/Warriors/";
+    boolean valide = false;
+    // On commence par montrer tous les warriors afin que le joueur puisse choisir celui de son choix
+    File f = new File(source);
+    pathnames = f.list();
+    int index = 1;
+    for (String pathname : pathnames) {
+        System.out.println(index+" || "+pathname);
+        index++;
+    }
+    System.out.println("Rentrez le numero correspondant au fichier de votre choix, ou 0 pour quitter ce menu.");
+    int choix = -1;
+    // Si le joueur rentre 0, alors on sort sans rien faire. Sinon on peut le traiter, et s'il n'y a pas d'erreur, on peut le donner au joueur.
+    while(choix <0 || choix > f.length()){
+      choix = Read.i()-1;
+    }
+
+    // On peut donc traiter le programme choisi si le nombre rentré est supérieur à 0 ( et correct )
+    if(choix >0){
+      Warrior w = Warrior.makeWarrior("corewar/src/main/java/corewar/Warriors/"+pathnames[choix]);
+      if(w != null){
+        this.currentPlayer.setWarrior(w);
+        valide = w.isReady();
+        playerAddedWarrior(w);
+      }
+    }
+
+    if(valide)
+      System.out.println("Warrior ajouté correctement au joueur courant! Retour au menu.");
+    else
+      System.out.println("Annulation du choix du Warrior... Retour au menu.");
+
+    Utils.sleep(1000);
+    mainMenu();
+
   }
 
   private void invalidProgram(){
@@ -217,20 +260,18 @@ public class Client {
   }
   
   private void playerAddedWarrior(Warrior warrior){
-    System.out.println("------------------------------------------------------------------------------------------");
-    System.out.println("");
-    System.out.println("Envoie du warrior au serveur ...");
-    System.out.println("");
-    System.out.println("------------------------------------------------------------------------------------------");
+    Utils.animation(7,"Envoi du warrior en cours...");
     try {
       Connexion connexion = new Connexion(new SocketCommunication(SocketCommunication.PLAYER_ADDED_WARRIOR, warrior));
       connexion.start();
       connexion.join();
+      Utils.clear();
       System.out.println("------------------------------------------------------------------------------------------");
       System.out.println("");
-      System.out.println("Warrior reçu");
+      System.out.println("Warrior reçu!");
       System.out.println("");
       System.out.println("------------------------------------------------------------------------------------------");
+      Utils.sleep(1000);
     } catch (IOException | InterruptedException e) {
       e.printStackTrace();
     }

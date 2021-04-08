@@ -116,17 +116,16 @@ public class Interpreteur {
     public static ArrayList<Instruction> interpreter(String chemin){
         ArrayList<Instruction> warrior = null;
         try{ 
-            try {
                 ArrayList<String> code = toList(chemin);
                 code = treatLabels(code);
                 warrior = interpreter(code);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
+        }
+        catch (FileNotFoundException e) {
+            System.out.println("Fichier non trouvé.");
         }
         catch(Exception e){
-            System.out.println("Erreur lors de l'interprétation du fichier -> sortie du programme.");
-            System.exit(0);
+            System.out.println("Erreur lors de l'interprétation du fichier... Vérifiez qu'il respecte bien toutes les conventions de REDCODE!");
+            return null;
         }
         return warrior;
     }

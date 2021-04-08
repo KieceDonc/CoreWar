@@ -1,6 +1,9 @@
 package corewar.ObjectModel;
 
+import corewar.Read;
+import corewar.ClientSide.Interpreteur;
 import corewar.ObjectModel.elementsCore.*;
+import corewar.*;
 
 import java.io.Serializable;
 import java.util.ArrayDeque;
@@ -120,15 +123,16 @@ public class Warrior implements Serializable {
         return res+"]";
     }
 
+    //L'ID N'A PAS D'IMPORTANCE
     public boolean equals(Warrior w){
         boolean flag = true;
         if(!(this.getInstructions().equals(w.getInstructions()))) 
             flag = false;
         if(!(this.getPointeurs().equals(w.getPointeurs()))) 
             flag = false;
-        if(!(this.getNom().equals(w.getNom()))) 
+        if(!(this.getId()== w.getId()))
             flag = false;
-        if(!(this.getId() == w.getId()))
+        if(!(this.getNom().equals(w.getNom()))) 
             flag = false;
         if(!(this.getCouleur().equals(w.getCouleur()))) 
             flag = false;
@@ -137,6 +141,41 @@ public class Warrior implements Serializable {
         if(!(this.getScore() == w.getScore())) 
             flag = false;
         return flag;
+    }
+
+    public static Warrior makeWarrior(String path){
+        Warrior w = new Warrior();
+
+        // On commence par interpreter le fichier et s'assurer qu'il n'y a pas d'erreur.
+        ArrayList<Instruction> liste = Interpreteur.interpreter(path);
+        if(liste == null){
+            return null;
+        }
+        w.setInstructions(liste,'0');
+
+        // On initialise aussi le nom du warrior.
+        System.out.println("Veuillez rentrer le nom de votre Warrior (entre 3 et 16 caracteres) : ");
+        String name = "";
+        do
+            name = Read.S();
+        while(name.length()<3 && name.length()>16);
+        w.setNom(name);
+
+        Utils.clear();
+        System.out.println("WARRIOR : "+w.getNom());
+        for(InstructionID ins : w.getInstructions())
+            System.out.println(ins.toString());
+        System.out.println("CE CHOIX CONVIENT? O/N");
+        String choix;
+        do
+            choix = Read.S();
+        while(!(choix.equals("O") || choix.equals("N")));
+
+        if(choix.equals("O")){
+            w.setReady(true);
+            return w;
+        }
+        else return null;
     }
 
 

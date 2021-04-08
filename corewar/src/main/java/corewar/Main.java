@@ -8,8 +8,6 @@ public class Main{
     public static boolean DEBUG_VALUE = true;
     
     public static void main(String[] args){
-        // PASSER EN COMMENTAIRE POUR TESTER SERVEUR
-        test();
 
         printLogo();
         switch(serverOrClient()){
@@ -20,11 +18,11 @@ public class Main{
             case 2:{
                 new Server();
             }
+            case 3:{
+                Debug.mainDebug();
+                System.exit(0);
+            }
         };
-    }
-
-    public static void test(){
-        Test.testTrucs();
     }
 
     /*
@@ -38,12 +36,13 @@ public class Main{
             System.out.println("");
             System.out.println("1 - Rejoindre en tant que joueur");
             System.out.println("2 - Créer un serveur");
+            System.out.println("3 - Lancer le debugging TEST");
             System.out.println("");
             System.out.print("Votre choix : ");
             choice = Read.i();
             System.out.println("");
             System.out.println("------------------------------------------------------------------------------------------");    
-        }while(choice>2 || choice<1);
+        }while(choice>3 || choice<1);
         return choice;
     }
 
