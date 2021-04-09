@@ -56,7 +56,7 @@ public class GameList{
     int cmpt = 0;
     for(int x=0;x<this.getSize();x++){
       Game currentGame = this.gameList.get(x);
-      if(!currentGame.hasStart()){
+      if(!currentGame.hasStart() && currentGame.getPlayersList().getSize()<4){
         cmpt+=1;
       }
     }
@@ -67,7 +67,7 @@ public class GameList{
     int allIDS[] = new int[this.getWaitingGameLength()];
     for(int x=0;x<this.getSize();x++){
       Game currentGame = this.gameList.get(x);
-      if(!currentGame.hasStart()){
+      if(!currentGame.hasStart() && currentGame.getPlayersList().getSize()<4){
         allIDS[x] = currentGame.getID();
       }
     }
@@ -78,7 +78,7 @@ public class GameList{
     String toPrint = "";
     for(int x=0;x<gameList.size();x++){
       Game currentGame = gameList.get(x);
-      if(!currentGame.hasStart()){
+      if(!currentGame.hasStart() && currentGame.getPlayersList().getSize()<4){
         toPrint+="Partie id : "+currentGame.getID()+", Nombre de joueurs : "+currentGame.getPlayersList().getSize()+"\n";
       }
     }

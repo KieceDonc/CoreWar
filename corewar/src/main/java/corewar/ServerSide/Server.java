@@ -86,7 +86,7 @@ public class Server{
     return this.ranking;
   }
 
-  public WarriorsRanking getProgramRanking(){
+  public WarriorsRanking getWarriorsRanking(){
     return this.programRanking;
   }
 

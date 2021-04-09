@@ -27,16 +27,13 @@ public class Utils {
         String s2 = " _        _\n/\\_\\     /\\_\\\n\\/_/     \\/_/\n";
         String s1 = " _\n/\\_\\\n\\/_/\n";
         String ligne = "------------------------------------------------------------------------------------------\n";
-        clear();
         System.out.println(ligne+"\n"+text+"\n\n\n\n\n"+ligne);
         for(int i = 1 ; i < loop ; i++){
             sleep(750);
-            clear();
             if(i%4 == 0) System.out.println(ligne+"\n"+text+"\n\n\n\n\n"+ligne);
             else if(i%4 == 1) System.out.println(ligne+"\n"+text+"\n"+s1+"\n"+ligne);
             else if(i%4 == 2) System.out.println(ligne+"\n"+text+"\n"+s2+"\n"+ligne);
             else if(i%4 == 3) System.out.println(ligne+"\n"+text+"\n"+s3+"\n"+ligne);
         }
-        clear();
     }
 }

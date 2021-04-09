@@ -79,7 +79,7 @@ public class Client {
       System.out.println("1 - Créer une partie");
       System.out.println("2 - Rejoindre une partie");
       System.out.println("3 - Voir le classement des joueurs");
-      System.out.println("4 - Voir le classement des programmes");
+      System.out.println("4 - Voir le classement des warriors");
       System.out.println("5 - Ajouter un programme");
       System.out.println("6 - Fermer");
       System.out.println("");
@@ -111,7 +111,7 @@ public class Client {
         break;
       }
       case 4: {
-        getProgramRanking().print();
+        getWarriorsRanking().print();
         break;
       }
       case 5:{
@@ -135,7 +135,7 @@ public class Client {
 
   // Méthode ajoutant un programme à un joueur, seulement s'il est valide.
   private void addWarrior() {
-    String[] pathnames;
+    /*String[] pathnames;
     String source = "corewar/src/main/java/corewar/Warriors/";
     boolean valide = false;
     // On commence par montrer tous les warriors afin que le joueur puisse choisir celui de son choix
@@ -156,19 +156,20 @@ public class Client {
     // On peut donc traiter le programme choisi si le nombre rentré est supérieur à 0 ( et correct )
     if(choix >0){
       Warrior w = Warrior.makeWarrior("corewar/src/main/java/corewar/Warriors/"+pathnames[choix]);
+      */
+      Warrior w = Warrior.makeWarrior("D:/Coding_WorkPlace/CoreWars/corewar/src/main/java/corewar/Warriors/gemini.redcode");
       if(w != null){
         this.currentPlayer.setWarrior(w);
-        valide = w.isReady();
         playerAddedWarrior(w);
       }
-    }
+    /*}*/
 
-    if(valide)
+    /*if(valide)
       System.out.println("Warrior ajouté correctement au joueur courant! Retour au menu.");
     else
       System.out.println("Annulation du choix du Warrior... Retour au menu.");
 
-    Utils.sleep(1000);
+    Utils.sleep(1000);*/
     mainMenu();
 
   }
@@ -247,9 +248,9 @@ public class Client {
     return null;
   }
 
-  private WarriorsRanking getProgramRanking() {
+  private WarriorsRanking getWarriorsRanking() {
     try {
-      Connexion connexion = new Connexion(new SocketCommunication(SocketCommunication.GET_PROGRAM_RANKING, null));
+      Connexion connexion = new Connexion(new SocketCommunication(SocketCommunication.GET_WARRIORS_RANKING, null));
       connexion.start();
       connexion.join();
       return (WarriorsRanking)connexion.getReceivedObject();
@@ -260,18 +261,21 @@ public class Client {
   }
   
   private void playerAddedWarrior(Warrior warrior){
-    Utils.animation(7,"Envoi du warrior en cours...");
+    //Utils.animation(7,"Envoi du warrior en cours...");
+    System.out.println("------------------------------------------------------------------------------------------");
+    System.out.println("");
+    System.out.println("Envoi du warrior en cours ...");
+    System.out.println("");
+    System.out.println("------------------------------------------------------------------------------------------");
     try {
       Connexion connexion = new Connexion(new SocketCommunication(SocketCommunication.PLAYER_ADDED_WARRIOR, warrior));
       connexion.start();
       connexion.join();
-      Utils.clear();
       System.out.println("------------------------------------------------------------------------------------------");
       System.out.println("");
       System.out.println("Warrior reçu!");
       System.out.println("");
       System.out.println("------------------------------------------------------------------------------------------");
-      Utils.sleep(1000);
     } catch (IOException | InterruptedException e) {
       e.printStackTrace();
     }

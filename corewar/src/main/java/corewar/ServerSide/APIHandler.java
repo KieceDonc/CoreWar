@@ -93,8 +93,8 @@ public class APIHandler extends Thread{
         startGameHandler(InComingObject);
         break;
       }
-      case SocketCommunication.GET_PROGRAM_RANKING:{
-        getProgramRankingHandler(InComingAPICallType);
+      case SocketCommunication.GET_WARRIORS_RANKING:{
+        getWarriorsRankingHandler(InComingAPICallType);
         break;
       }
       case SocketCommunication.PLAYER_ADDED_WARRIOR:{
@@ -183,16 +183,16 @@ public class APIHandler extends Thread{
     currentGame.start(this.oos);
   }
 
-  private void getProgramRankingHandler(int InComingAPICallType){
-    WarriorsRanking programRanking = server.getProgramRanking();
-    respond(new SocketCommunication(InComingAPICallType, programRanking));
+  private void getWarriorsRankingHandler(int InComingAPICallType){
+    WarriorsRanking warriorsRanking = server.getWarriorsRanking();
+    respond(new SocketCommunication(InComingAPICallType, warriorsRanking));
   }
 
   private void playerAddedWarriorHandler(int InComingAPICallType, Object InComingObject){
     Warrior warrior = (Warrior) InComingObject;
 
-    if(!server.getProgramRanking().isInList(warrior)){
-      server.getProgramRanking().add(warrior);
+    if(!server.getWarriorsRanking().isInList(warrior)){
+      server.getWarriorsRanking().add(warrior);
     }
     
     respond(new SocketCommunication(InComingAPICallType, null));

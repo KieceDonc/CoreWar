@@ -1,7 +1,11 @@
 package corewar.ObjectModel.elementsCore;
 
-public class InstructionID extends Instruction {
+import java.io.Serializable;
 
+public class InstructionID extends Instruction implements Serializable{
+
+    private static final long serialVersionUID = -3049692249790068260L;
+    
     private char id;
 
     public char getId() { return this.id; }

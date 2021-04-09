@@ -36,7 +36,7 @@ public class Main{
             System.out.println("");
             System.out.println("1 - Rejoindre en tant que joueur");
             System.out.println("2 - Créer un serveur");
-            System.out.println("3 - Lancer le debugging TEST");
+            System.out.println("3 - Lancer le debugging");
             System.out.println("");
             System.out.print("Votre choix : ");
             choice = Read.i();

@@ -3,10 +3,8 @@ package corewar.ObjectModel.elementsCore;
 import corewar.ObjectModel.*;
 
 import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Deque;
 
 /*
 Le core est la mémoire dans laquelle les programmes s'affrontent. 

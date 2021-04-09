@@ -125,22 +125,7 @@ public class Warrior implements Serializable {
 
     //L'ID N'A PAS D'IMPORTANCE
     public boolean equals(Warrior w){
-        boolean flag = true;
-        if(!(this.getInstructions().equals(w.getInstructions()))) 
-            flag = false;
-        if(!(this.getPointeurs().equals(w.getPointeurs()))) 
-            flag = false;
-        if(!(this.getId()== w.getId()))
-            flag = false;
-        if(!(this.getNom().equals(w.getNom()))) 
-            flag = false;
-        if(!(this.getCouleur().equals(w.getCouleur()))) 
-            flag = false;
-        if(!(this.isReady() == w.isReady())) 
-            flag = false;
-        if(!(this.getScore() == w.getScore())) 
-            flag = false;
-        return flag;
+        return this.getNom().equals(w.getNom());
     }
 
     public static Warrior makeWarrior(String path){

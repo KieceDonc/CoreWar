@@ -1,10 +1,13 @@
 package corewar.ObjectModel;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Warriors {
+public class Warriors implements Serializable {
 
+    private static final long serialVersionUID = 1941298264790810278L;
+    
     protected ArrayList<Warrior> warriors;
     public ArrayList<Warrior> getWarriors() { return this.warriors; }
     public void setWarriors(ArrayList<Warrior> warriors) { this.warriors = warriors; }

@@ -78,10 +78,11 @@ public class Game{
     public void onEnd() {
 
         PlayersRanking playersRanking = server.getRanking();
-        WarriorsRanking warriorsRanking = server.getProgramRanking();
+        WarriorsRanking warriorsRanking = server.getWarriorsRanking();
         for (int x = 0; x < playersList.getSize(); x++) {
             Player currentPlayer = playersRanking.get(playersList.get(x));
-            Warrior currentWarrior = warriorsRanking.get(currentPlayer.getWarrior());
+            Warrior currentWarrior = warriorsRanking.get(playersList.get(x).getWarrior());
+            
             currentPlayer.setScore(100);
             currentWarrior.setScore(100);
             // TODO UPDATE LES SCORES ICI

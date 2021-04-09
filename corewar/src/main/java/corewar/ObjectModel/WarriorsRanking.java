@@ -1,12 +1,11 @@
 package corewar.ObjectModel;
 
-import java.io.Serializable;
 import java.util.Collections;
 import java.util.Comparator;
 
-public class WarriorsRanking extends Warriors implements Serializable{
+public class WarriorsRanking extends Warriors{
 
-  private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 4850257802483521442L;
 
   public WarriorsRanking() {
     super();
