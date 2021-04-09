@@ -13,7 +13,6 @@ import corewar.Network.SocketCommunication;
 import corewar.Network.EventsSubscriber;
 
 public class Game{
-
     private Server server;
     private PlayersList playersList;
     private EventsSubscriber socketEventsSubscriber;
