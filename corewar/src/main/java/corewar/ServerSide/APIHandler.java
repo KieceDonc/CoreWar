@@ -101,6 +101,9 @@ public class APIHandler extends Thread{
         playerAddedWarriorHandler(InComingAPICallType, InComingObject);
         break;
       }
+      case SocketCommunication.MODIFY_CORE_SIZE:{
+        modifyCoreSizeHandler(InComingObject);
+      }
     }
   }
 
@@ -196,6 +199,15 @@ public class APIHandler extends Thread{
     }
     
     respond(new SocketCommunication(InComingAPICallType, null));
+  }
+
+  private void modifyCoreSizeHandler(Object InComingObject){
+    Object[] allObjects = (Object[]) InComingObject;
+    int gameID = (int) allObjects[0];
+    int coreSize = (int) allObjects[1];
+
+    Game currentGame = server.getGameList().getByID(gameID);
+    currentGame.setCoreSize(coreSize);
   }
 
   private void respond(SocketCommunication toSendObject){

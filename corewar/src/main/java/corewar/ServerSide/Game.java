@@ -17,6 +17,7 @@ public class Game{
     private PlayersList playersList;
     private EventsSubscriber socketEventsSubscriber;
     private final int ID;
+    private int coreSize;
     private boolean hasStart = false;
 
     public Game(Server server) {
@@ -63,7 +64,7 @@ public class Game{
                 TimeUnit.SECONDS.sleep(1);
                 String currentStatus ="------------------------------------------------------------------------------------------\n";
                 currentStatus+="\n";
-                currentStatus+="Mise à jour n°"+x+"\n";
+                currentStatus+="Mise à jour n°"+x+"\nCoresize = "+this.coreSize;
                 currentStatus+="\n";
                 currentStatus+="------------------------------------------------------------------------------------------";
                 socketEventsSubscriber.sendAll(new SocketCommunication(SocketCommunication.GAME_UPDATE, currentStatus));
@@ -122,6 +123,10 @@ public class Game{
 
     public boolean hasStart(){
         return this.hasStart;
+    }
+
+    public void setCoreSize(int coreSize){
+        this.coreSize = coreSize;
     }
 
     public static class IDGenerator{

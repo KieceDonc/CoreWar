@@ -24,6 +24,7 @@ public class SocketCommunication implements Serializable{
   public static final int GAME_UPDATE = 13;
   public static final int GET_WARRIORS_RANKING = 14;
   public static final int PLAYER_ADDED_WARRIOR = 15;
+  public static final int MODIFY_CORE_SIZE = 16;
 
   private int APICallType;
   private Object object;  

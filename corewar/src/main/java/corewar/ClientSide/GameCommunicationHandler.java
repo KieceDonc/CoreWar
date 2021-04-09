@@ -189,6 +189,11 @@ public class GameCommunicationHandler extends Thread{
     this.send(new SocketCommunication(SocketCommunication.START_GAME, gameID));
   }
 
+  public void setCoreSize(int coreSize) throws IOException {
+    Object[] listObjects = {gameID,coreSize};
+    this.send(new SocketCommunication(SocketCommunication.MODIFY_CORE_SIZE, listObjects));
+  }
+
   public void endCom(){
     if(comOpen){
       try {

@@ -25,7 +25,7 @@ public class Game extends Thread {
     private boolean stop = false;
     private boolean gameHasStart = false;
     private boolean gameHasFinish = false;
-    private Manche manche;
+    private Integer coreSize;
 
     private final int ID;
 
@@ -189,7 +189,7 @@ public class Game extends Thread {
         if(!stop){
             switch (choice) {
                 case 1: {
-                    if (manche == null)
+                    if (coreSize == null)
                         System.out.println("Veuillez paramétrer la partie d'abord.");
                     else {
                     if (isHost) 
@@ -220,12 +220,16 @@ public class Game extends Thread {
     }
 
     private void settings() {
-        int taille;
         // Demander la taille du core
         System.out.println("Veuillez rentrer la taille du core (min 500, maximum 10000, multiple de 100):");
-        do taille = Read.i();
-        while(taille < 500 || taille > 10000 || taille%100 != 0);
-        manche = new Manche(null, new Core(taille));
+        do 
+            coreSize = Read.i();
+        while(coreSize == null || coreSize < 500 || coreSize > 10000 || coreSize%100 != 0);
+        try {
+            gameCommunicationHandler.setCoreSize(coreSize);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void startGame() {
