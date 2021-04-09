@@ -3,11 +3,14 @@ package corewar;
 import java.util.concurrent.TimeUnit;
 
 public class Utils {
+
+    // Appeler pour effacer l'écran 
     public static void clear(){
         System.out.println("\033[H\033[2J");
         System.out.flush();
     }
 
+    // Endort le programme un certain temps. int milliseconds -> temps en millisecondes (1000 = 1s)
     public static void sleep(int milliseconds){
         try {
             TimeUnit.MILLISECONDS.sleep(milliseconds);
@@ -18,6 +21,7 @@ public class Utils {
 
     }
 
+    // Fait une animation avec 3 petits points qui cyclent. int loop -> nombre de frame d'animation 1 frame = 0.75s, String text -> texte affiché avec l'animation
     public static void animation(int loop, String text){
         String s3 = " _        _        _\n/\\_\\     /\\_\\     /\\_\\\n\\/_/     \\/_/     \\/_/\n";
         String s2 = " _        _\n/\\_\\     /\\_\\\n\\/_/     \\/_/\n";

@@ -80,10 +80,10 @@ public class Warrior implements Serializable {
     }
 
     public String couleurAnsi(){
-        if(couleur.equals("red")) return ("\u001B[31m");
-        if(couleur.equals("yellow")) return ("\u001B[32m");
-        if(couleur.equals("green")) return ("\u001B[33m");
-        if(couleur.equals("blue")) return ("\u001B[34m");
+        if(couleur.equals("red")) return ("\033[31m");
+        if(couleur.equals("yellow")) return ("\033[32m");
+        if(couleur.equals("green")) return ("\033[33m");
+        if(couleur.equals("blue")) return ("\033[34m");
         return "";
     }
 

@@ -117,7 +117,8 @@ public class Core {
         String res = "";
         int len = this.length();
         int i = 0;
-        String ANSI_RESET = "\u001B[0m";
+        String ANSI_RESET = "\033[0m";
+        String ANSI_BOLD = "\033[1m";
         HashMap<Integer,Warrior> pointeurs = getWarriors().mapPointeurs();
         HashMap<Character,String> id = getWarriors().mapId();
 
@@ -128,7 +129,7 @@ public class Core {
                     
             }
             else{
-                if(pointeurs.containsKey(i)) res+=pointeurs.get(i).couleurAnsi()+"\033[1m["+String.valueOf(this.read(i).getId())+"]\033[0m"+ANSI_RESET;
+                if(pointeurs.containsKey(i)) res+=pointeurs.get(i).couleurAnsi()+ANSI_BOLD+String.valueOf(this.read(i).getId())+"]"+ANSI_RESET;
                 else res+=id.get(read(i).getId())+"["+this.read(i).getId()+"]"+ANSI_RESET;
                 //EN GRAS : res+="[\033[1m"+String.valueOf(this.read(i).getId())+"\033[0m]";
             }
