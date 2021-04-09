@@ -134,11 +134,13 @@ public class Client {
   }
 
   // Méthode ajoutant un programme à un joueur, seulement s'il est valide.
+  //"corewar/src/main/java/corewar/Warriors/"
   private void addWarrior() {
     String[] pathnames;
     // Le joueur rentre le répertoire de ses warriors
-    System.out.println("Rentrez le chemin absolu vers le dossier contenant vos warriors");
+    System.out.println("Rentrez le chemin absolu vers le dossier contenant vos warriors (si lance depuis projet java, taper 0 pour utiliser le dossier warriors");
     String source = Read.S();
+    if(source.equals("0")) source = "corewar/src/main/java/corewar/Warriors/";
     boolean valide = false;
     // On commence par montrer tous les warriors afin que le joueur puisse choisir celui de son choix
     File f = new File(source);
@@ -157,10 +159,11 @@ public class Client {
 
     // On peut donc traiter le programme choisi si le nombre rentré est supérieur à 0 ( et correct )
     if(choix >0){
-      Warrior w = Warrior.makeWarrior("corewar/src/main/java/corewar/Warriors/"+pathnames[choix]);
+      Warrior w = Warrior.makeWarrior(source+pathnames[choix]);
       
       if(w != null){
         this.currentPlayer.setWarrior(w);
+        valide = true;
         playerAddedWarrior(w);
       }
     }

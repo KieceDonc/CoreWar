@@ -13,6 +13,8 @@ import corewar.Network.SocketCommunication;
 import corewar.ObjectModel.Player;
 import corewar.ObjectModel.PlayersList;
 import corewar.ObjectModel.PlayersRanking;
+import corewar.ObjectModel.elementsCore.Core;
+import corewar.ServerSide.Manche;
 
 public class Game extends Thread {
 
@@ -23,6 +25,7 @@ public class Game extends Thread {
     private boolean stop = false;
     private boolean gameHasStart = false;
     private boolean gameHasFinish = false;
+    private Manche manche;
 
     private final int ID;
 
@@ -151,6 +154,7 @@ public class Game extends Thread {
         if (isHost) {
             System.out.println("    1- Démarrer la partie");
             System.out.println("    2- Annuler la partie");
+            System.out.println("    3- Parametrer la parte");
         } else {
             System.out.println("    1- Quitter la partie");
         }
@@ -172,7 +176,7 @@ public class Game extends Thread {
                 System.out.println("");
                 System.out.println("------------------------------------------------------------------------------------------");
                 if (isHost) {
-                    shouldPrintAgain = choice < 1 || choice > 2;
+                    shouldPrintAgain = choice < 1 || choice > 3;
                 } else {
                     shouldPrintAgain = choice != 1;
                 }
@@ -185,9 +189,12 @@ public class Game extends Thread {
         if(!stop){
             switch (choice) {
                 case 1: {
-                    if (isHost) {
+                    if (manche == null)
+                        System.out.println("Veuillez paramétrer la partie d'abord.");
+                    else {
+                    if (isHost) 
                         startGame();
-                    } else {
+                    else 
                         leave();
                     }
                     break;
@@ -198,6 +205,11 @@ public class Game extends Thread {
                     }
                     break;
                 }
+                case 3: {
+                    if (isHost){
+                        settings();
+                    }
+                }
                 default: {
                     System.out.println("wtf, unhandled choice, current choice = " + choice);
                     System.out.println("Normally it happend when you don't incremente maxChoice in clientMainMenu()");
@@ -205,6 +217,15 @@ public class Game extends Thread {
                 }
             }
         }
+    }
+
+    private void settings() {
+        int taille;
+        // Demander la taille du core
+        System.out.println("Veuillez rentrer la taille du core (min 500, maximum 10000, multiple de 100):");
+        do taille = Read.i();
+        while(taille < 500 || taille > 10000 || taille%100 != 0);
+        manche = new Manche(null, new Core(taille));
     }
 
     private void startGame() {
