@@ -168,11 +168,12 @@ public class Client {
     int choix = -1;
     // Si le joueur rentre 0, alors on sort sans rien faire. Sinon on peut le traiter, et s'il n'y a pas d'erreur, on peut le donner au joueur.
     while(choix <0 || choix > f.length()){
-      choix = Read.i()-1;
+      choix = Read.i();
     }
 
     // On peut donc traiter le programme choisi si le nombre rentré est supérieur à 0 ( et correct )
     if(choix >0){
+      choix--;
       Warrior w = Warrior.makeWarrior(source+pathnames[choix]);
       
       if(w != null){
@@ -279,7 +280,6 @@ public class Client {
   }
   
   private void playerAddedWarrior(Warrior warrior){
-    //Utils.animation(7,"Envoi du warrior en cours...");
     System.out.println("------------------------------------------------------------------------------------------");
     System.out.println("");
     System.out.println("Envoi du warrior en cours ...");

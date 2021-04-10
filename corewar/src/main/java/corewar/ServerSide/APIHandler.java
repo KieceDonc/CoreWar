@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.HashMap;
 
 import corewar.Network.SocketCommunication;
 import corewar.ObjectModel.Player;
@@ -101,8 +102,8 @@ public class APIHandler extends Thread{
         playerAddedWarriorHandler(InComingAPICallType, InComingObject);
         break;
       }
-      case SocketCommunication.MODIFY_CORE_SIZE:{
-        modifyCoreSizeHandler(InComingObject);
+      case SocketCommunication.MODIFY_SETTINGS:{
+        modifySettings(InComingObject);
       }
     }
   }
@@ -201,13 +202,14 @@ public class APIHandler extends Thread{
     respond(new SocketCommunication(InComingAPICallType, null));
   }
 
-  private void modifyCoreSizeHandler(Object InComingObject){
+  private void modifySettings(Object InComingObject){
     Object[] allObjects = (Object[]) InComingObject;
     int gameID = (int) allObjects[0];
-    int coreSize = (int) allObjects[1];
+    @SuppressWarnings("unchecked")
+    HashMap<String,Integer> settings = (HashMap<String,Integer>) allObjects[1];
 
     Game currentGame = server.getGameList().getByID(gameID);
-    currentGame.setCoreSize(coreSize);
+    currentGame.setSettings(settings);
   }
 
   private void respond(SocketCommunication toSendObject){

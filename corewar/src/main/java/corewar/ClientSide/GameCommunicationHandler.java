@@ -7,6 +7,7 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import corewar.ClientSide.EventInterface.onGameCancel;
 import corewar.ClientSide.EventInterface.onGameStarting;
@@ -189,9 +190,9 @@ public class GameCommunicationHandler extends Thread{
     this.send(new SocketCommunication(SocketCommunication.START_GAME, gameID));
   }
 
-  public void setCoreSize(int coreSize) throws IOException {
-    Object[] listObjects = {gameID,coreSize};
-    this.send(new SocketCommunication(SocketCommunication.MODIFY_CORE_SIZE, listObjects));
+  public void setSettings(HashMap<String,Integer> settings) throws IOException {
+    Object[] listObjects = {gameID,settings};
+    this.send(new SocketCommunication(SocketCommunication.MODIFY_SETTINGS, listObjects));
   }
 
   public void endCom(){

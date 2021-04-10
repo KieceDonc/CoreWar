@@ -1,6 +1,7 @@
 package corewar.ClientSide;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 import corewar.Read;
 import corewar.Utils;
@@ -26,7 +27,8 @@ public class Game extends Thread {
     private boolean stop = false;
     private boolean gameHasStart = false;
     private boolean gameHasFinish = false;
-    private Integer coreSize;
+    private boolean settingsComplete = false;
+    private HashMap<String,Integer> settings;
 
     private final int ID;
 
@@ -192,7 +194,7 @@ public class Game extends Thread {
         if(!stop){
             switch (choice) {
                 case 1: {
-                    if (coreSize == null && isHost)
+                    if (!settingsComplete && isHost)
                         System.out.println("Veuillez paramétrer la partie d'abord.");
                     else {
                     if (isHost) 
@@ -240,18 +242,32 @@ public class Game extends Thread {
     }
 
     private void settings() {
-        // Demander la taille du core
+        Integer coreSize = null, frameRate = null, tours = null;
         
         do {
             System.out.println("Veuillez rentrer la taille du core (min 500, maximum 10000, multiple de 100):");
             coreSize = Read.i();
         } while(coreSize == null || coreSize < 500 || coreSize > 10000 || coreSize%100 != 0);
+        do {
+            System.out.println("Veuillez rentrer la vitesse de la partie entre 1 et 500, c'est à dire le nombre de tour à passer toutes les secondes (Conseillé 20 -> Une partie de 2000 tours durera alors 100 secondes) :");
+            frameRate = Read.i();
+        } while(frameRate == null || frameRate < 1 || frameRate > 500);
+        do {
+            System.out.println("Veuillez rentrer le nombre de tours max (conseillé ~2000), entre 5 et 50000:");
+            tours = Read.i();
+        } while(tours == null || tours < 5 || tours > 50000);
+
+        HashMap<String,Integer> settings = new HashMap<String,Integer>();
+        settings.clear();
+        settings.put("CORE_SIZE",coreSize);
+        settings.put("FRAME_RATE",frameRate/2);
+        settings.put("TURNS",tours);
+        settingsComplete = true;
         try {
-            gameCommunicationHandler.setCoreSize(coreSize);
+            gameCommunicationHandler.setSettings(settings);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Utils.animation(7, "Changement des paramètres!");
     }
 
     private void startGame() {

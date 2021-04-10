@@ -15,7 +15,6 @@ public class Manche {
     private Warriors warriors;
     private Core core;
     private ArrayList<Warrior> winners;
-    static final int RATE = 10;
 
     public Warriors getWarriors() { return this.warriors; }
     public Core getCore() { return this.core; }
@@ -30,7 +29,7 @@ public class Manche {
         this.setCore(core);
     }
 
-    public void traitementPartie(int tours, EventsSubscriber evt){
+    public void traitementPartie(int tours, int frameRate, EventsSubscriber evt){
         this.setWinners(new ArrayList<Warrior>());
         int incr = 0;
         getCore().initOrdre();
@@ -41,7 +40,6 @@ public class Manche {
                 System.out.println(stringBoard(incr));
                 evt.sendAll(new SocketCommunication(SocketCommunication.GAME_UPDATE, stringBoard(incr)));
             } catch (IOException e1) {
-                // TODO Auto-generated catch block
                 e1.printStackTrace();
             }
         }
@@ -49,27 +47,22 @@ public class Manche {
         Utils.sleep(5000);
 
         while(getWinners().isEmpty() && incr <= tours ){
-            
-            try{
-            String exec = "----------\nExecution de "+getWarriors().getWarriors().get(0)+"\n"+getCore().read(getCore().firstPointeur()).toString();
-            System.out.println(exec);
-            } catch(Exception e){System.out.println("Aucune instruction executee");}
-            
             Integer next = getCore().executer(getCore().firstPointeur());
-            if(evt == null)
-                System.out.println(stringBoard(incr));
-            else{
-                if(incr%RATE == 0){
+            if(incr%frameRate == 0){
+                if(evt == null){
+                    Utils.sleep(500);
+                    System.out.println(stringBoard(incr));
+                }else{
                     try {
-                        Utils.sleep(333);
+                        Utils.sleep(500);
                         System.out.println(stringBoard(incr));
                         evt.sendAll(new SocketCommunication(SocketCommunication.GAME_UPDATE, stringBoard(incr)));
                     } catch (IOException e) {
-                        // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
                 }
             }
+            
             getCore().cycle(next);
             Warrior w = getCore().isWinner();
             if(w != null)

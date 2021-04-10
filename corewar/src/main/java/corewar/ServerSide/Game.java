@@ -22,10 +22,10 @@ public class Game{
     private PlayersList playersList;
     private EventsSubscriber socketEventsSubscriber;
     private final int ID;
-    private int coreSize;
     private boolean hasStart = false;
     private HashMap<String,Integer> scoreJoueurs;
     private HashMap<String,Integer> scoreWarriors;
+    private HashMap<String,Integer> settings;
 
     public Game(Server server) {
         this.server = server;
@@ -72,7 +72,7 @@ public class Game{
                 System.out.println(p.getWarrior().toStringFull());
                 System.out.println("\n-------------\n");
             }
-            Core c = new Core(coreSize);
+            Core c = new Core(settings.get("CORE_SIZE"));
             Warriors w = new Warriors();
             for(int i = 0 ; i < playersList.getSize() ; i++){
                 Warrior war = playersList.get(i).getWarrior();
@@ -111,7 +111,7 @@ public class Game{
             Utils.sleep(2000);
 
             Manche m = new Manche(w,c);
-            m.traitementPartie(200,socketEventsSubscriber);
+            m.traitementPartie(settings.get("TURNS"),settings.get("FRAME_RATE"),socketEventsSubscriber);
 
             scoreJoueurs = new HashMap<String,Integer>();
             scoreWarriors = new HashMap<String,Integer>();
@@ -146,7 +146,6 @@ public class Game{
             
             currentPlayer.setScore(scoreJoueurs.get(currentPlayer.getName())+currentPlayer.getScore());
             currentWarrior.setScore(scoreWarriors.get(currentWarrior.getNom())+currentPlayer.getScore());
-            // TODO UPDATE LES SCORES ICI*/
         }
 
         try {
@@ -186,8 +185,8 @@ public class Game{
         return this.hasStart;
     }
 
-    public void setCoreSize(int coreSize){
-        this.coreSize = coreSize;
+    public void setSettings(HashMap<String,Integer> settings){
+        this.settings = settings;
     }
 
     public static class IDGenerator{
