@@ -1,6 +1,12 @@
 package corewar.ObjectModel.elementsCore;
 
-public class Instruction {
+import java.io.Serializable;
+
+public class Instruction implements Serializable {
+    /**
+     *
+     */
+    private static final long serialVersionUID = 7850383611281087682L;
     private Mnemonique mnq;
     private Operande op1;
     private Operande op2;

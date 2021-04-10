@@ -1,7 +1,13 @@
 package corewar.ObjectModel.elementsCore;
 
-public class Operande {
+import java.io.Serializable;
+
+public class Operande implements Serializable {
    
+    /**
+     *
+     */
+    private static final long serialVersionUID = 7323085518904894591L;
     private Mode mode;
     private int adresse;
 

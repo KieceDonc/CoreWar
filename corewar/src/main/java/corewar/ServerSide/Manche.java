@@ -61,6 +61,7 @@ public class Manche {
             else{
                 if(incr%RATE == 0){
                     try {
+                        Utils.sleep(333);
                         System.out.println(stringBoard(incr));
                         evt.sendAll(new SocketCommunication(SocketCommunication.GAME_UPDATE, stringBoard(incr)));
                     } catch (IOException e) {
@@ -69,7 +70,6 @@ public class Manche {
                     }
                 }
             }
-            Utils.sleep(1000);
             getCore().cycle(next);
             Warrior w = getCore().isWinner();
             if(w != null)
@@ -92,6 +92,43 @@ public class Manche {
 
     public String stringBoard(int tour){
         return "TOUR#"+tour+"\n"+this.getCore().toString()+"\n"+this.getWarriors().toString();
+    }
+
+    public void updateScore(){
+        for(Warrior w : getWarriors().getWarriors()){
+            int score = 0; //score
+            if(getWinners().contains(w)){
+                score += 1200/getWinners().size();
+            }
+            w.setScore(w.getScore()+score);
+        }
+    }
+
+    //500 points repartis entre les survivants
+    public int aliveScore(Warrior w){
+        double winners = getWinners().size();
+        if(getWinners().contains(w))
+            return (int)Math.floor(500/winners);
+        else
+            return 0;
+    }
+
+    //400 points répartis pour la possession de la mémoire
+    public int possessionScore(Warrior w){
+        int score = 0;
+        double coreSize = getCore().length();
+        for(int i = 0 ; i < coreSize ; i++)
+            if(getCore().read(i) != null && getCore().read(i).getId() == w.getId())
+                score++;
+        return (int)Math.floor((400*score)/coreSize);
+    }
+
+    //+10 points pour le nombre de pointeurs en vie max 100
+    public int pointeursScore(Warrior w){
+        int score = 100;
+        if(w.getPointeurs().size() <= 10)
+            score = w.getPointeurs().size()*10;
+        return score;
     }
 
     

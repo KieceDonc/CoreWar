@@ -2,6 +2,7 @@ package corewar.ObjectModel.elementsCore;
 
 import corewar.ObjectModel.*;
 
+import java.io.Serializable;
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -11,8 +12,12 @@ Le core est la mémoire dans laquelle les programmes s'affrontent.
 Il s'agit d'un tableau contenant des InstructionIDs.
 */
 
-public class Core {
+public class Core implements Serializable  {
 
+    /**
+     *
+     */
+    private static final long serialVersionUID = 6581696810503143347L;
     private InstructionID[] memoire;
     private Warriors warriors;
     private ArrayDeque<Warrior> ordre;

@@ -159,6 +159,7 @@ public class Warrior implements Serializable {
         do
             name = Read.S();
         while(name.length()<3 && name.length()>16);
+        name = name.toUpperCase();
         w.setNom(name);
 
         Utils.clear();

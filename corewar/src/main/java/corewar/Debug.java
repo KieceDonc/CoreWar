@@ -43,7 +43,7 @@ public class Debug{
         Warrior J1 = new Warrior();
         pr("j1 test");
         J1.setNom("J1");
-        J1.setId('C');
+        J1.setId('1');
         J1.setInstructions(Interpreteur.interpreter("corewar/src/main/java/corewar/Warriors/dwarf.redcode"),J1.getId());
         J1.setCouleur("blue");
         pr("j1");
@@ -66,7 +66,12 @@ public class Debug{
 
         Manche m = new Manche(w,c);
 
-        m.traitementPartie(6,null);
+        m.traitementPartie(500,null);
+        m.updateScore();
+
+        System.out.println("1 : En vie : "+m.aliveScore(J1)+" | Possession : "+m.possessionScore(J1)+" | Pointeurs "+m.pointeursScore(J1));
+        System.out.println("2 : En vie : "+m.aliveScore(J2)+" | Possession : "+m.possessionScore(J2)+" | Pointeurs "+m.pointeursScore(J2));
+        
     }
 
     private static void testAnim() {

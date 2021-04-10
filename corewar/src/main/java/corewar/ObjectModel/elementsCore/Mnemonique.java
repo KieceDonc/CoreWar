@@ -1,5 +1,6 @@
 package corewar.ObjectModel.elementsCore;
 
+import java.io.Serializable;
 import java.util.regex.Pattern;
 
 /*
@@ -28,7 +29,7 @@ STP -- save to p-space (saves a number to private storage space)
 NOP -- no operation (does nothing)
 */
 
-public enum Mnemonique {
+public enum Mnemonique implements Serializable{
     MOV,ADD,SUB,JMP,JMZ,JMG,JMN,DJN,DJZ,CMP,SEQ,SNE,SPL,DAT;
 
     // Retourne un regex faisant un OU logique de toutes les mnémoniques (insensible à la casse)

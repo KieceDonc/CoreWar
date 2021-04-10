@@ -3,6 +3,7 @@ package corewar.ServerSide;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 import corewar.ObjectModel.Player;
@@ -23,6 +24,8 @@ public class Game{
     private final int ID;
     private int coreSize;
     private boolean hasStart = false;
+    private HashMap<String,Integer> scoreJoueurs;
+    private HashMap<String,Integer> scoreWarriors;
 
     public Game(Server server) {
         this.server = server;
@@ -108,19 +111,25 @@ public class Game{
             Utils.sleep(2000);
 
             Manche m = new Manche(w,c);
-            m.traitementPartie(100,socketEventsSubscriber);
-            
-            /*
-            for (int x = 0; x < 10; x++) {
-                TimeUnit.SECONDS.sleep(1);
-                String currentStatus ="------------------------------------------------------------------------------------------\n";
-                currentStatus+="\n";
-                currentStatus+="Mise à jour n°"+x+"\nCoresize = "+this.coreSize;
-                currentStatus+="\n";
-                currentStatus+="------------------------------------------------------------------------------------------";
-                socketEventsSubscriber.sendAll(new SocketCommunication(SocketCommunication.GAME_UPDATE, currentStatus));
+            m.traitementPartie(200,socketEventsSubscriber);
+
+            scoreJoueurs = new HashMap<String,Integer>();
+            scoreWarriors = new HashMap<String,Integer>();
+            // On calcule les scores
+            for(Player p : playersList.getPlayersList()){
+                Warrior war = p.getWarrior();
+                int s = 0;
+                int as = m.aliveScore(war);
+                int pss = m.possessionScore(war);
+                int pts = m.pointeursScore(war);
+                int score = as+pss+pts;
+                String afficheScore = "Score du warrior "+war.getNom()+" :\n"+"En vie / 500 - "+as+" | Possession de la memoire / 400 - "+pss+" | Nombre de pointeurs / 100 - "+pts+"\nTOTAL : "+score;
+                scoreJoueurs.put(p.getName(), score);
+                scoreWarriors.put(war.getNom(), score);
+                socketEventsSubscriber.sendAll(new SocketCommunication(SocketCommunication.GAME_UPDATE, afficheScore));
             }
-            */
+
+            
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -135,9 +144,9 @@ public class Game{
             Player currentPlayer = playersRanking.get(playersList.get(x));
             Warrior currentWarrior = warriorsRanking.get(playersList.get(x).getWarrior());
             
-            currentPlayer.setScore(100);
-            currentWarrior.setScore(100);
-            // TODO UPDATE LES SCORES ICI
+            currentPlayer.setScore(scoreJoueurs.get(currentPlayer.getName())+currentPlayer.getScore());
+            currentWarrior.setScore(scoreWarriors.get(currentWarrior.getNom())+currentPlayer.getScore());
+            // TODO UPDATE LES SCORES ICI*/
         }
 
         try {
