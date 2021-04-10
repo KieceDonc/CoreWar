@@ -127,7 +127,7 @@ public class Core {
                     
             }
             else{
-                if(pointeurs.containsKey(i)) res+=pointeurs.get(i).couleurAnsi()+ANSI_BOLD+String.valueOf(this.read(i).getId())+"]"+ANSI_RESET;
+                if(pointeurs.containsKey(i)) res+=pointeurs.get(i).couleurAnsi()+ANSI_BOLD+"["+String.valueOf(this.read(i).getId())+"]"+ANSI_RESET;
                 else res+=id.get(read(i).getId())+"["+this.read(i).getId()+"]"+ANSI_RESET;
                 //EN GRAS : res+="[\033[1m"+String.valueOf(this.read(i).getId())+"\033[0m]";
             }

@@ -1,33 +1,54 @@
 package corewar.ServerSide;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import corewar.ObjectModel.elementsCore.*;
+import corewar.Utils;
+import corewar.Network.EventsSubscriber;
+import corewar.Network.SocketCommunication;
 import corewar.ObjectModel.*;
+
+
 
 public class Manche {
 
     private Warriors warriors;
     private Core core;
+    private ArrayList<Warrior> winners;
+    static final int RATE = 10;
 
     public Warriors getWarriors() { return this.warriors; }
     public Core getCore() { return this.core; }
+    public ArrayList<Warrior> getWinners(){ return this.winners; }
 
     public void setWarriors(Warriors warriors) { this.warriors = warriors; }
     public void setCore(Core core) { this.core = core; }
+    public void setWinners(ArrayList<Warrior> winners) { this.winners = winners; }
 
     public Manche(Warriors warriors, Core core){
         this.setWarriors(warriors);
         this.setCore(core);
     }
 
-    public void traitementPartie(int tours){
-        ArrayList<Warrior> winner = new ArrayList<Warrior>();
+    public void traitementPartie(int tours, EventsSubscriber evt){
+        this.setWinners(new ArrayList<Warrior>());
         int incr = 0;
-
         getCore().initOrdre();
-        printBoard();
+        if(evt == null)
+            System.out.println(stringBoard(incr));
+        else{
+            try {
+                System.out.println(stringBoard(incr));
+                evt.sendAll(new SocketCommunication(SocketCommunication.GAME_UPDATE, stringBoard(incr)));
+            } catch (IOException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
+        }
+        System.out.println("LA PARTIE VA COMMENCER!");
+        Utils.sleep(5000);
 
-        while(winner.isEmpty() && incr <= tours ){
+        while(getWinners().isEmpty() && incr <= tours ){
             
             try{
             String exec = "----------\nExecution de "+getWarriors().getWarriors().get(0)+"\n"+getCore().read(getCore().firstPointeur()).toString();
@@ -35,30 +56,42 @@ public class Manche {
             } catch(Exception e){System.out.println("Aucune instruction executee");}
             
             Integer next = getCore().executer(getCore().firstPointeur());
-            printBoard();
+            if(evt == null)
+                System.out.println(stringBoard(incr));
+            else{
+                if(incr%RATE == 0){
+                    try {
+                        System.out.println(stringBoard(incr));
+                        evt.sendAll(new SocketCommunication(SocketCommunication.GAME_UPDATE, stringBoard(incr)));
+                    } catch (IOException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                }
+            }
+            Utils.sleep(1000);
             getCore().cycle(next);
             Warrior w = getCore().isWinner();
             if(w != null)
-                winner.add(getCore().isWinner());
+                getWinners().add(getCore().isWinner());
             incr++;
         }
 
-        if(winner.isEmpty()){
+        if(getWinners().isEmpty()){
             String res = "";
             for(Warrior w : getCore().getOrdre()){
-                winner.add(w);
+                getWinners().add(w);
                 res+=w.getNom()+"\n";
             }
             System.out.println("IL Y A EGALITE ENTRE LES SURVIVANTS\n"+res);
             
         }
         else
-            System.out.println("Le gagnant est : "+winner.get(0).getNom());
+            System.out.println("Le gagnant est : "+getWinners().get(0).getNom());
     }
 
-    public void printBoard(){
-        System.out.println(getCore().toString());
-        System.out.println(getWarriors().toString());
+    public String stringBoard(int tour){
+        return "TOUR#"+tour+"\n"+this.getCore().toString()+"\n"+this.getWarriors().toString();
     }
 
     

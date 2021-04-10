@@ -3,6 +3,7 @@ package corewar.ClientSide;
 import java.io.IOException;
 
 import corewar.Read;
+import corewar.Utils;
 import corewar.ClientSide.EventInterface.onGameCancel;
 import corewar.ClientSide.EventInterface.onGameStarting;
 import corewar.ClientSide.EventInterface.onGameStop;
@@ -154,9 +155,11 @@ public class Game extends Thread {
         if (isHost) {
             System.out.println("    1- Démarrer la partie");
             System.out.println("    2- Annuler la partie");
-            System.out.println("    3- Parametrer la parte");
+            System.out.println("    3- Parametrer la partie");
+            System.out.println("    4- Afficher tous les warriors");
         } else {
             System.out.println("    1- Quitter la partie");
+            System.out.println("    2- Afficher son warrior");
         }
         System.out.println("");
         System.out.print("Votre choix : ");
@@ -176,9 +179,9 @@ public class Game extends Thread {
                 System.out.println("");
                 System.out.println("------------------------------------------------------------------------------------------");
                 if (isHost) {
-                    shouldPrintAgain = choice < 1 || choice > 3;
+                    shouldPrintAgain = choice < 1 || choice > 4;
                 } else {
-                    shouldPrintAgain = choice != 1;
+                    shouldPrintAgain = choice < 1 || choice > 2;
                 }
             }else{
                 // On a reçu l'ordre d'arrêter la partie mais on attendait que le joueur appuit sur une touche donc on sort
@@ -189,7 +192,7 @@ public class Game extends Thread {
         if(!stop){
             switch (choice) {
                 case 1: {
-                    if (coreSize == null)
+                    if (coreSize == null && isHost)
                         System.out.println("Veuillez paramétrer la partie d'abord.");
                     else {
                     if (isHost) 
@@ -203,12 +206,20 @@ public class Game extends Thread {
                     if (isHost) {
                         cancel();
                     }
+                    else
+                        afficherCurrentWarrior();
                     break;
                 }
                 case 3: {
                     if (isHost){
                         settings();
                     }
+                    break;
+                }
+                case 4: {
+                    if(isHost)
+                        afficherWarriors();
+                    break;
                 }
                 default: {
                     System.out.println("wtf, unhandled choice, current choice = " + choice);
@@ -219,17 +230,28 @@ public class Game extends Thread {
         }
     }
 
+    private void afficherCurrentWarrior() {
+        System.out.println(currentPlayer.getWarrior().toStringFull());
+    }
+
+    private void afficherWarriors() {
+        for(Player p : playersList.getPlayersList())
+            System.out.println(p.getWarrior().toStringFull());
+    }
+
     private void settings() {
         // Demander la taille du core
-        System.out.println("Veuillez rentrer la taille du core (min 500, maximum 10000, multiple de 100):");
-        do 
+        
+        do {
+            System.out.println("Veuillez rentrer la taille du core (min 500, maximum 10000, multiple de 100):");
             coreSize = Read.i();
-        while(coreSize == null || coreSize < 500 || coreSize > 10000 || coreSize%100 != 0);
+        } while(coreSize == null || coreSize < 500 || coreSize > 10000 || coreSize%100 != 0);
         try {
             gameCommunicationHandler.setCoreSize(coreSize);
         } catch (IOException e) {
             e.printStackTrace();
         }
+        Utils.animation(7, "Changement des paramètres!");
     }
 
     private void startGame() {

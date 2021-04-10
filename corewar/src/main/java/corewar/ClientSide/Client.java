@@ -10,6 +10,7 @@ import corewar.ObjectModel.Player;
 import corewar.ObjectModel.PlayersRanking;
 import corewar.ObjectModel.Warrior;
 import corewar.ObjectModel.WarriorsRanking;
+import corewar.ObjectModel.elementsCore.InstructionID;
 import corewar.ServerSide.ClientPrinterGameList;
 
 /*
@@ -72,7 +73,7 @@ public class Client {
 
   private void mainMenu() {
     int choice = 0;
-    int maxChoice = 6;
+    int maxChoice = 7;
     do {
       System.out.println("------------------------------------------------------------------------------------------");
       System.out.println("");
@@ -80,8 +81,9 @@ public class Client {
       System.out.println("2 - Rejoindre une partie");
       System.out.println("3 - Voir le classement des joueurs");
       System.out.println("4 - Voir le classement des warriors");
-      System.out.println("5 - Ajouter un programme");
-      System.out.println("6 - Fermer");
+      System.out.println("5 - Ajouter un Warrior");
+      System.out.println("6 - Voir le Warrior");
+      System.out.println("7 - Fermer");
       System.out.println("");
       System.out.print("Votre choix : ");
       choice = Read.i();
@@ -116,10 +118,13 @@ public class Client {
       }
       case 5:{
         addWarrior();
-        //playerAddedWarrior(null);
         break;
       }
       case 6:{
+        afficheWarrior();
+        break;
+      }
+      case 7 :{
         System.exit(0);
         break;
       }
@@ -131,6 +136,15 @@ public class Client {
     };
 
     mainMenu();
+  }
+
+  private void afficheWarrior() {
+    Warrior w = currentPlayer.getWarrior();
+    if(w == null)
+      System.out.println("Veuillez d'abord ajouter un Warrior (option 5)");
+    else{
+      System.out.println(w.toStringFull());
+    }
   }
 
   // Méthode ajoutant un programme à un joueur, seulement s'il est valide.

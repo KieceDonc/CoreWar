@@ -2,14 +2,18 @@ package corewar.ServerSide;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import corewar.ObjectModel.Player;
 import corewar.ObjectModel.PlayersList;
 import corewar.ObjectModel.PlayersRanking;
 import corewar.ObjectModel.Warrior;
+import corewar.ObjectModel.Warriors;
 import corewar.ObjectModel.WarriorsRanking;
+import corewar.ObjectModel.elementsCore.Core;
 import corewar.Network.SocketCommunication;
+import corewar.Utils;
 import corewar.Network.EventsSubscriber;
 
 public class Game{
@@ -60,6 +64,53 @@ public class Game{
 
     public void main() {
         try {
+            System.out.println("LA LISTE DE JOUEURS ET LEURS WARRIORS :");
+            for(Player p : playersList.getPlayersList()){
+                System.out.println(p.getWarrior().toStringFull());
+                System.out.println("\n-------------\n");
+            }
+            Core c = new Core(coreSize);
+            Warriors w = new Warriors();
+            for(int i = 0 ; i < playersList.getSize() ; i++){
+                Warrior war = playersList.get(i).getWarrior();
+                if(i == 0){
+                    war.setId('1');
+                    war.changeId('1');
+                    war.setCouleur("green");
+                }
+                if(i == 1){
+                    war.setId('2');
+                    war.changeId('2');
+                    war.setCouleur("blue");
+                }
+                if(i == 2){
+                    war.setId('3');
+                    war.changeId('3');
+                    war.setCouleur("yellow");
+                }
+                if(i == 3){
+                    war.setId('4');
+                    war.changeId('4');
+                    war.setCouleur("red");
+                }
+                w.add(war);
+            }
+            c.setWarriors(w);
+            c.load(); 
+            String debug = "";
+            if(!(w.getWarriors().isEmpty()))
+                debug += "Liste de joueur :\n"+w.toString();
+            else
+                debug+= "Liste de joueur vide";
+        
+                socketEventsSubscriber.sendAll(new SocketCommunication(SocketCommunication.GAME_UPDATE, debug)); 
+
+            Utils.sleep(2000);
+
+            Manche m = new Manche(w,c);
+            m.traitementPartie(100,socketEventsSubscriber);
+            
+            /*
             for (int x = 0; x < 10; x++) {
                 TimeUnit.SECONDS.sleep(1);
                 String currentStatus ="------------------------------------------------------------------------------------------\n";
@@ -69,6 +120,7 @@ public class Game{
                 currentStatus+="------------------------------------------------------------------------------------------";
                 socketEventsSubscriber.sendAll(new SocketCommunication(SocketCommunication.GAME_UPDATE, currentStatus));
             }
+            */
         } catch (Exception e) {
             e.printStackTrace();
         }

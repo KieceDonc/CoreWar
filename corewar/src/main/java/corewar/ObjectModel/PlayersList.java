@@ -117,6 +117,10 @@ public class PlayersList implements Serializable{
     return this.playersList.size();
   }
 
+  public synchronized ArrayList<Player> getPlayersList(){
+    return this.playersList;
+  }
+
   @Override
   public synchronized String toString(){
     String toReturn = "";

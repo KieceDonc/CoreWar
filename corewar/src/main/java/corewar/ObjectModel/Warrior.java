@@ -123,6 +123,21 @@ public class Warrior implements Serializable {
         return res+"]";
     }
 
+    public void changeId(char id){
+        for(InstructionID ins : this.getInstructions()){
+            System.out.println(ins.toString());
+            ins.setId(id);
+        }
+    }
+
+    public String toStringFull(){
+        String res = "";
+        res+="WARRIOR : "+this.getNom()+"\n";
+        for(InstructionID ins : this.getInstructions())
+                res+=ins.toString()+"\n";
+        return res;
+    }
+
     //L'ID N'A PAS D'IMPORTANCE
     public boolean equals(Warrior w){
         return this.getNom().equals(w.getNom());
