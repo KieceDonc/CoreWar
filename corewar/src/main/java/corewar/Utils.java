@@ -15,8 +15,6 @@ public class Utils {
         try {
             TimeUnit.MILLISECONDS.sleep(milliseconds);
         } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            ;
         }
 
     }
