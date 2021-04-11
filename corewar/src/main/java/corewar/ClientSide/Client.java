@@ -173,6 +173,7 @@ public class Client {
 
     // On peut donc traiter le programme choisi si le nombre rentré est supérieur à 0 ( et correct )
     if(choix >0){
+      
       choix--;
       Warrior w = Warrior.makeWarrior(source+pathnames[choix]);
       
