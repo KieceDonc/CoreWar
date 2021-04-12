@@ -2,9 +2,7 @@ package corewar.ServerSide;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.concurrent.TimeUnit;
 
 import corewar.ObjectModel.Player;
 import corewar.ObjectModel.PlayersList;
@@ -118,7 +116,6 @@ public class Game{
             // On calcule les scores
             for(Player p : playersList.getPlayersList()){
                 Warrior war = p.getWarrior();
-                int s = 0;
                 int as = m.aliveScore(war);
                 int pss = m.possessionScore(war);
                 int pts = m.pointeursScore(war);

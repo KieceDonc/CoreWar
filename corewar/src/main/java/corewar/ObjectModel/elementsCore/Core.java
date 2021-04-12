@@ -322,9 +322,9 @@ public class Core implements Serializable  {
 
             // On récupère tous les éléments de l'instruction pour que ce soit plus simple à traiter
             Mnemonique mnq = ins.getMnq();
-            Operande opA = ins.getOp1(), opB = ins.getOp2();
-            int adA = opA.getAdresse(), adB = opB.getAdresse();
-            Mode modeA = opA.getMode(), modeB = opB.getMode();
+            Operande opA = ins.getOp1();
+            int adA = opA.getAdresse();
+            Mode modeA = opA.getMode();
             Integer evalA = evalAdresse(OP.A, adresse), evalB = evalAdresse(OP.B, adresse);
             Integer valA = evalData(OP.A,adresse), valB = evalData(OP.B,adresse);// On évalue forcément les opérandes, même si le processus sera tué.
             char id = ins.getId();
@@ -503,100 +503,4 @@ NOP -- no operation (does nothing)
         A,B;
     }
 
-    // Teste les mnémoniques indiquées
-    public void testInstruction(Mnemonique mnq){
-        Core c = new Core (10*10);
-        pr("TEST DE LA MNEMONIQUE "+mnq.toString());
-        switch(mnq){
-            
-            case DAT : {
-                InstructionID ins1 = new InstructionID(5,'X');
-                c.write(12,ins1);
-                pr(c.testString());
-                pr("-------------------\nExecution 12 :");
-                pr(c.executer(12)+"\n");
-                pr(c.testString());
-                break;
-            }
-
-            case MOV : {
-                InstructionID ins1 = new InstructionID(20,'X');
-                InstructionID ins2 = new InstructionID(Mnemonique.MOV,Mode.IMMEDIAT,99,Mode.DIRECT,-5,'X');
-                c.write(12,ins1);
-                c.write(0,ins2);
-                pr(c.testString());
-                pr("-------------------\nExecution 0 :");
-                pr(c.executer(0)+"\n");
-                pr(c.testString());
-                break;
-            }
-
-            case ADD : {
-                InstructionID ins1 = new InstructionID(10,'X');
-                InstructionID ins3 = new InstructionID(-5,'X');
-                InstructionID ins4 = new InstructionID(18,'X');
-                InstructionID ins5 = new InstructionID(-10,'X');
-                InstructionID ins2 = new InstructionID(Mnemonique.ADD,Mode.INDIRECT,25,Mode.INDIRECT,10,'X');
-                c.write(20,ins1);
-                c.write(15,ins2);
-                c.write(25,ins3);
-                c.write(30,ins4);
-                c.write(40,ins5);
-                pr(c.testString());
-                pr("-------------------\nExecution 15 :");
-                pr(c.executer(15)+"\n");
-                pr(c.testString());
-                break;
-            }
-
-            case JMP : {
-                InstructionID ins1 = new InstructionID(5, 'X');
-                InstructionID ins2 = new InstructionID(12, 'X');
-                InstructionID ins3 = new InstructionID(Mnemonique.JMP,Mode.DIRECT,-20,Mode.IMMEDIAT,0,'X');
-                InstructionID ins4 = new InstructionID(Mnemonique.JMP,Mode.INDIRECT,-10,Mode.IMMEDIAT,0,'X');
-                c.write(6,ins1);
-                c.write(12,ins2);
-                c.write(25,ins3);
-                c.write(15,ins4);
-                pr(c.testString());
-                pr("-------------------\nExecution 15 et 25 :");
-                pr(c.executer(15)+"  ||  "+c.executer(25)+"\n");
-                pr(c.testString());
-            }
-
-            case DJN : {
-                InstructionID ins1 = new InstructionID(3, 'X');
-                InstructionID ins2 = new InstructionID(1, 'X');
-                InstructionID ins3 = new InstructionID(-10, 'X');
-                InstructionID ins4 = new InstructionID(Mnemonique.DJN,Mode.DIRECT,10,Mode.DIRECT,-15,'X');
-                InstructionID ins5 = new InstructionID(Mnemonique.DJN,Mode.DIRECT,15,Mode.DIRECT,-20,'X');
-                c.write(5,ins1);
-                c.write(10,ins2);
-                c.write(15,ins3);
-                c.write(20,ins4);
-                c.write(30,ins5);
-                pr(c.testString());
-                pr("-------------------\nExecution 20 et 30 :");
-                pr(c.executer(20)+"  ||  "+c.executer(30)+"\n");
-                pr(c.testString());
-            }
-
-            case DJZ : {
-                InstructionID ins1 = new InstructionID(3, 'X');
-                InstructionID ins2 = new InstructionID(1, 'X');
-                InstructionID ins3 = new InstructionID(-10, 'X');
-                InstructionID ins4 = new InstructionID(Mnemonique.DJZ,Mode.DIRECT,10,Mode.DIRECT,-15,'X');
-                InstructionID ins5 = new InstructionID(Mnemonique.DJZ,Mode.DIRECT,15,Mode.DIRECT,-20,'X');
-                c.write(5,ins1);
-                c.write(10,ins2);
-                c.write(15,ins3);
-                c.write(20,ins4);
-                c.write(30,ins5);
-                pr(c.testString());
-                pr("-------------------\nExecution 20 et 30 :");
-                pr(c.executer(20)+"  ||  "+c.executer(30)+"\n");
-                pr(c.testString());
-            }
-        }
-    }
 }

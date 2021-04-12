@@ -1,8 +1,7 @@
 package corewar;
 
-import java.io.File;
-
 import corewar.ClientSide.Interpreteur;
+import corewar.ObjectModel.Rankings;
 import corewar.ObjectModel.Warrior;
 import corewar.ObjectModel.Warriors;
 import corewar.ObjectModel.elementsCore.Core;
@@ -17,7 +16,7 @@ public class Debug{
             System.out.println("------------------------------------------------------------------------------------------");
             System.out.println("");
             System.out.println("1 - Cls");
-            System.out.println("2 - makeWarrior()");
+            System.out.println("2 - Sort Score");
             System.out.println("3 - Animation");
             System.out.println("4 - Test Partie DWARF vs IMP");
             System.out.println("");
@@ -29,7 +28,7 @@ public class Debug{
 
         switch(choice){
             case 1 : { testCls(); break; }
-            case 2 : { testMakeWarrior(); break;}
+            case 2 : { testScoreRank(); break;}
             case 3 : { testAnim(); break;}
             case 4 : { testPartie(); break;}
 
@@ -91,23 +90,19 @@ public class Debug{
         Utils.animation(500, "TEST DE L'ANIMATION...");
     }
 
-    public static void testMakeWarrior(){
-        Warrior w = Warrior.makeWarrior("corewar/src/main/java/corewar/Warriors/dwarf.redcode");
+    public static void testScoreRank(){
+        Rankings r = new Rankings();
+        r.addPlayer("YUUMI", 5);
+        r.addPlayer("SIVIR", 8);
+        r.addPlayer("KHAZIX", 2);
+        r.addPlayer("VIEGOSUPP", 3);
+        r.addPlayer("YUUMI",15);
+
+        System.out.println(r.toStringPlayers());
+        //System.out.println("Imp : "+r.getRankingWarriors().get("IMP"));
     }
 
     public static void testCls(){
-        System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAA");
-        System.out.println("BBBBBBBBBBBBBBBBBBBBBBBBBB");
-        System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAA");
-        System.out.println("BBBBBBBBBBBBBBBBBBBBBBBBBB");
-        System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAA");
-        System.out.println("BBBBBBBBBBBBBBBBBBBBBBBBBB");
-        System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAA");
-        System.out.println("BBBBBBBBBBBBBBBBBBBBBBBBBB");
-        System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAA");
-        System.out.println("BBBBBBBBBBBBBBBBBBBBBBBBBB");
-        System.out.println("APPUYEZ SUR ENTREE");
-        String s = Read.S();
         Utils.clear();
         System.out.println("La console est clear? Sortie du programme");
         System.out.flush();  

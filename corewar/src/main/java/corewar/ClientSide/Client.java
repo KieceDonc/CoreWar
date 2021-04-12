@@ -10,7 +10,6 @@ import corewar.ObjectModel.Player;
 import corewar.ObjectModel.PlayersRanking;
 import corewar.ObjectModel.Warrior;
 import corewar.ObjectModel.WarriorsRanking;
-import corewar.ObjectModel.elementsCore.InstructionID;
 import corewar.ServerSide.ClientPrinterGameList;
 
 /*
@@ -173,7 +172,7 @@ public class Client {
 
     // On peut donc traiter le programme choisi si le nombre rentré est supérieur à 0 ( et correct )
     if(choix >0){
-      
+
       choix--;
       Warrior w = Warrior.makeWarrior(source+pathnames[choix]);
       
@@ -185,7 +184,7 @@ public class Client {
     }
 
     if(valide)
-      System.out.println("Warrior ajouté correctement au joueur courant! Retour au menu.");
+      System.out.println("Warrior correctement ajouté!");
     else
       System.out.println("Annulation du choix du Warrior... Retour au menu.");
 

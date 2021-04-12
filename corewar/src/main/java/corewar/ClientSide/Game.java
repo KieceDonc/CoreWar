@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.HashMap;
 
 import corewar.Read;
-import corewar.Utils;
 import corewar.ClientSide.EventInterface.onGameCancel;
 import corewar.ClientSide.EventInterface.onGameStarting;
 import corewar.ClientSide.EventInterface.onGameStop;
@@ -15,8 +14,6 @@ import corewar.Network.SocketCommunication;
 import corewar.ObjectModel.Player;
 import corewar.ObjectModel.PlayersList;
 import corewar.ObjectModel.PlayersRanking;
-import corewar.ObjectModel.elementsCore.Core;
-import corewar.ServerSide.Manche;
 
 public class Game extends Thread {
 
@@ -28,7 +25,6 @@ public class Game extends Thread {
     private boolean gameHasStart = false;
     private boolean gameHasFinish = false;
     private boolean settingsComplete = false;
-    private HashMap<String,Integer> settings;
 
     private final int ID;
 
