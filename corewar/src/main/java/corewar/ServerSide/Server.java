@@ -5,6 +5,7 @@ import java.net.ServerSocket;
 
 import corewar.Main;
 import corewar.ObjectModel.PlayersRanking;
+import corewar.ObjectModel.Rankings;
 import corewar.ObjectModel.WarriorsRanking;
 import corewar.Read;
 
@@ -21,6 +22,7 @@ public class Server{
   private GameList gameList = new GameList();
   private PlayersRanking ranking = new PlayersRanking();
   private WarriorsRanking programRanking = new WarriorsRanking();
+  private Rankings rankings = new Rankings();
   private ServerSocket server;
 
   private boolean stopServer = false;
@@ -88,6 +90,10 @@ public class Server{
 
   public WarriorsRanking getWarriorsRanking(){
     return this.programRanking;
+  }
+
+  public Rankings getRankings(){
+    return this.rankings;
   }
 
 }

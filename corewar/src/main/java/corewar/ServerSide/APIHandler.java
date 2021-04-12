@@ -9,6 +9,7 @@ import java.util.HashMap;
 import corewar.Network.SocketCommunication;
 import corewar.ObjectModel.Player;
 import corewar.ObjectModel.PlayersList;
+import corewar.ObjectModel.Rankings;
 import corewar.ObjectModel.Warrior;
 import corewar.ObjectModel.WarriorsRanking;
 
@@ -104,6 +105,9 @@ public class APIHandler extends Thread{
       }
       case SocketCommunication.MODIFY_SETTINGS:{
         modifySettings(InComingObject);
+      }
+      case SocketCommunication.GET_RANKINGS:{
+        getRankingsHandler(InComingAPICallType);
       }
     }
   }
@@ -210,6 +214,11 @@ public class APIHandler extends Thread{
 
     Game currentGame = server.getGameList().getByID(gameID);
     currentGame.setSettings(settings);
+  }
+
+  private void getRankingsHandler(int InComingAPICallType){
+    Rankings rankings = server.getRankings();
+    respond(new SocketCommunication(InComingAPICallType, rankings));
   }
 
   private void respond(SocketCommunication toSendObject){

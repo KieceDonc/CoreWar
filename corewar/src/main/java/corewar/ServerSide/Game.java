@@ -7,6 +7,7 @@ import java.util.HashMap;
 import corewar.ObjectModel.Player;
 import corewar.ObjectModel.PlayersList;
 import corewar.ObjectModel.PlayersRanking;
+import corewar.ObjectModel.Rankings;
 import corewar.ObjectModel.Warrior;
 import corewar.ObjectModel.Warriors;
 import corewar.ObjectModel.WarriorsRanking;
@@ -120,7 +121,7 @@ public class Game{
                 int pss = m.possessionScore(war);
                 int pts = m.pointeursScore(war);
                 int score = as+pss+pts;
-                String afficheScore = "Score du warrior "+war.getNom()+" :\n"+"En vie / 500 - "+as+" | Possession de la memoire / 400 - "+pss+" | Nombre de pointeurs / 100 - "+pts+"\nTOTAL : "+score;
+                String afficheScore = "Score du warrior "+war.getNom()+" :\n"+"En vie = "+as+" / 500  | Possession de la memoire = "+pss+"  / 400 | Nombre de pointeurs = "+pts+"  / 100\nTOTAL DES POINTS : "+score+"  / 1000";
                 scoreJoueurs.put(p.getName(), score);
                 scoreWarriors.put(war.getNom(), score);
                 socketEventsSubscriber.sendAll(new SocketCommunication(SocketCommunication.GAME_UPDATE, afficheScore));
@@ -135,15 +136,24 @@ public class Game{
 
     public void onEnd() {
 
-        PlayersRanking playersRanking = server.getRanking();
-        WarriorsRanking warriorsRanking = server.getWarriorsRanking();
-        for (int x = 0; x < playersList.getSize(); x++) {
-            Player currentPlayer = playersRanking.get(playersList.get(x));
-            Warrior currentWarrior = warriorsRanking.get(playersList.get(x).getWarrior());
+        // PlayersRanking playersRanking = server.getRanking();
+        // WarriorsRanking warriorsRanking = server.getWarriorsRanking();
+        // for (int x = 0; x < playersList.getSize(); x++) {
+        //     Player currentPlayer = playersRanking.get(playersList.get(x));
+        //     Warrior currentWarrior = warriorsRanking.get(playersList.get(x).getWarrior());
             
-            currentPlayer.setScore(scoreJoueurs.get(currentPlayer.getName())+currentPlayer.getScore());
-            currentWarrior.setScore(scoreWarriors.get(currentWarrior.getNom())+currentPlayer.getScore());
+        //     currentPlayer.setScore(scoreJoueurs.get(currentPlayer.getName())+currentPlayer.getScore());
+        //     currentWarrior.setScore(scoreWarriors.get(currentWarrior.getNom())+currentPlayer.getScore());
+        // }
+
+        Rankings rankings = server.getRankings();
+        for(String key : scoreJoueurs.keySet()){
+            rankings.addPlayer(key.toUpperCase(), scoreJoueurs.get(key));
         }
+        for(String key : scoreWarriors.keySet()){
+            rankings.addWarrior(key.toUpperCase(), scoreWarriors.get(key));
+        }
+        
 
         try {
             socketEventsSubscriber.sendAll(new SocketCommunication(SocketCommunication.GAME_STOP, server.getRanking()));

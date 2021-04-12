@@ -8,6 +8,7 @@ import corewar.Utils;
 import corewar.Network.SocketCommunication;
 import corewar.ObjectModel.Player;
 import corewar.ObjectModel.PlayersRanking;
+import corewar.ObjectModel.Rankings;
 import corewar.ObjectModel.Warrior;
 import corewar.ObjectModel.WarriorsRanking;
 import corewar.ServerSide.ClientPrinterGameList;
@@ -108,11 +109,13 @@ public class Client {
         break;
       }
       case 3: {
-        getRanking().print();
+        //getRanking().print();
+        System.out.println(getRankings().toStringPlayers());
         break;
       }
       case 4: {
-        getWarriorsRanking().print();
+        // getWarriorsRanking().print();
+        System.out.println(getRankings().toStringWarriors());
         break;
       }
       case 5:{
@@ -261,6 +264,18 @@ public class Client {
       connexion.start();
       connexion.join();
       return (PlayersRanking)connexion.getReceivedObject();
+    } catch (IOException | InterruptedException e) {
+      e.printStackTrace();
+    }
+    return null;
+  }
+
+  private Rankings getRankings(){
+    try {
+      Connexion connexion = new Connexion(new SocketCommunication(SocketCommunication.GET_RANKINGS, null));
+      connexion.start();
+      connexion.join();
+      return (Rankings)connexion.getReceivedObject();
     } catch (IOException | InterruptedException e) {
       e.printStackTrace();
     }

@@ -338,7 +338,6 @@ public class Game extends Thread {
     }
 
     private void end(PlayersRanking ranking){
-        ranking.print();
         System.out.println("------------------------------------------------------------------------------------------");
         System.out.println("");
         System.out.println("La partie est terminé, vous pouvez appuyer sur n'importe qu'elle touche d'un entier pour quitter la partie");
