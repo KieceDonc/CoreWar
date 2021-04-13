@@ -24,7 +24,7 @@ public class Warrior implements Serializable {
     private char id;
     private String couleur;
     private boolean ready;
-    private int score;
+    //private int score;
     
     public ArrayList<InstructionID> getInstructions() { return this.instructions; }
     public ArrayDeque<Integer> getPointeurs() { return this.pointeurs; }
@@ -32,9 +32,9 @@ public class Warrior implements Serializable {
     public char getId() { return this.id; }
     public String getCouleur() { return this.couleur; }
     public boolean isReady() { return this.ready; }
-    public int getScore(){ return this.score; }
+    //public int getScore(){ return this.score; }
 
-    public void setScore(int score){ this.score = score; }
+    //public void setScore(int score){ this.score = score; }
     public void setInstructions(ArrayList<InstructionID> instructions) { this.instructions = instructions; }
     public void setInstructions(ArrayList<Instruction> instructions, char id) { this.setInstructions(toInstructionID(instructions,id)); }
     public void setPointeurs(ArrayDeque<Integer> pointeurs) { this.pointeurs = pointeurs; }

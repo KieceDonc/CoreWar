@@ -4,13 +4,12 @@ import java.io.File;
 import java.io.IOException;
 
 import corewar.Read;
+import corewar.Regles;
 import corewar.Utils;
 import corewar.Network.SocketCommunication;
 import corewar.ObjectModel.Player;
-import corewar.ObjectModel.PlayersRanking;
 import corewar.ObjectModel.Rankings;
 import corewar.ObjectModel.Warrior;
-import corewar.ObjectModel.WarriorsRanking;
 import corewar.ServerSide.ClientPrinterGameList;
 
 /*
@@ -73,7 +72,7 @@ public class Client {
 
   private void mainMenu() {
     int choice = 0;
-    int maxChoice = 7;
+    int maxChoice = 8;
     do {
       System.out.println("------------------------------------------------------------------------------------------");
       System.out.println("");
@@ -83,7 +82,8 @@ public class Client {
       System.out.println("4 - Voir le classement des warriors");
       System.out.println("5 - Ajouter un Warrior");
       System.out.println("6 - Voir le Warrior");
-      System.out.println("7 - Fermer");
+      System.out.println("7 - Voir le Warrior");
+      System.out.println("8 - Fermer");
       System.out.println("");
       System.out.print("Votre choix : ");
       choice = Read.i();
@@ -126,7 +126,11 @@ public class Client {
         afficheWarrior();
         break;
       }
-      case 7 :{
+      case 7:{
+        Regles.printRegles();
+        break;
+      }
+      case 8 :{
         System.exit(0);
         break;
       }
@@ -154,9 +158,10 @@ public class Client {
   private void addWarrior() {
     String[] pathnames;
     // Le joueur rentre le répertoire de ses warriors
-    System.out.println("Rentrez le chemin absolu vers le dossier contenant vos warriors (si lance depuis projet java, taper 0 pour utiliser le dossier warriors");
+    System.out.println("Rentrez le chemin absolu vers le REPERTOIRE contenant vos warriors, sans / à la fin. EXEMPLE : C:/Users/Yuumi/Desktop/Warriors\nRentrez 0 si ils sont rangés dans un dossier nommé Warriors dans le même répertoire que ce .jar");
     String source = Read.S();
-    if(source.equals("0")) source = "corewar/src/main/java/corewar/Warriors/";
+    if(source.equals("-1")) source = "corewar/src/main/java/corewar/Warriors/";
+    if(source.equals("0")) source = "Warriors";
     boolean valide = false;
     // On commence par montrer tous les warriors afin que le joueur puisse choisir celui de son choix
     File f = new File(source);
@@ -258,36 +263,12 @@ public class Client {
     }
    }
 
-   private PlayersRanking getRanking() {
-    try {
-      Connexion connexion = new Connexion(new SocketCommunication(SocketCommunication.GET_RANKING, null));
-      connexion.start();
-      connexion.join();
-      return (PlayersRanking)connexion.getReceivedObject();
-    } catch (IOException | InterruptedException e) {
-      e.printStackTrace();
-    }
-    return null;
-  }
-
   private Rankings getRankings(){
     try {
       Connexion connexion = new Connexion(new SocketCommunication(SocketCommunication.GET_RANKINGS, null));
       connexion.start();
       connexion.join();
       return (Rankings)connexion.getReceivedObject();
-    } catch (IOException | InterruptedException e) {
-      e.printStackTrace();
-    }
-    return null;
-  }
-
-  private WarriorsRanking getWarriorsRanking() {
-    try {
-      Connexion connexion = new Connexion(new SocketCommunication(SocketCommunication.GET_WARRIORS_RANKING, null));
-      connexion.start();
-      connexion.join();
-      return (WarriorsRanking)connexion.getReceivedObject();
     } catch (IOException | InterruptedException e) {
       e.printStackTrace();
     }

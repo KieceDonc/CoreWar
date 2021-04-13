@@ -87,16 +87,6 @@ public class Manche {
         return "TOUR#"+tour+"\n"+this.getCore().toString()+"\n"+this.getWarriors().toString();
     }
 
-    public void updateScore(){
-        for(Warrior w : getWarriors().getWarriors()){
-            int score = 0; //score
-            if(getWinners().contains(w)){
-                score += 1200/getWinners().size();
-            }
-            w.setScore(w.getScore()+score);
-        }
-    }
-
     //500 points repartis entre les survivants
     public int aliveScore(Warrior w){
         double winners = getWinners().size();

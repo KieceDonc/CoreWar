@@ -16,17 +16,6 @@ DJZ -- decrement and jump if zero ((decrements a number by one, and jumps if the
 CMP -- compare (same as SEQ)
 SPL -- split (creates new process)
 DAT -- data (kills the process)
-
-// REDCODE ETENDU :
-MUL -- multiply (multiplies one number with another)
-DIV -- divide (divides one number with another)
-MOD -- modulus (divides one number with another and gives the remainder)
-SEQ -- skip if equal (compares two instructions, and skips the next instruction if they are equal)
-SNE -- skip if not equal (compares two instructions, and skips the next instruction if they aren't equal)
-SLT -- skip if lower than (compares two values, and skips the next instruction if the first is lower than the second)
-LDP -- load from p-space (loads a number from private storage space)
-STP -- save to p-space (saves a number to private storage space)
-NOP -- no operation (does nothing)
 */
 
 public enum Mnemonique implements Serializable{

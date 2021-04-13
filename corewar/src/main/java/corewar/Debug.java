@@ -12,6 +12,7 @@ public class Debug{
     public static void mainDebug(){
 
         int choice = 0;
+        final int maxChoice = 5;
         do{
             System.out.println("------------------------------------------------------------------------------------------");
             System.out.println("");
@@ -19,18 +20,21 @@ public class Debug{
             System.out.println("2 - Sort Score");
             System.out.println("3 - Animation");
             System.out.println("4 - Test Partie DWARF vs IMP");
+            System.out.println("5 - Afficher Règles");
             System.out.println("");
             System.out.print("Votre choix : ");
             choice = Read.i();
             System.out.println("");
             System.out.println("------------------------------------------------------------------------------------------");    
-        }while(choice>4 || choice<1);
+        }while(choice>maxChoice || choice<0);
 
         switch(choice){
+            case 0 : { System.exit(0);}
             case 1 : { testCls(); break; }
             case 2 : { testScoreRank(); break;}
             case 3 : { testAnim(); break;}
             case 4 : { testPartie(); break;}
+            case 5 : { Regles.printRegles(); break;}
 
         }
         mainDebug();
@@ -79,7 +83,6 @@ public class Debug{
         Manche m = new Manche(w,c);
 
         m.traitementPartie(tours,frameRate,null);
-        m.updateScore();
 
         System.out.println("1 : En vie : "+m.aliveScore(J1)+" | Possession : "+m.possessionScore(J1)+" | Pointeurs "+m.pointeursScore(J1));
         System.out.println("2 : En vie : "+m.aliveScore(J2)+" | Possession : "+m.possessionScore(J2)+" | Pointeurs "+m.pointeursScore(J2));
