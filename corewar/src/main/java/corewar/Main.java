@@ -48,7 +48,7 @@ public class Main{
         do{
             System.out.println("------------------------------------------------------------------------------------------");
             System.out.println("");
-            System.out.println("1 - Rejoindre en tant que joueur");
+            System.out.println("1 - Rejoindre en tant que Joueur");
             System.out.println("2 - Créer un serveur");
             System.out.println("3 - Lancer une partie en local");
             System.out.println("4 - Quitter");
