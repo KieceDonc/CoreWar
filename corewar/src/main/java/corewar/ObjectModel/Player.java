@@ -8,7 +8,6 @@ public class Player implements Serializable {
   
   private Warrior warrior;
   private String name;
-  private int score;
 
   public Player(String name){
     this.name = name;
@@ -26,19 +25,11 @@ public class Player implements Serializable {
     return this.name;
   }
 
-  public void setScore(int score){
-    this.score = score;
-  }
-
-  public int getScore(){
-    return this.score;
-  }
-
   public boolean equals(Player player2){
     return this.getName().equals(player2.getName());
   }
 
   public String toString(){
-    return "Player "+this.getName()+", score = "+this.getScore();
+    return "Player "+this.getName();
   }
 }
