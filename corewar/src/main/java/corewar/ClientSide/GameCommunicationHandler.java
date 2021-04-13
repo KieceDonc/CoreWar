@@ -17,7 +17,6 @@ import corewar.ClientSide.EventInterface.onPlayerJoinGame;
 import corewar.ClientSide.EventInterface.onPlayerLeftGame;
 import corewar.Network.SocketCommunication;
 import corewar.ObjectModel.Player;
-import corewar.ObjectModel.PlayersRanking;
 import corewar.ServerSide.Server;
 
 public class GameCommunicationHandler extends Thread{
@@ -98,8 +97,7 @@ public class GameCommunicationHandler extends Thread{
         break;
       }
       case SocketCommunication.GAME_STOP:{
-        PlayersRanking ranking = (PlayersRanking) InComingObject;
-        gameStopHandler(ranking);
+        gameStopHandler();
         break;
       }
       case SocketCommunication.GAME_UPDATE:{
@@ -133,9 +131,9 @@ public class GameCommunicationHandler extends Thread{
     }
   }
 
-  private void gameStopHandler(PlayersRanking ranking){
+  private void gameStopHandler(){
     for(int x=0;x<gameStartingListeners.size();x++){
-      this.gameStopListeners.get(x).dothis(ranking);
+      this.gameStopListeners.get(x).dothis();
     }
     endCom();
   }

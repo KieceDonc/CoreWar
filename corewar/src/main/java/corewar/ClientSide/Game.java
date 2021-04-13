@@ -13,7 +13,6 @@ import corewar.ClientSide.EventInterface.onPlayerLeftGame;
 import corewar.Network.SocketCommunication;
 import corewar.ObjectModel.Player;
 import corewar.ObjectModel.PlayersList;
-import corewar.ObjectModel.PlayersRanking;
 
 public class Game extends Thread {
 
@@ -91,8 +90,8 @@ public class Game extends Thread {
         gameCommunicationHandler.onGameStop(new onGameStop(){
         
             @Override
-            public void dothis(PlayersRanking ranking) {
-                end(ranking);
+            public void dothis() {
+                end();
                 gameHasFinish = true;
             }
         });
@@ -337,7 +336,7 @@ public class Game extends Thread {
         System.out.println(status);
     }
 
-    private void end(PlayersRanking ranking){
+    private void end(){
         System.out.println("------------------------------------------------------------------------------------------");
         System.out.println("");
         System.out.println("La partie est terminé, vous pouvez appuyer sur n'importe qu'elle touche d'un entier pour quitter la partie");

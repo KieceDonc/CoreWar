@@ -6,11 +6,9 @@ import java.util.HashMap;
 
 import corewar.ObjectModel.Player;
 import corewar.ObjectModel.PlayersList;
-import corewar.ObjectModel.PlayersRanking;
 import corewar.ObjectModel.Rankings;
 import corewar.ObjectModel.Warrior;
 import corewar.ObjectModel.Warriors;
-import corewar.ObjectModel.WarriorsRanking;
 import corewar.ObjectModel.elementsCore.Core;
 import corewar.Network.SocketCommunication;
 import corewar.Utils;
@@ -156,7 +154,7 @@ public class Game{
         
 
         try {
-            socketEventsSubscriber.sendAll(new SocketCommunication(SocketCommunication.GAME_STOP, server.getRanking()));
+            socketEventsSubscriber.sendAll(new SocketCommunication(SocketCommunication.GAME_STOP, null));
         } catch (IOException e) {
             e.printStackTrace();
         }

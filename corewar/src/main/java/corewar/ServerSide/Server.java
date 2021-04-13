@@ -4,9 +4,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 
 import corewar.Main;
-import corewar.ObjectModel.PlayersRanking;
 import corewar.ObjectModel.Rankings;
-import corewar.ObjectModel.WarriorsRanking;
 import corewar.Read;
 
 /*
@@ -20,8 +18,6 @@ public class Server{
   public static final int port = 5487;
   
   private GameList gameList = new GameList();
-  private PlayersRanking ranking = new PlayersRanking();
-  private WarriorsRanking programRanking = new WarriorsRanking();
   private Rankings rankings = new Rankings();
   private ServerSocket server;
 
@@ -82,14 +78,6 @@ public class Server{
 
   public GameList getGameList(){
     return this.gameList;
-  }
-
-  public PlayersRanking getRanking(){
-    return this.ranking;
-  }
-
-  public WarriorsRanking getWarriorsRanking(){
-    return this.programRanking;
   }
 
   public Rankings getRankings(){
