@@ -4,6 +4,13 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
 public class Rankings implements Serializable{
 
@@ -111,6 +118,53 @@ public class Rankings implements Serializable{
         }
         return res;
     }
+
+    public boolean saveWarriorRankings(){
+        try {
+            new File("Save").mkdir();
+            FileOutputStream fileOut = new FileOutputStream("Save/WarriorSave");
+            ObjectOutputStream out = new ObjectOutputStream(fileOut);
+            out.writeObject(this.getRankingWarriors());
+            out.close();
+            fileOut.close();
+    
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return false;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+   }
+
+    public boolean loadWarriorRankings(){
+        try {
+            if(!new File("Save/WarriorSave").isFile())
+                return false;
+            FileInputStream fileIn = new FileInputStream("Save/WarriorSave");
+            ObjectInputStream ois = new ObjectInputStream(fileIn);
+
+            @SuppressWarnings("unchecked")
+            HashMap<String,Integer> load = (HashMap<String,Integer>) ois.readObject();
+
+            this.setRankingWarriors(load);
+            ois.close();
+            fileIn.close();
+          } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return false;
+          } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+          } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            return false;
+          }
+
+        return true;
+
+   }
 
     
 }

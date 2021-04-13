@@ -34,6 +34,10 @@ public class Server{
   */
   public void apiHandler() {
     Server thisServer = this;
+    boolean ok = this.getRankings().loadWarriorRankings();
+    if(ok) System.out.println("Classement des warriors chargé");
+    else System.out.println("Echec du chargement du classement des warriors (Normal si premier lancement du serveur)");
+    
     new Thread(new Runnable() {
 
       @Override
@@ -57,9 +61,12 @@ public class Server{
       @Override
       public void run() {
         try {
-          System.out.println("Appuyer sur entrée pour étiendre le serveur");
+          System.out.println("Appuyer sur entrée pour éteindre le serveur");
           Read.S();
           stopServer = true;
+          boolean ok = getRankings().saveWarriorRankings();
+          if(ok) System.out.println("Sauvegarde des Warriors effectuée");
+          else System.out.println("Echec de la sauvegarde des Warriors");
           server.close();
         } catch (Exception e){
 

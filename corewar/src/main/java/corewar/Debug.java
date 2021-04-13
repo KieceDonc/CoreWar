@@ -12,7 +12,7 @@ public class Debug{
     public static void mainDebug(){
 
         int choice = 0;
-        final int maxChoice = 5;
+        final int maxChoice = 6;
         do{
             System.out.println("------------ MENU SECRET! ECRAN DE DEBUG\n---- Ce menu contient divers tests de fonctionnalités implémentées ou non.");
             System.out.println("");
@@ -21,6 +21,7 @@ public class Debug{
             System.out.println("3 - Animation");
             System.out.println("4 - Test Partie DWARF vs IMP");
             System.out.println("5 - Afficher Règles");
+            System.out.println("6 - Sauvegarde des warriors");
             System.out.println("");
             System.out.print("Votre choix : ");
             choice = Read.i();
@@ -35,11 +36,30 @@ public class Debug{
             case 3 : { testAnim(); break;}
             case 4 : { testPartie(); break;}
             case 5 : { Regles.printRegles(); break;}
+            case 6 : { testSauvegarde(); break;}
 
         }
         mainDebug();
         
         
+    }
+
+    private static void testSauvegarde() {
+
+        Rankings r1 = new Rankings();
+        r1.addWarrior("DWARF", 5);
+        pr(r1.toStringWarriors());
+
+        boolean ok = r1.saveWarriorRankings();
+        pr(ok);
+
+        r1.getRankingWarriors().clear();
+        Utils.animation(3, "Supression de la liste");
+        Rankings r2 = new Rankings();
+        pr(r2.toStringWarriors());
+        r2.loadWarriorRankings();
+        r2.addWarrior("IMP", 7);
+        pr(r2.toStringWarriors());
     }
 
     private static void testPartie() {
