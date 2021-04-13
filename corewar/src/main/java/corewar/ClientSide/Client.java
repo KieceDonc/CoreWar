@@ -1,6 +1,7 @@
 package corewar.ClientSide;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import corewar.Read;
@@ -82,7 +83,7 @@ public class Client {
       System.out.println("4 - Voir le classement des warriors");
       System.out.println("5 - Ajouter un Warrior");
       System.out.println("6 - Voir le Warrior");
-      System.out.println("7 - Voir le Warrior");
+      System.out.println("7 - Voir les règles");
       System.out.println("8 - Fermer");
       System.out.println("");
       System.out.print("Votre choix : ");
@@ -157,14 +158,24 @@ public class Client {
   //"corewar/src/main/java/corewar/Warriors/"
   private void addWarrior() {
     String[] pathnames;
+    File f;
+
     // Le joueur rentre le répertoire de ses warriors
     System.out.println("Rentrez le chemin absolu vers le REPERTOIRE contenant vos warriors, sans / à la fin. EXEMPLE : C:/Users/Yuumi/Desktop/Warriors\nRentrez 0 si ils sont rangés dans un dossier nommé Warriors dans le même répertoire que ce .jar");
     String source = Read.S();
     if(source.equals("-1")) source = "corewar/src/main/java/corewar/Warriors/";
-    if(source.equals("0")) source = "Warriors";
+    if(source.equals("0")) source = "Warriors/";
     boolean valide = false;
+
+    // Si le répertoire existe on peut continuer, sinon retour au menu
+    f = new File(source);
+    if(!f.isDirectory()){
+      System.out.println("Le répertoire n'a pas été trouvé. Veuillez reessayer");
+      return;
+    } 
+    
+
     // On commence par montrer tous les warriors afin que le joueur puisse choisir celui de son choix
-    File f = new File(source);
     pathnames = f.list();
     int index = 1;
     for (String pathname : pathnames) {
@@ -174,9 +185,9 @@ public class Client {
     System.out.println("Rentrez le numero correspondant au fichier de votre choix, ou 0 pour quitter ce menu.");
     int choix = -1;
     // Si le joueur rentre 0, alors on sort sans rien faire. Sinon on peut le traiter, et s'il n'y a pas d'erreur, on peut le donner au joueur.
-    while(choix <0 || choix > f.length()){
+    do{
       choix = Read.i();
-    }
+    }while(choix <0 || choix > pathnames.length);
 
     // On peut donc traiter le programme choisi si le nombre rentré est supérieur à 0 ( et correct )
     if(choix >0){
@@ -197,8 +208,7 @@ public class Client {
       System.out.println("Annulation du choix du Warrior... Retour au menu.");
 
     Utils.sleep(1000);
-    mainMenu();
-
+    return;
   }
 
   private void invalidProgram(){
