@@ -11,7 +11,7 @@ import corewar.ObjectModel.Player;
 import corewar.ObjectModel.PlayersList;
 import corewar.ObjectModel.Rankings;
 import corewar.ObjectModel.Warrior;
-import corewar.ObjectModel.WarriorsRanking;
+
 
 public class APIHandler extends Thread{
   
@@ -59,10 +59,6 @@ public class APIHandler extends Thread{
     int InComingAPICallType = receivedObject.getAPICallType();
     Object InComingObject = receivedObject.getObject();
     switch(InComingAPICallType){
-      case SocketCommunication.GET_RANKING:{
-        getRankingHandler(InComingAPICallType);
-        break;
-      }
       case SocketCommunication.IS_PLAYER_NAME_TAKEN:{
         isPlayerNameTakenHandler(InComingAPICallType, InComingObject);
         break;
@@ -87,20 +83,16 @@ public class APIHandler extends Thread{
         cancelGameHandler(InComingObject);
         break;
       }
+      case SocketCommunication.PLAYER_ADDED_WARRIOR:{
+        playerAddedWarriorHandler(InComingAPICallType, InComingObject);
+        break;
+      }
       case SocketCommunication.PLAYER_LEAVE_GAME:{
         playerLeaveGameHandler(InComingObject);
         break;
       }
       case SocketCommunication.START_GAME:{
         startGameHandler(InComingObject);
-        break;
-      }
-      case SocketCommunication.GET_WARRIORS_RANKING:{
-        getWarriorsRankingHandler(InComingAPICallType);
-        break;
-      }
-      case SocketCommunication.PLAYER_ADDED_WARRIOR:{
-        playerAddedWarriorHandler(InComingAPICallType, InComingObject);
         break;
       }
       case SocketCommunication.MODIFY_SETTINGS:{
@@ -112,14 +104,11 @@ public class APIHandler extends Thread{
     }
   }
 
-  private void getRankingHandler(int InComingAPICallType){
-    respond(new SocketCommunication(InComingAPICallType, server.getRanking()));
-  }
 
   private void isPlayerNameTakenHandler(int InComingAPICallType, Object InComingObject){
     String playerName = (String)InComingObject;
 
-    boolean isPlayerNameTaken = server.getRanking().isInList(playerName);
+    boolean isPlayerNameTaken = server.getRankings().getRankingPlayers().containsKey(playerName.toUpperCase());
 
     if(!isPlayerNameTaken){
       GameList gameList = server.getGameList();
@@ -133,7 +122,7 @@ public class APIHandler extends Thread{
     }
 
     if(!isPlayerNameTaken){
-      server.getRanking().add(new Player(playerName));
+      server.getRankings().addPlayer(playerName.toUpperCase(), 0);
     }
 
     respond(new SocketCommunication(InComingAPICallType, isPlayerNameTaken));
@@ -190,18 +179,12 @@ public class APIHandler extends Thread{
     Game currentGame = server.getGameList().getByID(gameID);
     currentGame.start(this.oos);
   }
-
-  private void getWarriorsRankingHandler(int InComingAPICallType){
-    WarriorsRanking warriorsRanking = server.getWarriorsRanking();
-    respond(new SocketCommunication(InComingAPICallType, warriorsRanking));
-  }
-
+  
   private void playerAddedWarriorHandler(int InComingAPICallType, Object InComingObject){
     Warrior warrior = (Warrior) InComingObject;
 
-    if(!server.getWarriorsRanking().isInList(warrior)){
-      server.getWarriorsRanking().add(warrior);
-    }
+    if(!server.getRankings().getRankingWarriors().containsKey(warrior.getNom().toUpperCase()))
+      server.getRankings().addWarrior(warrior.getNom().toUpperCase(), 0);
     
     respond(new SocketCommunication(InComingAPICallType, null));
   }

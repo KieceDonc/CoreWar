@@ -1,14 +1,9 @@
 package corewar.ObjectModel;
 
 import java.io.Serializable;
-import java.security.KeyStore.Entry;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
 
 public class Rankings implements Serializable{
 
