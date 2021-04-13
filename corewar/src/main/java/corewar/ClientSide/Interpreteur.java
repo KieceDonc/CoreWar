@@ -10,7 +10,7 @@ import java.util.HashMap;
 
 public class Interpreteur {
 
-    //Cette fonction convertit le fichier RedCode dont l'emplacement est passé en paramètre en Liste de string.
+    //Cette fonction convertit le fichier texte dont l'emplacement est passé en paramètre en Liste de string.
     //Elle renvoie une ArrayList<String> telle que : Une ligne de code = Une ligne du tableau. 
     public static ArrayList<String> toList(String chemin) throws FileNotFoundException{
 
