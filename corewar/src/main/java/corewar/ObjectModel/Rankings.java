@@ -36,7 +36,7 @@ public class Rankings implements Serializable{
         this.setRankingWarriors(new HashMap<String,Integer>());
     }
 
-    public void addWarrior(String name, Integer score){
+    public synchronized void addWarrior(String name, Integer score){
         String key = name.toUpperCase();
         if(this.getRankingWarriors().containsKey(key))
             this.getRankingWarriors().replace(key,this.getRankingWarriors().get(key)+score);
@@ -44,7 +44,7 @@ public class Rankings implements Serializable{
             this.getRankingWarriors().put(key,score);
     }
 
-    public void addPlayer(String name, Integer score){
+    public synchronized void addPlayer(String name, Integer score){
         String key = name.toUpperCase();
         if(this.getRankingPlayers().containsKey(key))
             this.getRankingPlayers().replace(key,this.getRankingPlayers().get(key)+score);
