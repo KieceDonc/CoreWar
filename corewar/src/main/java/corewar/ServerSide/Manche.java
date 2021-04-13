@@ -55,7 +55,6 @@ public class Manche {
                 }else{
                     try {
                         Utils.sleep(500);
-                        System.out.println(stringBoard(incr));
                         evt.sendAll(new SocketCommunication(SocketCommunication.GAME_UPDATE, stringBoard(incr)));
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -76,11 +75,11 @@ public class Manche {
                 getWinners().add(w);
                 res+=w.getNom()+"\n";
             }
-            System.out.println("IL Y A EGALITE ENTRE LES SURVIVANTS\n"+res);
+            System.out.println("PLUSIEURS WARRIORS SONT ENCORE EN VIE\n"+res);
             
         }
         else
-            System.out.println("Le gagnant est : "+getWinners().get(0).getNom());
+            System.out.println("LA PARTIE SE FINIT SUR UN SEUL SURVIVANT : "+getWinners().get(0).getNom());
     }
 
     public String stringBoard(int tour){

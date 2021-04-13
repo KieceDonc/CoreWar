@@ -10,25 +10,33 @@ public class Main{
     
     public static void main(String[] args){
 
+        boolean exit = false;
+
         printLogo();
-        switch(serverOrClient()){
-            case 1:{ 
-                new Client();
-                break;
-            }
-            case 2:{
-                new Server();
-                break;
-            }
-            case 3:{
-                Local.PartieLocale();
-                break;
-            }
-            case 4:{
-                Debug.mainDebug();
-                System.exit(0);
-            }
-        };
+        do{
+            switch(serverOrClient()){
+                case 1:{ 
+                    new Client();
+                    break;
+                }
+                case 2:{
+                    new Server();
+                    break;
+                }
+                case 3:{
+                    Local.PartieLocale();
+                    break;
+                }
+                case 4:{
+                    exit = true;
+                    break;
+                }
+                case 5:{
+                    Debug.mainDebug();
+                    break;
+                }
+            };
+        }while(!exit);
     }
 
     /*
@@ -43,13 +51,13 @@ public class Main{
             System.out.println("1 - Rejoindre en tant que joueur");
             System.out.println("2 - Créer un serveur");
             System.out.println("3 - Lancer une partie en local");
-            System.out.println("4 - Lancer le debugging");
+            System.out.println("4 - Quitter");
             System.out.println("");
             System.out.print("Votre choix : ");
             choice = Read.i();
             System.out.println("");
             System.out.println("------------------------------------------------------------------------------------------");    
-        }while(choice>4 || choice<1);
+        }while(choice>5 || choice<1);
         return choice;
     }
 

@@ -14,7 +14,7 @@ public class Debug{
         int choice = 0;
         final int maxChoice = 5;
         do{
-            System.out.println("------------------------------------------------------------------------------------------");
+            System.out.println("------------ MENU SECRET! ECRAN DE DEBUG\n---- Ce menu contient divers tests de fonctionnalités implémentées ou non.");
             System.out.println("");
             System.out.println("1 - Cls");
             System.out.println("2 - Sort Score");
@@ -62,13 +62,13 @@ public class Debug{
         Warrior J1 = new Warrior();
         J1.setNom("DWARF");
         J1.setId('1');
-        J1.setInstructions(Interpreteur.interpreter("corewar/src/main/java/corewar/Warriors/dwarf.redcode"),J1.getId());
+        J1.setInstructions(Interpreteur.interpreter("corewar/src/main/java/corewar/Warriors/dwarf"),J1.getId());
         J1.setCouleur("blue");
 
         Warrior J2 = new Warrior();
         J2.setNom("IMP");
         J2.setId('2');
-        J2.setInstructions(Interpreteur.interpreter("corewar/src/main/java/corewar/Warriors/imp.redcode"),J2.getId());
+        J2.setInstructions(Interpreteur.interpreter("corewar/src/main/java/corewar/Warriors/imp"),J2.getId());
         J2.setCouleur("red");
 
 

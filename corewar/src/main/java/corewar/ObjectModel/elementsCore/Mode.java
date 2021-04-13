@@ -1,10 +1,10 @@
 package corewar.ObjectModel.elementsCore;
 
-import java.io.Serializable;
+
 import java.util.regex.Pattern;
 
 // Direct : " " | Immédiat : "#" | Indirect : "@"
-public enum Mode implements Serializable {
+public enum Mode {
     DIRECT{ public String toString() { return "" ; } },
     IMMEDIAT{ public String toString() { return "#" ; } }, 
     INDIRECT{ public String toString() { return "@" ; } };

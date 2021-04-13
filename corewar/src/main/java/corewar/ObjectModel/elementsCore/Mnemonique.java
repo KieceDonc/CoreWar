@@ -1,6 +1,6 @@
 package corewar.ObjectModel.elementsCore;
 
-import java.io.Serializable;
+
 import java.util.regex.Pattern;
 
 /*
@@ -18,7 +18,7 @@ SPL -- split (creates new process)
 DAT -- data (kills the process)
 */
 
-public enum Mnemonique implements Serializable{
+public enum Mnemonique{
     MOV,ADD,SUB,JMP,JMZ,JMG,JMN,DJN,DJZ,CMP,SEQ,SNE,SPL,DAT;
 
     // Retourne un regex faisant un OU logique de toutes les mnémoniques (insensible à la casse)

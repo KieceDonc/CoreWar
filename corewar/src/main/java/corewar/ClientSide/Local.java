@@ -6,11 +6,14 @@ import corewar.Read;
 import corewar.Utils;
 import corewar.ObjectModel.Warrior;
 import corewar.ObjectModel.Warriors;
+import corewar.ObjectModel.elementsCore.Core;
+import corewar.ServerSide.Manche;
 
 public class Local {
 
     public static void PartieLocale(){
         System.out.println("cool");
+        int nombreJoueurs;
         int choix;
         String source;
         File f;
@@ -21,8 +24,8 @@ public class Local {
         do{
             Utils.clear();
             System.out.println("LANCEMENT D'UNE PARTIE SOLO!\n\nEntrez le nombre de Warriors participant au match (entre 2 et 4) :");
-            choix = Read.i();
-        }while(choix < 2 && choix > 4);
+            nombreJoueurs = Read.i();
+        }while(nombreJoueurs < 2 && nombreJoueurs > 4);
         
         // Répertoire des warriors
         do{
@@ -42,8 +45,9 @@ public class Local {
 
         // On demande a chaque joueur de paramétrer son Warrior
         Warriors warriors = new Warriors();
-        for(int i = 1 ; i <= choix ; i++){
-            choix = -1;
+        for(int i = 1 ; i <= nombreJoueurs ; i++){
+            Utils.clear();
+            System.out.println("----- CREATION DU WARRIOR #"+i+"\n");
             do{
                 int index = 1;
                 for (String pathname : pathnames) {
@@ -64,7 +68,7 @@ public class Local {
             switch(i){
                 case 1 :{
                     id = '1';
-                    color = "red";
+                    color = "green";
                     break;
                 }
                 case 2 :{
@@ -79,18 +83,50 @@ public class Local {
                 }
                 case 4 :{
                     id = '4';
-                    color = "green";
+                    color = "red";
                     break;
                 }
             }
             war.setId(id);
+            war.changeId(id);
             war.setCouleur(color);
-            
-            
+            war.setReady(true);
+            warriors.add(war);
         }
 
-
+        Integer coreSize = null, frameRate = null, tours = null;
         
+        do {
+            System.out.println("Veuillez rentrer la taille du core (min 500, maximum 10000, multiple de 100):");
+            coreSize = Read.i();
+        } while(coreSize == null || coreSize < 500 || coreSize > 10000 || coreSize%100 != 0);
+        do {
+            System.out.println("Veuillez rentrer la vitesse de la partie entre 1 et 500, c'est à dire le nombre de tour à passer toutes les secondes (Conseillé 20 -> Une partie de 2000 tours durera alors 100 secondes) :");
+            frameRate = Read.i();
+        } while(frameRate == null || frameRate < 1 || frameRate > 500);
+        do {
+            System.out.println("Veuillez rentrer le nombre de tours max (conseillé ~2000), entre 5 et 50000:");
+            tours = Read.i();
+        } while(tours == null || tours < 5 || tours > 50000);
+        frameRate = frameRate/2;
+
+        Core c = new Core(coreSize);
+        c.setWarriors(warriors);
+        c.load();
+
+        Manche m = new Manche(warriors,c);
+
+        m.traitementPartie(tours,frameRate,null);
+
+        for(Warrior current : warriors.getWarriors()){
+            int as = m.aliveScore(current);
+            int pss = m.possessionScore(current);
+            int pts = m.pointeursScore(current);
+            int score = as+pss+pts;
+            System.out.println("Score du warrior "+current.getNom()+" :\n"+"En vie = "+as+" / 500  | Possession de la memoire = "+pss+"  / 400 | Nombre de pointeurs = "+pts+"  / 100\nTOTAL DES POINTS : "+score+"  / 1000\n");
+        }
+
+            
 
 
     }
